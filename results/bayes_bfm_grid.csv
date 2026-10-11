@@ -1,0 +1,8 @@
+config,features,rank,n_iter,valid_rmse,valid_rmse_last,time_s
+"MF (u, i)",none,10,1000,0.8887,0.8887,14.4
++ implicite user (SVD++),iu,10,1000,0.885,0.885,21.7
++ implicite item (flipped),ii,10,1000,0.8762,0.8762,19.3
++ genres/décennie,side,10,1000,0.884,0.884,17.1
+tout,iu+ii+side,10,2000,0.8736,0.8728,55.4
+"tout, rang 5",iu+ii+side,5,1000,0.877,0.877,15.2
+"tout, rang 20",iu+ii+side,20,1000,0.8787,0.8787,51.0

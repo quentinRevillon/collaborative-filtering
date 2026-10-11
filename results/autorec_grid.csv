@@ -1,0 +1,28 @@
+family,hidden,lam,item,residual,kernel_dim,epochs,train_rmse,valid_rmse,time_s
+I-AutoRec raw,500,10.0,True,False,0,13,0.7466,0.968,11.5
+I-AutoRec raw,500,30.0,True,False,0,22,0.7244,0.958,10.1
+I-AutoRec raw,500,100.0,True,False,0,195,0.838,0.9262,35.4
+I-AutoRec raw,500,300.0,True,False,0,211,0.8948,0.9453,32.2
+I-AutoRec residual,500,10.0,True,True,0,116,0.4572,0.8896,19.6
+I-AutoRec residual,500,30.0,True,True,0,181,0.6761,0.8893,28.5
+I-AutoRec residual,500,100.0,True,True,0,30,0.7546,0.8913,8.3
+I-AutoRec residual,500,300.0,True,True,0,54,0.7696,0.891,11.6
+U-AutoRec raw,500,10.0,False,False,0,46,0.2484,0.9915,13.0
+U-AutoRec raw,500,30.0,False,False,0,44,0.4641,0.9773,12.5
+U-AutoRec raw,500,100.0,False,False,0,50,0.7456,0.9782,12.4
+U-AutoRec raw,500,300.0,False,False,0,35,0.8535,0.9884,10.3
+U-AutoRec residual,500,10.0,False,True,0,7,0.7065,0.9138,6.0
+U-AutoRec residual,500,30.0,False,True,0,7,0.739,0.9071,5.7
+U-AutoRec residual,500,100.0,False,True,0,7,0.7504,0.9009,5.7
+U-AutoRec residual,500,300.0,False,True,0,7,0.7562,0.8962,5.7
+I-AutoRec residual,100,10.0,True,True,0,37,0.6729,0.8914,2.6
+I-AutoRec residual,100,30.0,True,True,0,144,0.6854,0.8896,6.9
+I-AutoRec residual,100,100.0,True,True,0,15,0.7673,0.891,1.8
+I-AutoRec residual,100,300.0,True,True,0,16,0.7703,0.8903,1.9
+I-AutoRec residual,300,10.0,True,True,0,72,0.4985,0.8916,9.1
+I-AutoRec residual,300,30.0,True,True,0,195,0.6763,0.8897,20.1
+I-AutoRec residual,300,100.0,True,True,0,48,0.7636,0.8911,6.7
+I-AutoRec residual,300,300.0,True,True,0,32,0.7701,0.8911,5.2
+I-AutoRec residual (kernel),500,10.0,True,True,5,114,0.5175,0.8895,21.3
+I-AutoRec residual (kernel),500,30.0,True,True,5,57,0.7125,0.8908,12.4
+I-AutoRec residual (kernel),500,100.0,True,True,5,31,0.7568,0.8912,7.7

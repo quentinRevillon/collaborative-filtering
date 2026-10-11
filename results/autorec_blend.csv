@@ -1,0 +1,3 @@
+method,alpha,valid_cv_rmse,test_rmse,test_acc,weights
+"blend (ridge, alt models)",1.0,0.8837,0.8683,0.2473,"{""biases"": -1.0127, ""side-info biases"": 0.7217, ""soft-impute"": 0.0583, ""item-kNN"": 0.9395, ""MF-ALS"": 0.2916}"
+blend + I-AutoRec residual,1.0,0.8842,0.8682,0.2475,"{""biases"": -1.046, ""side-info biases"": 0.7244, ""soft-impute"": -0.0523, ""item-kNN"": 0.9265, ""MF-ALS"": 0.2264, ""AutoRec"": 0.214}"

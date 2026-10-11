@@ -1,0 +1,692 @@
+family,epoch,train_rmse,valid_rmse
+I-AutoRec raw,1,0.9933,1.0454
+I-AutoRec raw,2,0.9661,1.0163
+I-AutoRec raw,3,0.9727,1.0171
+I-AutoRec raw,4,0.9632,1.0094
+I-AutoRec raw,5,0.9345,0.989
+I-AutoRec raw,6,0.9082,0.9732
+I-AutoRec raw,7,0.8965,0.971
+I-AutoRec raw,8,0.8946,0.9763
+I-AutoRec raw,9,0.8917,0.979
+I-AutoRec raw,10,0.8837,0.9759
+I-AutoRec raw,11,0.8744,0.9707
+I-AutoRec raw,12,0.8681,0.9678
+I-AutoRec raw,13,0.8647,0.967
+I-AutoRec raw,14,0.8611,0.9653
+I-AutoRec raw,15,0.8562,0.9615
+I-AutoRec raw,16,0.8514,0.9571
+I-AutoRec raw,17,0.8486,0.9541
+I-AutoRec raw,18,0.8473,0.9527
+I-AutoRec raw,19,0.8455,0.9513
+I-AutoRec raw,20,0.8427,0.9494
+I-AutoRec raw,21,0.8399,0.948
+I-AutoRec raw,22,0.8381,0.9476
+I-AutoRec raw,23,0.8369,0.948
+I-AutoRec raw,24,0.8353,0.9477
+I-AutoRec raw,25,0.8333,0.9464
+I-AutoRec raw,26,0.8316,0.9447
+I-AutoRec raw,27,0.8306,0.9429
+I-AutoRec raw,28,0.8298,0.9411
+I-AutoRec raw,29,0.8288,0.9393
+I-AutoRec raw,30,0.8275,0.9379
+I-AutoRec raw,31,0.8265,0.9371
+I-AutoRec raw,32,0.8256,0.937
+I-AutoRec raw,33,0.8249,0.9372
+I-AutoRec raw,34,0.8244,0.9372
+I-AutoRec raw,35,0.824,0.9371
+I-AutoRec raw,36,0.8236,0.9368
+I-AutoRec raw,37,0.8231,0.9361
+I-AutoRec raw,38,0.8226,0.9352
+I-AutoRec raw,39,0.8223,0.9344
+I-AutoRec raw,40,0.8223,0.9337
+I-AutoRec raw,41,0.8223,0.933
+I-AutoRec raw,42,0.8222,0.9324
+I-AutoRec raw,43,0.8222,0.9319
+I-AutoRec raw,44,0.8222,0.9317
+I-AutoRec raw,45,0.8222,0.9319
+I-AutoRec raw,46,0.8223,0.9325
+I-AutoRec raw,47,0.8226,0.933
+I-AutoRec raw,48,0.823,0.9333
+I-AutoRec raw,49,0.8232,0.9329
+I-AutoRec raw,50,0.8234,0.9321
+I-AutoRec raw,51,0.8235,0.9312
+I-AutoRec raw,52,0.8238,0.9305
+I-AutoRec raw,53,0.8241,0.9304
+I-AutoRec raw,54,0.8244,0.9307
+I-AutoRec raw,55,0.8248,0.9312
+I-AutoRec raw,56,0.8251,0.9314
+I-AutoRec raw,57,0.8254,0.9314
+I-AutoRec raw,58,0.8257,0.9309
+I-AutoRec raw,59,0.826,0.9305
+I-AutoRec raw,60,0.8263,0.9302
+I-AutoRec raw,61,0.8266,0.9303
+I-AutoRec raw,62,0.8269,0.9305
+I-AutoRec raw,63,0.8272,0.9308
+I-AutoRec raw,64,0.8275,0.9308
+I-AutoRec raw,65,0.8278,0.9305
+I-AutoRec raw,66,0.828,0.9301
+I-AutoRec raw,67,0.8283,0.9297
+I-AutoRec raw,68,0.8285,0.9296
+I-AutoRec raw,69,0.8287,0.9296
+I-AutoRec raw,70,0.8289,0.9298
+I-AutoRec raw,71,0.8292,0.93
+I-AutoRec raw,72,0.8294,0.9301
+I-AutoRec raw,73,0.8296,0.9299
+I-AutoRec raw,74,0.8298,0.9296
+I-AutoRec raw,75,0.83,0.9293
+I-AutoRec raw,76,0.8301,0.9292
+I-AutoRec raw,77,0.8303,0.9291
+I-AutoRec raw,78,0.8305,0.9292
+I-AutoRec raw,79,0.8306,0.9293
+I-AutoRec raw,80,0.8308,0.9293
+I-AutoRec raw,81,0.8309,0.9291
+I-AutoRec raw,82,0.8311,0.929
+I-AutoRec raw,83,0.8312,0.9288
+I-AutoRec raw,84,0.8313,0.9287
+I-AutoRec raw,85,0.8315,0.9287
+I-AutoRec raw,86,0.8316,0.9287
+I-AutoRec raw,87,0.8317,0.9287
+I-AutoRec raw,88,0.8318,0.9286
+I-AutoRec raw,89,0.8319,0.9285
+I-AutoRec raw,90,0.8321,0.9284
+I-AutoRec raw,91,0.8322,0.9283
+I-AutoRec raw,92,0.8323,0.9283
+I-AutoRec raw,93,0.8324,0.9282
+I-AutoRec raw,94,0.8325,0.9282
+I-AutoRec raw,95,0.8326,0.9282
+I-AutoRec raw,96,0.8327,0.9282
+I-AutoRec raw,97,0.8328,0.9281
+I-AutoRec raw,98,0.8329,0.928
+I-AutoRec raw,99,0.833,0.9279
+I-AutoRec raw,100,0.8331,0.9279
+I-AutoRec raw,101,0.8332,0.9277
+I-AutoRec raw,102,0.8333,0.9278
+I-AutoRec raw,103,0.8333,0.9277
+I-AutoRec raw,104,0.8334,0.9278
+I-AutoRec raw,105,0.8335,0.9276
+I-AutoRec raw,106,0.8336,0.9277
+I-AutoRec raw,107,0.8337,0.9276
+I-AutoRec raw,108,0.8338,0.9275
+I-AutoRec raw,109,0.8339,0.9275
+I-AutoRec raw,110,0.834,0.9275
+I-AutoRec raw,111,0.834,0.9274
+I-AutoRec raw,112,0.8341,0.9275
+I-AutoRec raw,113,0.8342,0.9272
+I-AutoRec raw,114,0.8343,0.9274
+I-AutoRec raw,115,0.8344,0.9273
+I-AutoRec raw,116,0.8344,0.9272
+I-AutoRec raw,117,0.8345,0.9273
+I-AutoRec raw,118,0.8346,0.9272
+I-AutoRec raw,119,0.8347,0.9272
+I-AutoRec raw,120,0.8347,0.9271
+I-AutoRec raw,121,0.8348,0.9271
+I-AutoRec raw,122,0.8349,0.9271
+I-AutoRec raw,123,0.8349,0.9271
+I-AutoRec raw,124,0.835,0.927
+I-AutoRec raw,125,0.8351,0.9271
+I-AutoRec raw,126,0.8351,0.927
+I-AutoRec raw,127,0.8352,0.9269
+I-AutoRec raw,128,0.8353,0.927
+I-AutoRec raw,129,0.8353,0.9269
+I-AutoRec raw,130,0.8354,0.927
+I-AutoRec raw,131,0.8355,0.9269
+I-AutoRec raw,132,0.8355,0.9269
+I-AutoRec raw,133,0.8356,0.9269
+I-AutoRec raw,134,0.8356,0.9269
+I-AutoRec raw,135,0.8357,0.9268
+I-AutoRec raw,136,0.8358,0.9269
+I-AutoRec raw,137,0.8358,0.9268
+I-AutoRec raw,138,0.8359,0.9268
+I-AutoRec raw,139,0.8359,0.9268
+I-AutoRec raw,140,0.836,0.9267
+I-AutoRec raw,141,0.836,0.9268
+I-AutoRec raw,142,0.8361,0.9267
+I-AutoRec raw,143,0.8361,0.9267
+I-AutoRec raw,144,0.8362,0.9267
+I-AutoRec raw,145,0.8362,0.9267
+I-AutoRec raw,146,0.8363,0.9267
+I-AutoRec raw,147,0.8363,0.9267
+I-AutoRec raw,148,0.8364,0.9267
+I-AutoRec raw,149,0.8364,0.9267
+I-AutoRec raw,150,0.8365,0.9266
+I-AutoRec raw,151,0.8365,0.9266
+I-AutoRec raw,152,0.8366,0.9266
+I-AutoRec raw,153,0.8366,0.9266
+I-AutoRec raw,154,0.8366,0.9266
+I-AutoRec raw,155,0.8367,0.9266
+I-AutoRec raw,156,0.8367,0.9266
+I-AutoRec raw,157,0.8368,0.9266
+I-AutoRec raw,158,0.8368,0.9265
+I-AutoRec raw,159,0.8369,0.9265
+I-AutoRec raw,160,0.8369,0.9265
+I-AutoRec raw,161,0.8369,0.9265
+I-AutoRec raw,162,0.837,0.9265
+I-AutoRec raw,163,0.837,0.9265
+I-AutoRec raw,164,0.8371,0.9265
+I-AutoRec raw,165,0.8371,0.9265
+I-AutoRec raw,166,0.8371,0.9265
+I-AutoRec raw,167,0.8372,0.9265
+I-AutoRec raw,168,0.8372,0.9264
+I-AutoRec raw,169,0.8372,0.9265
+I-AutoRec raw,170,0.8373,0.9264
+I-AutoRec raw,171,0.8373,0.9265
+I-AutoRec raw,172,0.8374,0.9264
+I-AutoRec raw,173,0.8374,0.9265
+I-AutoRec raw,174,0.8374,0.9264
+I-AutoRec raw,175,0.8374,0.9264
+I-AutoRec raw,176,0.8375,0.9265
+I-AutoRec raw,177,0.8375,0.9264
+I-AutoRec raw,178,0.8375,0.9264
+I-AutoRec raw,179,0.8376,0.9264
+I-AutoRec raw,180,0.8376,0.9264
+I-AutoRec raw,181,0.8376,0.9264
+I-AutoRec raw,182,0.8377,0.9264
+I-AutoRec raw,183,0.8377,0.9264
+I-AutoRec raw,184,0.8377,0.9264
+I-AutoRec raw,185,0.8377,0.9264
+I-AutoRec raw,186,0.8378,0.9264
+I-AutoRec raw,187,0.8378,0.9264
+I-AutoRec raw,188,0.8378,0.9264
+I-AutoRec raw,189,0.8379,0.9263
+I-AutoRec raw,190,0.8379,0.9264
+I-AutoRec raw,191,0.8379,0.9263
+I-AutoRec raw,192,0.8379,0.9264
+I-AutoRec raw,193,0.838,0.9262
+I-AutoRec raw,194,0.838,0.9265
+I-AutoRec raw,195,0.838,0.9262
+I-AutoRec raw,196,0.838,0.9265
+I-AutoRec raw,197,0.8381,0.9263
+I-AutoRec raw,198,0.8381,0.9263
+I-AutoRec raw,199,0.8381,0.9264
+I-AutoRec raw,200,0.8381,0.9262
+I-AutoRec raw,201,0.8382,0.9264
+I-AutoRec raw,202,0.8382,0.9264
+I-AutoRec raw,203,0.8382,0.9262
+I-AutoRec raw,204,0.8382,0.9264
+I-AutoRec raw,205,0.8382,0.9263
+I-AutoRec raw,206,0.8383,0.9263
+I-AutoRec raw,207,0.8383,0.9263
+I-AutoRec raw,208,0.8383,0.9263
+I-AutoRec raw,209,0.8383,0.9262
+I-AutoRec raw,210,0.8383,0.9264
+I-AutoRec raw,211,0.8384,0.9262
+I-AutoRec raw,212,0.8384,0.9264
+I-AutoRec raw,213,0.8384,0.9264
+I-AutoRec raw,214,0.8384,0.9262
+I-AutoRec raw,215,0.8384,0.9264
+I-AutoRec raw,216,0.8385,0.9262
+I-AutoRec raw,217,0.8385,0.9263
+I-AutoRec raw,218,0.8385,0.9263
+I-AutoRec raw,219,0.8385,0.9262
+I-AutoRec raw,220,0.8385,0.9263
+I-AutoRec raw,221,0.8385,0.9263
+I-AutoRec raw,222,0.8386,0.9263
+I-AutoRec raw,223,0.8386,0.9263
+I-AutoRec raw,224,0.8386,0.9263
+I-AutoRec raw,225,0.8386,0.9263
+I-AutoRec residual,1,0.8697,0.9765
+I-AutoRec residual,2,0.8278,0.9426
+I-AutoRec residual,3,0.8203,0.9429
+I-AutoRec residual,4,0.822,0.9502
+I-AutoRec residual,5,0.7988,0.9348
+I-AutoRec residual,6,0.7714,0.9151
+I-AutoRec residual,7,0.7622,0.9106
+I-AutoRec residual,8,0.768,0.919
+I-AutoRec residual,9,0.7674,0.923
+I-AutoRec residual,10,0.7539,0.917
+I-AutoRec residual,11,0.739,0.9099
+I-AutoRec residual,12,0.7339,0.9096
+I-AutoRec residual,13,0.736,0.9129
+I-AutoRec residual,14,0.7345,0.9118
+I-AutoRec residual,15,0.7261,0.9044
+I-AutoRec residual,16,0.7171,0.8964
+I-AutoRec residual,17,0.7138,0.8937
+I-AutoRec residual,18,0.7149,0.8957
+I-AutoRec residual,19,0.7145,0.8982
+I-AutoRec residual,20,0.7098,0.8988
+I-AutoRec residual,21,0.704,0.8986
+I-AutoRec residual,22,0.7011,0.8995
+I-AutoRec residual,23,0.701,0.901
+I-AutoRec residual,24,0.7009,0.901
+I-AutoRec residual,25,0.6988,0.8987
+I-AutoRec residual,26,0.6957,0.8953
+I-AutoRec residual,27,0.6935,0.8927
+I-AutoRec residual,28,0.6928,0.8918
+I-AutoRec residual,29,0.6925,0.8922
+I-AutoRec residual,30,0.6917,0.8929
+I-AutoRec residual,31,0.6903,0.8935
+I-AutoRec residual,32,0.689,0.8938
+I-AutoRec residual,33,0.6882,0.8941
+I-AutoRec residual,34,0.6878,0.8943
+I-AutoRec residual,35,0.6876,0.894
+I-AutoRec residual,36,0.6871,0.8934
+I-AutoRec residual,37,0.6864,0.8925
+I-AutoRec residual,38,0.6858,0.892
+I-AutoRec residual,39,0.6856,0.8919
+I-AutoRec residual,40,0.6855,0.8919
+I-AutoRec residual,41,0.6854,0.8919
+I-AutoRec residual,42,0.6851,0.8917
+I-AutoRec residual,43,0.6848,0.8915
+I-AutoRec residual,44,0.6847,0.8916
+I-AutoRec residual,45,0.6847,0.8918
+I-AutoRec residual,46,0.6846,0.8918
+I-AutoRec residual,47,0.6845,0.8918
+I-AutoRec residual,48,0.6844,0.8917
+I-AutoRec residual,49,0.6845,0.8917
+I-AutoRec residual,50,0.6845,0.8915
+I-AutoRec residual,51,0.6845,0.8912
+I-AutoRec residual,52,0.6844,0.8908
+I-AutoRec residual,53,0.6845,0.8906
+I-AutoRec residual,54,0.6845,0.8906
+I-AutoRec residual,55,0.6846,0.8908
+I-AutoRec residual,56,0.6846,0.8911
+I-AutoRec residual,57,0.6846,0.8914
+I-AutoRec residual,58,0.6846,0.8916
+I-AutoRec residual,59,0.6846,0.8915
+I-AutoRec residual,60,0.6846,0.8911
+I-AutoRec residual,61,0.6847,0.8905
+I-AutoRec residual,62,0.6847,0.8902
+I-AutoRec residual,63,0.6847,0.8902
+I-AutoRec residual,64,0.6847,0.8905
+I-AutoRec residual,65,0.6847,0.8908
+I-AutoRec residual,66,0.6846,0.891
+I-AutoRec residual,67,0.6846,0.891
+I-AutoRec residual,68,0.6846,0.8908
+I-AutoRec residual,69,0.6846,0.8906
+I-AutoRec residual,70,0.6846,0.8904
+I-AutoRec residual,71,0.6845,0.8904
+I-AutoRec residual,72,0.6845,0.8904
+I-AutoRec residual,73,0.6844,0.8905
+I-AutoRec residual,74,0.6844,0.8905
+I-AutoRec residual,75,0.6843,0.8904
+I-AutoRec residual,76,0.6843,0.8904
+I-AutoRec residual,77,0.6842,0.8904
+I-AutoRec residual,78,0.6842,0.8904
+I-AutoRec residual,79,0.6841,0.8904
+I-AutoRec residual,80,0.684,0.8903
+I-AutoRec residual,81,0.6839,0.8902
+I-AutoRec residual,82,0.6839,0.8903
+I-AutoRec residual,83,0.6838,0.8902
+I-AutoRec residual,84,0.6837,0.8902
+I-AutoRec residual,85,0.6836,0.8902
+I-AutoRec residual,86,0.6835,0.8902
+I-AutoRec residual,87,0.6834,0.8901
+I-AutoRec residual,88,0.6834,0.8901
+I-AutoRec residual,89,0.6833,0.8901
+I-AutoRec residual,90,0.6832,0.8901
+I-AutoRec residual,91,0.6831,0.8901
+I-AutoRec residual,92,0.683,0.8901
+I-AutoRec residual,93,0.6829,0.89
+I-AutoRec residual,94,0.6828,0.89
+I-AutoRec residual,95,0.6827,0.8899
+I-AutoRec residual,96,0.6826,0.8899
+I-AutoRec residual,97,0.6825,0.8899
+I-AutoRec residual,98,0.6824,0.8899
+I-AutoRec residual,99,0.6823,0.89
+I-AutoRec residual,100,0.6822,0.89
+I-AutoRec residual,101,0.6821,0.8899
+I-AutoRec residual,102,0.682,0.8899
+I-AutoRec residual,103,0.682,0.8898
+I-AutoRec residual,104,0.6819,0.8898
+I-AutoRec residual,105,0.6818,0.8898
+I-AutoRec residual,106,0.6817,0.8898
+I-AutoRec residual,107,0.6816,0.8898
+I-AutoRec residual,108,0.6815,0.8898
+I-AutoRec residual,109,0.6814,0.8898
+I-AutoRec residual,110,0.6813,0.8898
+I-AutoRec residual,111,0.6812,0.8897
+I-AutoRec residual,112,0.6811,0.8897
+I-AutoRec residual,113,0.681,0.8897
+I-AutoRec residual,114,0.6809,0.8897
+I-AutoRec residual,115,0.6808,0.8897
+I-AutoRec residual,116,0.6807,0.8897
+I-AutoRec residual,117,0.6806,0.8897
+I-AutoRec residual,118,0.6806,0.8896
+I-AutoRec residual,119,0.6805,0.8897
+I-AutoRec residual,120,0.6804,0.8897
+I-AutoRec residual,121,0.6803,0.8896
+I-AutoRec residual,122,0.6802,0.8896
+I-AutoRec residual,123,0.6801,0.8896
+I-AutoRec residual,124,0.68,0.8896
+I-AutoRec residual,125,0.6799,0.8896
+I-AutoRec residual,126,0.6798,0.8896
+I-AutoRec residual,127,0.6798,0.8896
+I-AutoRec residual,128,0.6797,0.8895
+I-AutoRec residual,129,0.6796,0.8896
+I-AutoRec residual,130,0.6795,0.8895
+I-AutoRec residual,131,0.6794,0.8896
+I-AutoRec residual,132,0.6793,0.8895
+I-AutoRec residual,133,0.6793,0.8895
+I-AutoRec residual,134,0.6792,0.8895
+I-AutoRec residual,135,0.6791,0.8895
+I-AutoRec residual,136,0.679,0.8895
+I-AutoRec residual,137,0.6789,0.8895
+I-AutoRec residual,138,0.6789,0.8895
+I-AutoRec residual,139,0.6788,0.8895
+I-AutoRec residual,140,0.6787,0.8895
+I-AutoRec residual,141,0.6786,0.8894
+I-AutoRec residual,142,0.6785,0.8895
+I-AutoRec residual,143,0.6785,0.8894
+I-AutoRec residual,144,0.6784,0.8894
+I-AutoRec residual,145,0.6783,0.8895
+I-AutoRec residual,146,0.6782,0.8894
+I-AutoRec residual,147,0.6782,0.8894
+I-AutoRec residual,148,0.6781,0.8894
+I-AutoRec residual,149,0.678,0.8894
+I-AutoRec residual,150,0.678,0.8894
+I-AutoRec residual,151,0.6779,0.8894
+I-AutoRec residual,152,0.6778,0.8894
+I-AutoRec residual,153,0.6777,0.8894
+I-AutoRec residual,154,0.6777,0.8894
+I-AutoRec residual,155,0.6776,0.8894
+I-AutoRec residual,156,0.6775,0.8894
+I-AutoRec residual,157,0.6775,0.8894
+I-AutoRec residual,158,0.6774,0.8893
+I-AutoRec residual,159,0.6773,0.8894
+I-AutoRec residual,160,0.6773,0.8893
+I-AutoRec residual,161,0.6772,0.8894
+I-AutoRec residual,162,0.6771,0.8894
+I-AutoRec residual,163,0.6771,0.8893
+I-AutoRec residual,164,0.677,0.8894
+I-AutoRec residual,165,0.677,0.8893
+I-AutoRec residual,166,0.6769,0.8894
+I-AutoRec residual,167,0.6768,0.8894
+I-AutoRec residual,168,0.6768,0.8893
+I-AutoRec residual,169,0.6767,0.8894
+I-AutoRec residual,170,0.6767,0.8893
+I-AutoRec residual,171,0.6766,0.8894
+I-AutoRec residual,172,0.6765,0.8893
+I-AutoRec residual,173,0.6765,0.8894
+I-AutoRec residual,174,0.6764,0.8893
+I-AutoRec residual,175,0.6764,0.8894
+I-AutoRec residual,176,0.6763,0.8893
+I-AutoRec residual,177,0.6763,0.8894
+I-AutoRec residual,178,0.6762,0.8893
+I-AutoRec residual,179,0.6762,0.8893
+I-AutoRec residual,180,0.6761,0.8894
+I-AutoRec residual,181,0.6761,0.8893
+I-AutoRec residual,182,0.676,0.8893
+I-AutoRec residual,183,0.676,0.8893
+I-AutoRec residual,184,0.6759,0.8893
+I-AutoRec residual,185,0.6759,0.8894
+I-AutoRec residual,186,0.6758,0.8893
+I-AutoRec residual,187,0.6758,0.8893
+I-AutoRec residual,188,0.6757,0.8893
+I-AutoRec residual,189,0.6757,0.8893
+I-AutoRec residual,190,0.6756,0.8893
+I-AutoRec residual,191,0.6756,0.8893
+I-AutoRec residual,192,0.6755,0.8893
+I-AutoRec residual,193,0.6755,0.8893
+I-AutoRec residual,194,0.6754,0.8893
+I-AutoRec residual,195,0.6754,0.8893
+I-AutoRec residual,196,0.6754,0.8893
+I-AutoRec residual,197,0.6753,0.8894
+I-AutoRec residual,198,0.6753,0.8893
+I-AutoRec residual,199,0.6752,0.8894
+I-AutoRec residual,200,0.6752,0.8893
+I-AutoRec residual,201,0.6752,0.8893
+I-AutoRec residual,202,0.6751,0.8893
+I-AutoRec residual,203,0.6751,0.8893
+I-AutoRec residual,204,0.675,0.8893
+I-AutoRec residual,205,0.675,0.8894
+I-AutoRec residual,206,0.675,0.8893
+I-AutoRec residual,207,0.6749,0.8893
+I-AutoRec residual,208,0.6749,0.8893
+I-AutoRec residual,209,0.6749,0.8893
+I-AutoRec residual,210,0.6748,0.8893
+I-AutoRec residual,211,0.6748,0.8893
+U-AutoRec raw,1,0.8908,1.0431
+U-AutoRec raw,2,0.8339,1.0478
+U-AutoRec raw,3,0.8004,1.04
+U-AutoRec raw,4,0.778,1.0333
+U-AutoRec raw,5,0.7544,1.0276
+U-AutoRec raw,6,0.7293,1.0226
+U-AutoRec raw,7,0.706,1.019
+U-AutoRec raw,8,0.6867,1.0168
+U-AutoRec raw,9,0.67,1.0148
+U-AutoRec raw,10,0.653,1.0114
+U-AutoRec raw,11,0.6348,1.0066
+U-AutoRec raw,12,0.6173,1.0021
+U-AutoRec raw,13,0.6029,0.9996
+U-AutoRec raw,14,0.5913,0.9986
+U-AutoRec raw,15,0.5798,0.9975
+U-AutoRec raw,16,0.5674,0.9956
+U-AutoRec raw,17,0.5559,0.9938
+U-AutoRec raw,18,0.5468,0.993
+U-AutoRec raw,19,0.5386,0.9927
+U-AutoRec raw,20,0.5298,0.992
+U-AutoRec raw,21,0.5213,0.991
+U-AutoRec raw,22,0.5141,0.9901
+U-AutoRec raw,23,0.5083,0.989
+U-AutoRec raw,24,0.5033,0.9875
+U-AutoRec raw,25,0.4984,0.9858
+U-AutoRec raw,26,0.4941,0.9845
+U-AutoRec raw,27,0.4909,0.9839
+U-AutoRec raw,28,0.4884,0.9839
+U-AutoRec raw,29,0.486,0.9841
+U-AutoRec raw,30,0.4836,0.9839
+U-AutoRec raw,31,0.4815,0.9835
+U-AutoRec raw,32,0.4798,0.9825
+U-AutoRec raw,33,0.4781,0.9813
+U-AutoRec raw,34,0.4765,0.98
+U-AutoRec raw,35,0.475,0.9791
+U-AutoRec raw,36,0.4737,0.9785
+U-AutoRec raw,37,0.4724,0.9783
+U-AutoRec raw,38,0.4711,0.9783
+U-AutoRec raw,39,0.4698,0.9784
+U-AutoRec raw,40,0.4685,0.9786
+U-AutoRec raw,41,0.4673,0.9785
+U-AutoRec raw,42,0.4662,0.9781
+U-AutoRec raw,43,0.4651,0.9776
+U-AutoRec raw,44,0.4641,0.9773
+U-AutoRec raw,45,0.4631,0.9774
+U-AutoRec raw,46,0.4622,0.9778
+U-AutoRec raw,47,0.4613,0.9781
+U-AutoRec raw,48,0.4606,0.9783
+U-AutoRec raw,49,0.4599,0.9783
+U-AutoRec raw,50,0.4592,0.9781
+U-AutoRec raw,51,0.4586,0.9777
+U-AutoRec raw,52,0.4581,0.9774
+U-AutoRec raw,53,0.4575,0.9775
+U-AutoRec raw,54,0.457,0.9777
+U-AutoRec raw,55,0.4565,0.978
+U-AutoRec raw,56,0.456,0.9781
+U-AutoRec raw,57,0.4555,0.9779
+U-AutoRec raw,58,0.4551,0.9777
+U-AutoRec raw,59,0.4547,0.9776
+U-AutoRec raw,60,0.4543,0.9777
+U-AutoRec raw,61,0.4539,0.9778
+U-AutoRec raw,62,0.4536,0.978
+U-AutoRec raw,63,0.4532,0.9782
+U-AutoRec raw,64,0.4529,0.9783
+U-AutoRec raw,65,0.4526,0.9782
+U-AutoRec raw,66,0.4524,0.978
+U-AutoRec raw,67,0.4521,0.9779
+U-AutoRec raw,68,0.4518,0.9779
+U-AutoRec raw,69,0.4516,0.9781
+U-AutoRec raw,70,0.4513,0.9783
+U-AutoRec raw,71,0.4511,0.9784
+U-AutoRec raw,72,0.4509,0.9782
+U-AutoRec raw,73,0.4506,0.978
+U-AutoRec raw,74,0.4504,0.9779
+U-AutoRec residual,1,0.7782,0.9021
+U-AutoRec residual,2,0.7702,0.8998
+U-AutoRec residual,3,0.7638,0.8972
+U-AutoRec residual,4,0.7611,0.8969
+U-AutoRec residual,5,0.7597,0.8971
+U-AutoRec residual,6,0.758,0.8966
+U-AutoRec residual,7,0.7562,0.8962
+U-AutoRec residual,8,0.7549,0.8966
+U-AutoRec residual,9,0.7543,0.8977
+U-AutoRec residual,10,0.7538,0.8988
+U-AutoRec residual,11,0.7531,0.8994
+U-AutoRec residual,12,0.7524,0.8994
+U-AutoRec residual,13,0.7519,0.8991
+U-AutoRec residual,14,0.7516,0.8989
+U-AutoRec residual,15,0.7514,0.8989
+U-AutoRec residual,16,0.751,0.8989
+U-AutoRec residual,17,0.7506,0.8991
+U-AutoRec residual,18,0.7505,0.8994
+U-AutoRec residual,19,0.7504,0.8997
+U-AutoRec residual,20,0.7502,0.8998
+U-AutoRec residual,21,0.7502,0.8995
+U-AutoRec residual,22,0.7502,0.8991
+U-AutoRec residual,23,0.7502,0.8987
+U-AutoRec residual,24,0.7504,0.8985
+U-AutoRec residual,25,0.7505,0.8986
+U-AutoRec residual,26,0.7506,0.8988
+U-AutoRec residual,27,0.7507,0.8989
+U-AutoRec residual,28,0.7508,0.8989
+U-AutoRec residual,29,0.7509,0.8987
+U-AutoRec residual,30,0.7509,0.8985
+U-AutoRec residual,31,0.751,0.8983
+U-AutoRec residual,32,0.7511,0.8982
+U-AutoRec residual,33,0.7512,0.8981
+U-AutoRec residual,34,0.7512,0.8979
+U-AutoRec residual,35,0.7512,0.8979
+U-AutoRec residual,36,0.7512,0.898
+U-AutoRec residual,37,0.7512,0.898
+I-AutoRec residual (kernel),1,0.8818,0.9903
+I-AutoRec residual (kernel),2,0.8247,0.9458
+I-AutoRec residual (kernel),3,0.8131,0.9449
+I-AutoRec residual (kernel),4,0.819,0.9573
+I-AutoRec residual (kernel),5,0.7913,0.9411
+I-AutoRec residual (kernel),6,0.7535,0.9171
+I-AutoRec residual (kernel),7,0.7375,0.9108
+I-AutoRec residual (kernel),8,0.7435,0.9217
+I-AutoRec residual (kernel),9,0.743,0.9283
+I-AutoRec residual (kernel),10,0.7249,0.9223
+I-AutoRec residual (kernel),11,0.7026,0.9131
+I-AutoRec residual (kernel),12,0.6917,0.9109
+I-AutoRec residual (kernel),13,0.6912,0.9138
+I-AutoRec residual (kernel),14,0.6886,0.9134
+I-AutoRec residual (kernel),15,0.6778,0.9067
+I-AutoRec residual (kernel),16,0.6642,0.8985
+I-AutoRec residual (kernel),17,0.6557,0.8948
+I-AutoRec residual (kernel),18,0.6528,0.8964
+I-AutoRec residual (kernel),19,0.6501,0.8995
+I-AutoRec residual (kernel),20,0.6438,0.901
+I-AutoRec residual (kernel),21,0.6353,0.9011
+I-AutoRec residual (kernel),22,0.6286,0.9012
+I-AutoRec residual (kernel),23,0.6247,0.9016
+I-AutoRec residual (kernel),24,0.6217,0.9011
+I-AutoRec residual (kernel),25,0.6178,0.8992
+I-AutoRec residual (kernel),26,0.6131,0.8965
+I-AutoRec residual (kernel),27,0.6085,0.8942
+I-AutoRec residual (kernel),28,0.6048,0.893
+I-AutoRec residual (kernel),29,0.6017,0.8929
+I-AutoRec residual (kernel),30,0.599,0.8934
+I-AutoRec residual (kernel),31,0.5964,0.8942
+I-AutoRec residual (kernel),32,0.5936,0.8948
+I-AutoRec residual (kernel),33,0.5908,0.8948
+I-AutoRec residual (kernel),34,0.5882,0.8945
+I-AutoRec residual (kernel),35,0.5862,0.8943
+I-AutoRec residual (kernel),36,0.5846,0.894
+I-AutoRec residual (kernel),37,0.583,0.8935
+I-AutoRec residual (kernel),38,0.5811,0.8927
+I-AutoRec residual (kernel),39,0.5793,0.892
+I-AutoRec residual (kernel),40,0.5778,0.8918
+I-AutoRec residual (kernel),41,0.5768,0.8919
+I-AutoRec residual (kernel),42,0.5758,0.8921
+I-AutoRec residual (kernel),43,0.5747,0.8922
+I-AutoRec residual (kernel),44,0.5736,0.8922
+I-AutoRec residual (kernel),45,0.5726,0.8921
+I-AutoRec residual (kernel),46,0.5719,0.8919
+I-AutoRec residual (kernel),47,0.5712,0.8917
+I-AutoRec residual (kernel),48,0.5705,0.8916
+I-AutoRec residual (kernel),49,0.5698,0.8914
+I-AutoRec residual (kernel),50,0.5692,0.8914
+I-AutoRec residual (kernel),51,0.5686,0.8914
+I-AutoRec residual (kernel),52,0.568,0.8913
+I-AutoRec residual (kernel),53,0.5675,0.8911
+I-AutoRec residual (kernel),54,0.5669,0.8909
+I-AutoRec residual (kernel),55,0.5664,0.8907
+I-AutoRec residual (kernel),56,0.5659,0.8906
+I-AutoRec residual (kernel),57,0.5653,0.8907
+I-AutoRec residual (kernel),58,0.5647,0.8908
+I-AutoRec residual (kernel),59,0.5641,0.8909
+I-AutoRec residual (kernel),60,0.5635,0.8909
+I-AutoRec residual (kernel),61,0.5629,0.8909
+I-AutoRec residual (kernel),62,0.5621,0.8907
+I-AutoRec residual (kernel),63,0.5614,0.8905
+I-AutoRec residual (kernel),64,0.5605,0.8903
+I-AutoRec residual (kernel),65,0.5596,0.8902
+I-AutoRec residual (kernel),66,0.5587,0.8902
+I-AutoRec residual (kernel),67,0.5577,0.8902
+I-AutoRec residual (kernel),68,0.5566,0.8902
+I-AutoRec residual (kernel),69,0.5555,0.8902
+I-AutoRec residual (kernel),70,0.5544,0.8901
+I-AutoRec residual (kernel),71,0.5532,0.8901
+I-AutoRec residual (kernel),72,0.5519,0.8901
+I-AutoRec residual (kernel),73,0.5507,0.8901
+I-AutoRec residual (kernel),74,0.5495,0.8901
+I-AutoRec residual (kernel),75,0.5483,0.8901
+I-AutoRec residual (kernel),76,0.547,0.89
+I-AutoRec residual (kernel),77,0.5458,0.8899
+I-AutoRec residual (kernel),78,0.5446,0.8898
+I-AutoRec residual (kernel),79,0.5435,0.8897
+I-AutoRec residual (kernel),80,0.5424,0.8897
+I-AutoRec residual (kernel),81,0.5413,0.8898
+I-AutoRec residual (kernel),82,0.5402,0.8898
+I-AutoRec residual (kernel),83,0.5392,0.8898
+I-AutoRec residual (kernel),84,0.5382,0.8898
+I-AutoRec residual (kernel),85,0.5373,0.8898
+I-AutoRec residual (kernel),86,0.5364,0.8897
+I-AutoRec residual (kernel),87,0.5356,0.8897
+I-AutoRec residual (kernel),88,0.5347,0.8896
+I-AutoRec residual (kernel),89,0.5339,0.8897
+I-AutoRec residual (kernel),90,0.5331,0.8897
+I-AutoRec residual (kernel),91,0.5323,0.8897
+I-AutoRec residual (kernel),92,0.5315,0.8897
+I-AutoRec residual (kernel),93,0.5308,0.8897
+I-AutoRec residual (kernel),94,0.53,0.8896
+I-AutoRec residual (kernel),95,0.5293,0.8896
+I-AutoRec residual (kernel),96,0.5285,0.8896
+I-AutoRec residual (kernel),97,0.5277,0.8895
+I-AutoRec residual (kernel),98,0.527,0.8895
+I-AutoRec residual (kernel),99,0.5262,0.8895
+I-AutoRec residual (kernel),100,0.5255,0.8895
+I-AutoRec residual (kernel),101,0.5248,0.8895
+I-AutoRec residual (kernel),102,0.5241,0.8895
+I-AutoRec residual (kernel),103,0.5234,0.8895
+I-AutoRec residual (kernel),104,0.5227,0.8895
+I-AutoRec residual (kernel),105,0.5221,0.8895
+I-AutoRec residual (kernel),106,0.5215,0.8895
+I-AutoRec residual (kernel),107,0.5209,0.8895
+I-AutoRec residual (kernel),108,0.5203,0.8895
+I-AutoRec residual (kernel),109,0.5198,0.8895
+I-AutoRec residual (kernel),110,0.5193,0.8895
+I-AutoRec residual (kernel),111,0.5188,0.8895
+I-AutoRec residual (kernel),112,0.5184,0.8895
+I-AutoRec residual (kernel),113,0.5179,0.8895
+I-AutoRec residual (kernel),114,0.5175,0.8895
+I-AutoRec residual (kernel),115,0.517,0.8895
+I-AutoRec residual (kernel),116,0.5166,0.8895
+I-AutoRec residual (kernel),117,0.5162,0.8895
+I-AutoRec residual (kernel),118,0.5158,0.8895
+I-AutoRec residual (kernel),119,0.5154,0.8895
+I-AutoRec residual (kernel),120,0.5149,0.8895
+I-AutoRec residual (kernel),121,0.5145,0.8895
+I-AutoRec residual (kernel),122,0.5141,0.8895
+I-AutoRec residual (kernel),123,0.5137,0.8895
+I-AutoRec residual (kernel),124,0.5133,0.8895
+I-AutoRec residual (kernel),125,0.5129,0.8895
+I-AutoRec residual (kernel),126,0.5125,0.8895
+I-AutoRec residual (kernel),127,0.5122,0.8895
+I-AutoRec residual (kernel),128,0.5118,0.8895
+I-AutoRec residual (kernel),129,0.5114,0.8895
+I-AutoRec residual (kernel),130,0.511,0.8895
+I-AutoRec residual (kernel),131,0.5106,0.8895
+I-AutoRec residual (kernel),132,0.5103,0.8895
+I-AutoRec residual (kernel),133,0.5099,0.8895
+I-AutoRec residual (kernel),134,0.5095,0.8895
+I-AutoRec residual (kernel),135,0.5091,0.8895
+I-AutoRec residual (kernel),136,0.5088,0.8895
+I-AutoRec residual (kernel),137,0.5084,0.8895
+I-AutoRec residual (kernel),138,0.508,0.8895
+I-AutoRec residual (kernel),139,0.5077,0.8895
+I-AutoRec residual (kernel),140,0.5073,0.8895
+I-AutoRec residual (kernel),141,0.507,0.8895
+I-AutoRec residual (kernel),142,0.5066,0.8895
+I-AutoRec residual (kernel),143,0.5062,0.8895
+I-AutoRec residual (kernel),144,0.5059,0.8895

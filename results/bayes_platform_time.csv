@@ -1,0 +1,2 @@
+method,hyperparams,n_ratings,threads,fit_complete_time_s
+Bayesian FM,"{""features"": [""iu"", ""ii"", ""side""], ""rank"": 10, ""n_iter"": 2000}",63196,4,92.9

@@ -212,7 +212,8 @@ figures dans \texttt{figures/}.
 %=============================================================================
 
 Les étapes sont ordonnées pour que chacune serve de référence à la suivante.
-Les étapes 0 à 4 sont faites ; la présentation du 15 octobre s'appuie dessus.
+Les étapes 0 à 5 sont faites ; la présentation du 15 octobre s'appuie dessus
+(\texttt{slides/slides.tex}, compilé en \texttt{slides.pdf} à la racine).
 
 %-----------------------------------------------------------------------------
 \begin{etape}{Étape 0 --- Un premier rendu valide sur la plateforme \hfill \textcolor{ok}{fait}}
@@ -359,31 +360,60 @@ de chaque méthode par rapport aux biais seuls (droite).}
 \end{figure}
 
 %-----------------------------------------------------------------------------
-\begin{etape}{Étape 5 --- Méthodes de l'état de l'art \hfill \textcolor{warm}{à faire}}
+\begin{etape}{Étape 5 --- Méthodes de l'état de l'art \hfill \textcolor{ok}{fait}}
 \textbf{Objectif :} tester les deux pistes que la littérature désigne comme les
 plus prometteuses sur de petites données creuses (section~\ref{sec:sota}).
 
 \begin{itemize}
-  \item \textbf{Factorisation bayésienne (BPMF / factorization machine par MCMC).}
-        Au lieu d'un seul jeu de facteurs, on moyenne les prédictions de
-        nombreux échantillons de la loi a posteriori : la régularisation est
-        apprise, plus besoin de régler $\lambda$. Sur MovieLens-10M, c'est
-        l'une des meilleures méthodes connues~\cite{rendle2019}. Variante
-        enrichie : ajouter au modèle l'ensemble des films notés par chaque
-        utilisateur (SVD++) et les genres.
-  \item \textbf{AutoRec}~\cite{autorec}. Un auto-encodeur à une couche cachée
-        (500 neurones) reçoit le vecteur des notes d'un film et apprend à le
-        reconstruire ; la perte ne porte que sur les notes observées. C'est la
-        méthode profonde la plus simple et la plus efficace en RMSE ; on la
-        prévoit surtout comme membre supplémentaire du mélange.
+  \item \textbf{Factorisation bayésienne.} Au lieu d'un seul jeu de facteurs,
+        on tire par échantillonnage de Gibbs de nombreux jeux de facteurs
+        plausibles et on \emph{moyenne} leurs prédictions :
+        $\rhat_{ui} = \frac1S \sum_{s} \rhat^{(s)}_{ui}$. La régularisation est
+        portée par un a priori dont les paramètres sont eux-mêmes échantillonnés :
+        plus de $\lambda$ à régler.
+        \begin{itemize}
+          \item \textbf{BPMF}~\cite{bpmf} (\texttt{src/bpmf.py}) : rang 20,
+                300 échantillons : \textbf{0,8646}, mieux que le mélange de
+                l'étape~4.
+          \item \textbf{Factorization machine bayésienne}~\cite{rendle2019}
+                (\texttt{src/bfm.py}, bibliothèque \texttt{myfm}) : on ajoute au
+                modèle l'ensemble des films notés par l'utilisateur (SVD++),
+                l'ensemble des utilisateurs ayant noté le film, et les genres et
+                la décennie. Rang 10, 2\,000 itérations : \textbf{0,8552}, en 60\,s
+                (93\,s sur train + test).
+        \end{itemize}
+  \item \textbf{AutoRec}~\cite{autorec} (\texttt{src/autorec.py}). Un
+        auto-encodeur à une couche cachée reçoit le vecteur des notes d'un film et
+        apprend à le reconstruire. Sur les notes brutes, il fait pire que les
+        biais (0,912) ; sur les résidus des biais, 0,8722. Il surapprend
+        fortement (RMSE train 0,68 contre 0,89 en validation) et n'apporte rien
+        au mélange. La variante à noyaux (Sparse FC~\cite{sparsefc}) ne fait pas
+        mieux.
 \end{itemize}
+
+\textbf{Deux enseignements.} Un échantillon seul est mauvais (RMSE $\approx 1{,}03$) :
+tout le gain vient de la \emph{moyenne} (figure~\ref{fig:bayes}). Et l'ablation montre
+que l'information la plus utile n'est pas la note, mais \emph{qui a noté quoi} :
+l'ensemble des utilisateurs ayant noté un film fait gagner 0,012 à lui seul.
 \end{etape}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\linewidth]{bayes/rmse_vs_samples.png}\\[4pt]
+\includegraphics[width=0.62\linewidth]{bayes/ablation.png}
+\caption{Haut : RMSE de validation d'un échantillon seul (gris) et de la moyenne
+des échantillons (bleu). Bas : apport de chaque groupe de variables à la
+factorization machine bayésienne (validation).}
+\label{fig:bayes}
+\end{figure}
 
 %-----------------------------------------------------------------------------
 \begin{etape}{Étape 6 --- Version finale pour la plateforme \hfill \textcolor{warm}{à faire}}
 \begin{itemize}
-  \item Brancher le mélange dans \texttt{generate.py} et vérifier le temps sur
-        4 threads (objectif : moins de 300\,s, marge large sous 1200\,s).
+  \item Brancher la factorization machine bayésienne dans \texttt{generate.py}
+        (93\,s sur train + test), puis tester un mélange FM + $k$NN + BPMF.
+  \item \texttt{myfm} impose \texttt{numpy} $\geq 2$ sur la plateforme : vérifier
+        tout le code avec \texttt{numpy} 2 depuis un clone propre.
   \item Décider si \texttt{namesngenre.npy} doit être versionné dans le dépôt :
         la plateforme ne garantit pas sa présence.
   \item Ne \textbf{pas} arrondir les prédictions : l'accuracy ne change pas
@@ -414,8 +444,11 @@ Factorisation SGD ($k=20$) & 0,8932 & 0,8775 & 0,243 & ---    & 0,5 \\
 Factorisation ALS ($k=20$) & 0,8899 & 0,8725 & 0,247 & ---    & 1,5 \\
 Soft-Impute ($\tau=10$) & 0,8892 & 0,8716 & 0,248 & 0,9165 & 4,67 \\
 $k$NN films ($k=40$)   & 0,8848 & 0,8705 & \textbf{0,249} & 0,9226 & 1,05 \\
+AutoRec (résidus)      & 0,8893 & 0,8722 & 0,248 & ---    & 16,8 \\
+Mélange ridge          & 0,8837 & 0,8683 & 0,247 & 0,9177 & 7,73 \\
+BPMF ($k=20$)          & 0,8881 & 0,8646 & 0,252 & ---    & 43,8 \\
 \midrule
-\textbf{Mélange ridge} & \textbf{0,8837} & \textbf{0,8683} & 0,247 & 0,9177 & 7,73 \\
+\textbf{FM bayésienne} & \textbf{0,8728} & \textbf{0,8552} & \textbf{0,254} & --- & 60,0 \\
 \bottomrule
 \end{tabular}
 \caption{Entraînement sur train, score sur test. \og Films rares \fg{} : notes de
@@ -425,9 +458,10 @@ test des films ayant moins de 5 notes en train (6\,543 notes).}
 
 Pour situer ces chiffres : les meilleures références du classement de la
 plateforme sont autour de $0{,}80$--$0{,}82$, mais elles disposent de deux fois
-plus de notes en entrée. L'écart entre méthodes est faible (moins de $0{,}01$)
-parce que les biais captent presque tout le signal disponible : c'est un
-résultat en soi, à expliquer dans la présentation.
+plus de notes en entrée. Les méthodes \og ponctuelles \fg{} (factorisation,
+Soft-Impute, $k$NN, AutoRec) restent à moins de $0{,}01$ des biais, qui captent
+presque tout le signal. Seule l'approche bayésienne, qui moyenne et exploite
+\og qui a noté quoi \fg{}, fait un saut net ($-0{,}019$).
 
 %=============================================================================
 \section{État de l'art}

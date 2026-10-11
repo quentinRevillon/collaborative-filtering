@@ -1,14 +1,36 @@
-# DataLabAssignement1
+# DataLab A1 — Collaborative filtering (group 40, *La piscine*)
 
-## generate.py
-Use the file *generate.py* to complete your ratings table. 
-It takes in argument *--name* the name of the files you want to use and it saves the complete matrix as *output.npy*.
-DO NOT CHANGE THE LINES TO LOAD AND SAVE THE TABLE. Between those to you are free to use any method for matrix completion. 
-Example:
-  > python3 generate.py --name ratings_train.npy
+Completion of a sparse users × movies ratings matrix (MovieLens copy, 610 × 4980, ~1 % observed).
+Metric: RMSE on held-out ratings (the platform also reports exact-rating accuracy and running time).
 
-## requirements.txt
-Among the good pratice of datascience, we encourage you to use conda or virtualenv to create python environment. 
-To test your code on our platform, you are required to update the *requirements.txt*, with the different librairies you might use. 
-When your code will be test, we will execute: 
-  > pip install -r requirements.txt
+## Layout
+
+```
+generate.py              platform entry point (do not change load/save lines)
+src/                     models, all with the API fit_xxx(train, shape, **hp) -> predict(u, i)
+  data.py                loading, splits, metrics, matrix completion helper
+  baselines.py           global mean, regularized biases mu + b_u + b_i
+experiments/             reproducible experiment scripts (write results/ and figures/)
+  eda.py                 exploratory data analysis
+  evaluate_output.py     score output.npy on a held-out file
+figures/                 figures used in slides and report
+docs/                    project procedure (LaTeX)
+data/                    local copy of the .npy files (not versioned)
+```
+
+## Usage
+
+```bash
+pip install -r requirements.txt
+python generate.py --name data/ratings_train.npy          # writes output.npy
+python experiments/evaluate_output.py --test data/ratings_test.npy
+```
+
+## Protocol
+
+Local: fit on `ratings_train`, hyperparameters tuned on a 10 % validation split of train (seed 0),
+final score on `ratings_test`. Platform: `generate.py` receives train + test merged and is scored on a hidden eval set.
+
+## Deliverables
+
+`slides.pdf` and `report.pdf` at the repository root (A1 preliminary slides: 14 Oct 23:59; report: 21 Oct 23:59).

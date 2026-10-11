@@ -1,0 +1,7 @@
+method,hyperparams,valid_rmse,test_rmse,test_acc,test_rmse_rare,fit_time_s
+biases,"{""lam"": 2.0}",0.8909,0.8746,0.2444,0.9168,0.01
+side-info biases,"{""lam"": 2.0, ""lam_w"": 10.0, ""pop"": true}",0.8889,0.8736,0.2459,0.9145,0.04
+soft-impute,"{""tau"": 10.0, ""lam"": 2.0}",0.8892,0.8716,0.2475,0.9165,4.67
+item-kNN,"{""k"": 40, ""shrink"": 100.0, ""beta"": 0.2, ""lam"": 2.0}",0.8848,0.8705,0.2494,0.9226,1.05
+MF-ALS,"{""rank"": 10, ""lam_f"": 12.0, ""lam_b"": 2.0}",0.89,0.8725,0.246,0.9171,1.96
+blend (ridge),"{""alpha"": 1.0, ""models"": [""biases"", ""side-info biases"", ""soft-impute"", ""item-kNN"", ""MF-ALS""]}",0.8837,0.8683,0.2473,0.9177,7.73

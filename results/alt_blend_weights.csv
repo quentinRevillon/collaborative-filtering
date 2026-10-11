@@ -1,0 +1,7 @@
+model,weight
+biases,-1.0127
+side-info biases,0.7217
+soft-impute,0.0583
+item-kNN,0.9395
+MF-ALS,0.2916
+intercept,-0.022

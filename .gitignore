@@ -1,0 +1,11 @@
+output.npy
+data/*.npy
+__pycache__/
+*.pyc
+docs/**/*.aux
+docs/**/*.log
+docs/**/*.out
+docs/**/*.toc
+docs/**/*.fls
+docs/**/*.fdb_latexmk
+docs/**/*.synctex.gz

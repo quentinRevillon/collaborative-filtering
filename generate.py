@@ -4,6 +4,9 @@ import os
 from tqdm import tqdm, trange
 import argparse
 
+from src.baselines import fit_biases
+from src.data import complete, to_coo
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate a completed ratings table.')
@@ -20,9 +23,9 @@ if __name__ == '__main__':
     print('Ratings Loaded.')
     
 
-    # Any method you want
-    average = np.nanmean(table)
-    table = np.nan_to_num(table, nan=average)
+    # Regularized biases mu + b_u + b_i (see src/baselines.py)
+    predict = fit_biases(to_coo(table), table.shape, lam=2.0)
+    table = complete(predict, table.shape)
 
     
 

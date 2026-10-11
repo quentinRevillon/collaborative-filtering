@@ -1,0 +1,7 @@
+method,rmse_raw,rmse_rounded,acc_raw,acc_rounded
+biases,0.8746,0.8877,0.2444,0.2444
+side-info biases,0.8736,0.887,0.2459,0.2459
+soft-impute,0.8716,0.8844,0.2475,0.2475
+item-kNN,0.8705,0.883,0.2494,0.2494
+MF-ALS,0.8725,0.8849,0.246,0.246
+blend,0.8683,0.8803,0.2473,0.2473

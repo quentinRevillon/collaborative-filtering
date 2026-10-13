@@ -1,0 +1,544 @@
+% Documentation du projet A1 (filtrage collaboratif), groupe 40 « La piscine ».
+% Partie 1 : les données, décrites à partir des fichiers. Partie 2 : les méthodes testées, dans l'ordre.
+% Compilation (depuis docs/documentation/) : pdflatex documentation.tex (deux fois).
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[most]{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{accent}{HTML}{2A6FDB}
+\setlist{itemsep=2pt, topsep=4pt}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.2}
+
+% Encadré « Définition » : un mot nouveau, défini avant d'être utilisé.
+\newtcolorbox{definition}[1]{enhanced, breakable, colback=accent!5, colframe=accent,
+  boxrule=0.6pt, arc=2pt, left=8pt, right=8pt, fonttitle=\bfseries, title={Définition : #1}}
+% Bloc résultat d'une méthode.
+\newcommand{\resultat}[1]{\par\textbf{Résultat sur le test :} #1\par}
+
+\title{\textbf{Projet A1 --- Documentation}\\[4pt]
+  \large Les données, puis les méthodes testées}
+\author{Groupe 40 \og La piscine \fg{}}
+\date{13 octobre 2026}
+
+\begin{document}
+\maketitle
+
+Tout le contenu du dépôt (code, expériences, résultats, documents) a été généré par
+Claude Code. Ce document décrit d'abord les données, à partir des fichiers eux-mêmes,
+puis les méthodes testées, dans l'ordre où elles l'ont été. Chaque mot technique est
+défini dans un encadré bleu avant d'être utilisé.
+
+\tableofcontents
+
+%=============================================================================
+\part{Les données}
+%=============================================================================
+
+\section{Les trois fichiers}
+
+Le cours fournit trois fichiers, dans le dossier \texttt{data/} :
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Fichier} & \textbf{Contenu} \\
+\midrule
+\texttt{ratings\_train.npy} & un tableau de notes de films (les notes qu'on a le droit d'utiliser) \\
+\texttt{ratings\_test.npy} & un second tableau, de même forme, avec d'autres notes (pour vérifier nos prédictions) \\
+\texttt{namesngenre.npy} & le titre et les genres de chaque film \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+L'extension \texttt{.npy} désigne un fichier de la bibliothèque Python \emph{numpy} :
+il contient un tableau de nombres (ou de textes), qu'on ouvre avec \texttt{np.load}.
+
+\section{Le tableau de notes}
+
+\subsection{Sa forme}
+
+\texttt{ratings\_train.npy} est un tableau de \textbf{610 lignes} et \textbf{4\,980 colonnes}.
+
+\begin{itemize}
+  \item \textbf{Une ligne = un utilisateur} : une personne qui a noté des films. Les
+        utilisateurs sont anonymes ; on les désigne par leur numéro de ligne, de 0 à 609.
+  \item \textbf{Une colonne = un film}, numéroté de 0 à 4\,979. Son titre est donné par
+        le fichier \texttt{namesngenre.npy} (section~\ref{sec:films}).
+  \item \textbf{Une case} (ligne $u$, colonne $i$) contient la note que l'utilisateur $u$
+        a donnée au film $i$, ou rien s'il ne l'a pas noté.
+\end{itemize}
+
+\begin{definition}{note}
+Un nombre entre 0,5 et 5, par pas de 0,5 : 0,5 ; 1 ; 1,5 ; \dots ; 5. C'est le nombre
+d'étoiles qu'une personne a données à un film.
+\end{definition}
+
+\begin{definition}{NaN}
+\og Not a Number \fg. C'est la valeur que contient une case vide : elle signifie
+\og cet utilisateur n'a pas noté ce film \fg (ou, dans le fichier d'entraînement, que la
+note est cachée). Ce n'est pas une note de 0.
+\end{definition}
+
+\subsection{Un extrait réel}
+
+Voici les cinq utilisateurs qui ont noté le plus de films, croisés avec quatre des films
+les plus notés. \og --- \fg{} est une case vide (NaN).
+
+\begin{center}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccc}
+\toprule
+ & Forrest Gump & Shawshank Redemption & Pulp Fiction & Silence of the Lambs \\
+ & (film 256) & (film 227) & (film 211) & (film 413) \\
+\midrule
+Utilisateur 413 & 5 & --- & --- & --- \\
+Utilisateur 473 & --- & --- & 4 & 4,5 \\
+Utilisateur 598 & 3,5 & --- & 5 & 3 \\
+Utilisateur 447 & --- & --- & --- & --- \\
+Utilisateur 273 & 4,5 & --- & 5 & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Même pour les utilisateurs les plus actifs et les films les plus connus, la plupart des
+cases sont vides.
+
+\subsection{Combien de cases sont remplies}
+
+Le tableau a $610 \times 4\,980 = 3\,037\,800$ cases. Seules \textbf{31\,598} contiennent
+une note, soit \textbf{1,04\,\%}. Les 99\,\% restants sont des NaN.
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+ & \textbf{minimum} & \textbf{médiane} & \textbf{maximum} \\
+\midrule
+Notes par utilisateur & 2 & 24 & 815 \\
+Notes par film & 1 & 3 & 109 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+La \emph{médiane} est la valeur du milieu : la moitié des films ont 3 notes ou moins.
+Plus précisément, 57\,\% des films ont 3 notes ou moins, et 1\,301 films (26\,\%) n'en
+ont qu'une seule. Chaque film a au moins une note.
+
+\subsection{Les notes données}
+
+La moyenne de toutes les notes est \textbf{3,52}. Les notes entières et hautes dominent :
+
+\begin{center}
+\begin{tabular}{lrrrrrrrrrr}
+\toprule
+Note & 0,5 & 1 & 1,5 & 2 & 2,5 & 3 & 3,5 & 4 & 4,5 & 5 \\
+\midrule
+Nombre & 382 & 853 & 526 & 2\,308 & 1\,665 & 6\,231 & 4\,153 & 8\,532 & 2\,675 & 4\,273 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Le tableau de test}
+
+\texttt{ratings\_test.npy} a exactement la même forme (610 lignes, 4\,980 colonnes, les
+mêmes utilisateurs et les mêmes films), et contient lui aussi 31\,598 notes. Mais
+\textbf{aucune case n'est remplie dans les deux tableaux à la fois} : les notes du test
+sont des notes cachées dans le tableau d'entraînement.
+
+\textbf{Exemple réel.} L'utilisateur 0 a noté \emph{Grumpier Old Men (1995)} (film 2).
+Dans \texttt{ratings\_train.npy}, la case (0, 2) est vide ; dans \texttt{ratings\_test.npy},
+elle vaut 4. Une bonne méthode, qui ne voit que le tableau d'entraînement, doit prédire
+une valeur proche de 4 pour cette case.
+
+Une difficulté importante : 21\,\% des notes du test portent sur un film qui a moins de
+5 notes dans le tableau d'entraînement. Pour ces films, on dispose de très peu
+d'information.
+
+\section{Le fichier des films}\label{sec:films}
+
+\texttt{namesngenre.npy} est un tableau de 4\,980 lignes et 2 colonnes : la ligne $i$
+décrit le film de la colonne $i$ des tableaux de notes. Ses cinq premières lignes :
+
+\begin{center}
+\begin{tabular}{rll}
+\toprule
+\textbf{Film} & \textbf{Titre (année)} & \textbf{Genres} \\
+\midrule
+0 & Toy Story (1995) & Adventure|Animation|Children|Comedy|Fantasy \\
+1 & Jumanji (1995) & Adventure|Children|Fantasy \\
+2 & Grumpier Old Men (1995) & Comedy|Romance \\
+3 & Waiting to Exhale (1995) & Comedy|Drama|Romance \\
+4 & Father of the Bride Part II (1995) & Comedy \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+  \item L'année est entre parenthèses à la fin du titre ; elle va de 1902 à 2018
+        (absente pour 3 films).
+  \item Les genres sont séparés par \og | \fg. Il y en a 20, de \emph{Drama}
+        (2\,253 films) à \emph{Film-Noir} (50 films), plus \og (no genres listed) \fg
+        pour 8 films.
+\end{itemize}
+
+\section{Ce qu'il faut produire, et comment c'est noté}
+
+\subsection{La tâche}
+
+Le script \texttt{generate.py} reçoit un tableau de notes troué et doit écrire, dans
+\texttt{output.npy}, \textbf{le même tableau avec une valeur dans toutes les cases}.
+La valeur mise dans une case vide est une \textbf{prédiction} : notre estimation de la
+note que l'utilisateur donnerait à ce film.
+
+Sur la plateforme du cours, \texttt{generate.py} reçoit l'entraînement et le test réunis
+(63\,196 notes). Il est noté sur un troisième jeu de notes, caché, que nous n'avons pas.
+Limites : 20 minutes, 4 c\oe urs de processeur, pas de carte graphique.
+
+\subsection{La mesure de l'erreur}
+
+\begin{definition}{RMSE (erreur quadratique moyenne)}
+Pour chaque note cachée, on calcule l'écart entre la vraie note et la prédiction, on le
+met au carré, on fait la moyenne de ces carrés, puis on prend la racine carrée :
+\[
+  \mathrm{RMSE} = \sqrt{\text{moyenne de } (\text{vraie note} - \text{prédiction})^2} .
+\]
+Le résultat s'exprime en étoiles. Le carré rend les écarts positifs et pénalise davantage
+les grosses erreurs. \textbf{Plus la RMSE est basse, meilleure est la méthode.}
+\end{definition}
+
+Exemple : deux notes cachées, de vraies valeurs 4 et 3, prédites 3 et 3. Écarts : 1 et 0.
+Carrés : 1 et 0. Moyenne : 0,5. Racine : 0,71. La RMSE vaut 0,71 étoile.
+
+La plateforme affiche aussi l'\emph{accuracy}, le pourcentage de notes exactement
+devinées une fois la prédiction arrondie à la demi-étoile, et le temps de calcul.
+
+\subsection{Comment on évalue nos méthodes en local}
+
+On n'a pas les notes cachées de la plateforme. On imite donc la situation avec nos deux
+fichiers :
+
+\begin{definition}{entraînement, validation, test}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Entraînement} : les notes que la méthode voit pour calculer ses prédictions.
+  \item \textbf{Validation} : 10\,\% des notes d'entraînement, tirées au hasard (toujours
+        les mêmes) et mises de côté. Elles servent à choisir les réglages d'une méthode :
+        on essaie plusieurs réglages et on garde celui qui a la plus petite RMSE sur
+        la validation.
+  \item \textbf{Test} : le fichier \texttt{ratings\_test.npy}. Une fois le réglage choisi,
+        la méthode est recalculée sur tout l'entraînement, puis sa RMSE est mesurée
+        \textbf{une seule fois} sur le test. Le test ne sert jamais à choisir.
+\end{itemize}
+\end{definition}
+
+\begin{definition}{réglage (hyperparamètre)}
+Un nombre que l'on fixe soi-même avant de lancer une méthode, par exemple le nombre de
+voisins à regarder. On le choisit en comparant plusieurs valeurs sur la validation.
+\end{definition}
+
+Tous les chiffres \og RMSE test \fg{} de ce document sont obtenus ainsi.
+
+%=============================================================================
+\part{Les méthodes testées, dans l'ordre}
+%=============================================================================
+
+Chaque méthode est un moyen de remplir les cases vides. Elles sont présentées dans
+l'ordre où elles ont été testées. La plupart réutilisent la précédente.
+
+\section{La moyenne globale}
+
+\textbf{Ce qu'on calcule.} La moyenne des 31\,598 notes d'entraînement : 3,52. On met
+3,52 dans toutes les cases vides.
+
+\resultat{RMSE 1,037. C'est le point de départ : toute méthode utile doit faire mieux.}
+
+\section{Les biais}\label{sec:biais}
+
+\textbf{L'idée.} Certains utilisateurs notent plus haut que les autres ; certains films
+sont mieux notés que les autres. On corrige la moyenne globale de ces deux effets.
+
+\begin{definition}{biais d'un utilisateur, biais d'un film}
+Le \textbf{biais d'un utilisateur} est le nombre qu'il faut ajouter à la moyenne globale
+pour tenir compte de sa façon de noter : positif s'il note plus haut que les autres,
+négatif s'il note plus bas. Le \textbf{biais d'un film} est la même chose pour un film :
+positif s'il reçoit de meilleures notes que la moyenne, négatif sinon.
+\end{definition}
+
+La prédiction pour l'utilisateur $u$ et le film $i$ est une addition :
+\[
+  \text{prédiction} = \text{moyenne globale} + \text{biais de } u + \text{biais de } i .
+\]
+
+\textbf{Exemple réel : utilisateur 0, film 2 (\emph{Grumpier Old Men}).}
+\begin{itemize}
+  \item Moyenne globale : 3,52.
+  \item L'utilisateur 0 a donné 71 notes, de moyenne 4,35, soit 0,83 au-dessus de 3,52.
+        Son biais calculé est \textbf{+0,63} : un peu moins que 0,83, parce qu'il a
+        surtout noté des films que tout le monde note bien ; une partie de ses notes
+        hautes s'explique par les films, pas par lui.
+  \item \emph{Grumpier Old Men} a 17 notes, de moyenne 3,03. Son biais est \textbf{$-0{,}36$}.
+  \item Prédiction : $3{,}52 + 0{,}63 - 0{,}36 = \mathbf{3{,}80}$. La vraie note (dans le
+        test) est 4.
+\end{itemize}
+
+\textbf{Le problème des films peu notés.} \emph{Party Girl (1995)} (film 133) n'a qu'une
+note : un 5. Calculé naïvement, son biais serait d'environ $+1{,}5$, sur la foi d'une
+seule personne. On ajoute donc une prudence :
+
+\begin{definition}{régularisation}
+Une correction qui rapproche de 0 les nombres calculés sur peu de données. Pour un biais :
+on divise la somme des écarts par (nombre de notes $+ \lambda$) au lieu du nombre de notes.
+$\lambda$ (\og lambda \fg) est un réglage. Avec $\lambda = 2$, un film à 1 note voit son
+écart divisé par 3 ; un film à 100 notes, par 102 au lieu de 100, presque rien.
+\end{definition}
+
+Avec $\lambda = 2$, le biais de \emph{Party Girl} tombe à $+0{,}45$. Les biais sont
+calculés en alternant : biais des films à biais des utilisateurs fixés, puis l'inverse,
+vingt fois. Cela prend 0,01 seconde.
+
+\resultat{RMSE \textbf{0,8746} (meilleur réglage : $\lambda = 2$). C'est la méthode de
+référence. C'est aussi ce que fait aujourd'hui le \texttt{generate.py} poussé sur GitHub.}
+
+\begin{definition}{résidu}
+L'écart entre une vraie note et la prédiction des biais. Pour l'utilisateur 0 et
+\emph{Grumpier Old Men} : $4 - 3{,}80 = +0{,}20$. Le résidu, c'est ce que les biais
+n'expliquent pas : le goût propre de cet utilisateur pour ce film. Toutes les méthodes
+suivantes partent des biais et essaient de prédire les résidus.
+\end{definition}
+
+\section{La factorisation de matrice}\label{sec:mf}
+
+C'est la méthode exigée par le sujet.
+
+\textbf{L'idée.} On décrit chaque utilisateur par une courte liste de $k$ nombres, et
+chaque film par une liste de $k$ nombres. Le résidu prédit pour un couple (utilisateur,
+film) est obtenu en multipliant les deux listes terme à terme puis en additionnant.
+
+\begin{definition}{facteurs, rang}
+Les \textbf{facteurs} d'un utilisateur (ou d'un film) sont ses $k$ nombres. Personne ne
+les choisit : la méthode les calcule pour que les prédictions collent aux notes connues.
+Le \textbf{rang} est $k$, la longueur des listes (nous avons essayé de 1 à 50).
+\end{definition}
+
+Exemple avec $k = 2$ (valeurs inventées pour illustrer) : facteurs de l'utilisateur
+$(0{,}8 \,;\, -0{,}5)$, facteurs du film $(0{,}9 \,;\, 0{,}1)$. Résidu prédit :
+$0{,}8 \times 0{,}9 + (-0{,}5) \times 0{,}1 = 0{,}67$. Prédiction finale = moyenne + biais
+de l'utilisateur + biais du film + 0,67.
+
+Le nom vient de là : le tableau $610 \times 4\,980$ est approché par le produit d'un
+tableau $610 \times k$ (les facteurs des utilisateurs) et d'un tableau $k \times 4\,980$
+(ceux des films).
+
+\textbf{Le danger.} Avec beaucoup de facteurs et peu de notes, la méthode peut reproduire
+parfaitement les notes d'entraînement sans rien savoir prédire d'autre. On parle de
+\emph{surapprentissage}. On ajoute donc une régularisation sur les facteurs (réglage
+$\lambda_f$), comme pour les biais.
+
+\textbf{Trois façons de calculer les facteurs, testées :}
+\begin{itemize}
+  \item \textbf{ALS} (moindres carrés alternés) : on fixe les facteurs des films et on
+        calcule directement, par une formule, les meilleurs facteurs des utilisateurs ;
+        puis l'inverse ; quinze fois.
+  \item \textbf{ALS-WR} : la même chose, avec une régularisation plus forte pour les
+        utilisateurs et les films qui ont beaucoup de notes.
+  \item \textbf{SGD} (descente de gradient) : on parcourt les notes une par une et, à chaque
+        fois, on modifie un peu les facteurs dans le sens qui réduit l'erreur sur cette note.
+\end{itemize}
+
+\resultat{ALS \textbf{0,8725} (rang 20, $\lambda_f = 10$) ; ALS-WR 0,8746 ; SGD 0,8775.
+Gain faible sur les biais. Sans régularisation : erreur proche de 0 sur l'entraînement,
+plus de 1,0 sur la validation. Avec une régularisation trop forte ($\lambda_f \geq 15$),
+les facteurs valent 0 et on retrouve exactement les biais.}
+
+\section{Soft-Impute}
+
+\textbf{L'idée.} Même objectif que la factorisation, sans fixer $k$ à l'avance. On
+travaille sur le tableau des résidus et on répète :
+\begin{enumerate}
+  \item remplir les cases vides avec la prédiction actuelle (0 au départ) ;
+  \item \og lisser \fg{} le tableau complet, c'est-à-dire n'en garder que les grandes
+        tendances communes à beaucoup d'utilisateurs et de films ;
+  \item recommencer jusqu'à ce que le tableau ne change plus.
+\end{enumerate}
+
+\begin{definition}{SVD (décomposition en valeurs singulières)}
+Une opération mathématique qui écrit n'importe quel tableau de nombres comme une somme de
+\og motifs \fg{} simples, rangés du plus important au plus faible. L'importance d'un motif
+est un nombre appelé \emph{valeur singulière}. Le lissage de Soft-Impute retire la même
+quantité $\tau$ (\og tau \fg, un réglage) à chaque valeur singulière : les motifs faibles
+tombent à 0 et disparaissent, les forts restent.
+\end{definition}
+
+\resultat{RMSE \textbf{0,8716} ($\tau = 10$), en 4,7 secondes. Avec $\tau \geq 20$, tous
+les motifs disparaissent et on retrouve les biais.}
+
+\section{Les plus proches voisins (kNN)}
+
+\textbf{L'idée.} Pour prédire la note de l'utilisateur $u$ sur le film $i$, on regarde
+comment $u$ a noté les films qui \og ressemblent \fg{} à $i$.
+
+\begin{definition}{ressemblance entre deux films}
+On prend les utilisateurs qui ont noté les deux films. Si ceux qui ont un résidu positif
+sur l'un ont aussi un résidu positif sur l'autre (et pareil pour les négatifs), les films
+se ressemblent. On le mesure par une \emph{corrélation}, un nombre entre $-1$ et $1$.
+Comme une corrélation calculée sur 2 ou 3 personnes n'est pas fiable, on la réduit quand
+peu d'utilisateurs ont noté les deux films (réglage \og shrink \fg).
+\end{definition}
+
+\textbf{Le calcul}, pour $u$ et $i$ :
+\begin{enumerate}
+  \item parmi les films notés par $u$, garder les $k$ qui ressemblent le plus à $i$
+        (les \og voisins \fg ; réglage $k$) ;
+  \item faire la moyenne des résidus de $u$ sur ces voisins, chacun pesant selon sa
+        ressemblance avec $i$ ;
+  \item ajouter cette moyenne à la prédiction des biais.
+\end{enumerate}
+Ajout de notre part : un petit nombre $\beta$ (\og bêta \fg) ajouté au dénominateur de la
+moyenne. Il réduit la correction quand les voisins sont peu nombreux ou peu ressemblants.
+Sur la validation : 0,908 sans $\beta$, 0,885 avec $\beta = 0{,}2$.
+
+\resultat{RMSE \textbf{0,8705} ($k = 40$, shrink 100, $\beta = 0{,}2$). Meilleur sur les
+films très notés ; légèrement moins bon que les biais sur les films à 1 ou 2 notes.}
+
+\section{Les biais complétés par les genres}
+
+\textbf{L'idée.} Utiliser le fichier des films. Avec les biais simples, la régularisation
+rapproche de 0 le biais d'un film peu noté. Ici, on le rapproche plutôt de la valeur
+attendue d'après ses genres, sa décennie de sortie et son nombre de notes. Cette valeur
+attendue est apprise sur l'ensemble des films (une \emph{régression linéaire} : un poids
+par genre et par décennie, qu'on additionne).
+
+\resultat{RMSE \textbf{0,8736}. Gain global minime, mais c'est la seule méthode jusqu'ici
+qui fait mieux que les biais sur les films à 1 ou 2 notes (0,940 contre 0,944).}
+
+\section{Le mélange}
+
+\textbf{L'idée.} Combiner les prédictions des cinq méthodes précédentes (biais,
+biais + genres, Soft-Impute, kNN, ALS) par une somme pondérée :
+\[
+  \text{prédiction} = a_1 \times \text{prédiction}_1 + \dots + a_5 \times \text{prédiction}_5 + \text{constante}.
+\]
+Les poids $a_1, \dots, a_5$ sont choisis pour que la RMSE soit la plus petite possible sur
+la validation (régression \emph{ridge} : une régression linéaire avec régularisation).
+Poids obtenus : kNN 0,94 ; biais + genres 0,72 ; ALS 0,29 ; Soft-Impute 0,06 ;
+biais $-1{,}01$. Le poids négatif des biais compense le fait qu'ils sont déjà contenus dans
+les quatre autres méthodes.
+
+\resultat{RMSE \textbf{0,8683}, mieux que chaque méthode seule.}
+
+\section{AutoRec (réseau de neurones)}
+
+\begin{definition}{réseau de neurones, auto-encodeur}
+Un \textbf{réseau de neurones} est une fonction composée de couches de calculs simples
+(multiplications, additions, puis une fonction qui \og écrase \fg{} les valeurs) ; ses
+nombreux coefficients sont ajustés pour réduire l'erreur. Un \textbf{auto-encodeur} est un
+réseau qui reçoit une liste de nombres, la résume en une liste plus courte, puis essaie de
+reconstruire la liste de départ à partir de ce résumé.
+\end{definition}
+
+\textbf{Ici.} L'entrée est une colonne du tableau des résidus (les 610 résidus d'un film,
+avec des 0 pour les cases vides). Le réseau la résume en 500 nombres, puis reconstruit
+les 610 valeurs. Il est entraîné à bien reconstruire les cases connues ; les valeurs qu'il
+reconstruit dans les cases vides sont les prédictions. Variantes testées : par film ou par
+utilisateur, sur les notes ou sur les résidus, 100 à 500 nombres de résumé, 27 réglages.
+
+\resultat{RMSE \textbf{0,8722}, pas mieux que les méthodes simples, et aucun gain dans le
+mélange. Le réseau a plusieurs centaines de milliers de coefficients pour 31\,598 notes :
+il surapprend.}
+
+\section{Les méthodes bayésiennes}
+
+\textbf{L'idée.} Toutes les méthodes précédentes calculent \emph{une} solution (un jeu de
+biais et de facteurs). Avec si peu de notes, beaucoup de solutions différentes sont presque
+aussi plausibles. Les méthodes bayésiennes en tirent des centaines au hasard, chacune
+compatible avec les données, et font \textbf{la moyenne de leurs prédictions}.
+
+\begin{definition}{échantillonnage de Gibbs}
+La façon de tirer ces solutions : comme l'ALS, on alterne utilisateurs et films, mais au lieu
+de prendre les meilleurs facteurs, on en tire au hasard selon leur plausibilité. La force
+de la régularisation est elle-même tirée au hasard : il n'y a plus de $\lambda$ à régler.
+Les premiers tirages, encore mauvais, sont jetés.
+\end{definition}
+
+Deux méthodes testées :
+\begin{itemize}
+  \item \textbf{BPMF} : la factorisation de matrice (biais + facteurs) en version
+        bayésienne. 300 tirages moyennés.
+  \item \textbf{FM bayésienne} (\emph{factorization machine}) : la même idée, en donnant
+        en plus à la méthode, pour chaque note, la liste des films notés par l'utilisateur,
+        la liste des utilisateurs qui ont noté le film, et les genres et la décennie du film.
+        2\,000 tirages. Calculée avec la bibliothèque \texttt{myfm}.
+\end{itemize}
+
+Observations : un tirage seul a une RMSE d'environ 1,03 (pire que la moyenne globale) ;
+c'est la moyenne des tirages qui est bonne. Parmi les informations ajoutées à la FM, la
+plus utile est la liste des utilisateurs qui ont noté le film (validation : 0,8887 sans
+rien, 0,8762 avec elle seule, 0,8728 avec les trois).
+
+\resultat{BPMF \textbf{0,8646} (44 s) ; FM bayésienne \textbf{0,8552} (60 s ; 93 s sur
+entraînement + test). C'est le meilleur résultat, et le seul gain net sur les biais
+($-0{,}019$).}
+
+%=============================================================================
+\part{Récapitulatif}
+%=============================================================================
+
+\section{Toutes les méthodes}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}rXrr@{}}
+\toprule
+\textbf{Ordre} & \textbf{Méthode} & \textbf{RMSE test} & \textbf{Temps} \\
+\midrule
+1 & Moyenne globale & 1,0369 & 0 s \\
+2 & Biais (référence) & 0,8746 & 0,01 s \\
+3 & Factorisation : ALS / ALS-WR / SGD & 0,8725 / 0,8746 / 0,8775 & 0,5 à 1,5 s \\
+4 & Soft-Impute & 0,8716 & 4,7 s \\
+5 & Plus proches voisins (kNN) & 0,8705 & 1,1 s \\
+6 & Biais + genres & 0,8736 & 0,04 s \\
+7 & Mélange des méthodes 2 à 6 & 0,8683 & 7,7 s \\
+8 & AutoRec & 0,8722 & 17 s \\
+9 & BPMF & 0,8646 & 44 s \\
+10 & \textbf{FM bayésienne} & \textbf{0,8552} & 60 s \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Tout a tourné sur un ordinateur portable, sans carte graphique. Chaque expérience n'a été
+lancée qu'une fois, avec un seul tirage de la validation : des écarts de l'ordre de 0,001
+entre deux méthodes ne sont pas forcément significatifs.
+
+\section{Où est le code}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Méthode} & \textbf{Code} et \textbf{script d'expérience} (résultats dans \texttt{results/}) \\
+\midrule
+Lecture des données, RMSE & \texttt{src/data.py} \\
+Moyenne, biais & \texttt{src/baselines.py} \\
+Factorisation & \texttt{src/mf.py} ; \texttt{experiments/run\_mf.py} \\
+Soft-Impute, kNN, biais + genres, mélange & \texttt{src/soft\_impute.py}, \texttt{src/knn.py},
+  \texttt{src/side\_info.py}, \texttt{src/blend.py} ; \texttt{experiments/run\_alternatives.py} \\
+AutoRec & \texttt{src/autorec.py} ; \texttt{experiments/run\_autorec.py} \\
+BPMF, FM bayésienne & \texttt{src/bpmf.py}, \texttt{src/bfm.py} ; \texttt{experiments/run\_bayesian.py} \\
+Description des données & \texttt{experiments/eda.py} (figures dans \texttt{figures/eda/}) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\end{document}

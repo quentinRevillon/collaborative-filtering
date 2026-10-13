@@ -14,7 +14,7 @@ experiments/             reproducible experiment scripts (write results/ and fig
   eda.py                 exploratory data analysis
   evaluate_output.py     score output.npy on a held-out file
 figures/                 figures used in slides and report
-docs/                    project procedure (LaTeX) and beginner course on the methods (docs/cours/)
+docs/                    project procedure (LaTeX) and data-first documentation (docs/documentation/)
 data/                    local copy of the .npy files (not versioned)
 ```
 

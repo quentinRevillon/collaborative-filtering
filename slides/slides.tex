@@ -338,51 +338,23 @@ kNN on residuals, damped & \key{0.871} \\
 $r_{ui} \approx \mu + b_u + b_i + U_u^\top I_i$ \; \muted{\footnotesize (Salakhutdinov \& Mnih 2008)}
 
 \vspace{0.8em}
-\textbf{The problem with ALS.} With 1\,\% of the ratings, \key{many} solutions $(I, U)$
-explain the known ratings almost equally well. ALS keeps only \key{one} of them, and
-its choice on rarely rated movies is largely luck.
-
-\vspace{0.8em}
-\textbf{The BPMF idea}, in three steps:
-\begin{enumerate}
-  \item draw \key{hundreds} of solutions at random, each with a probability proportional
-        to how well it explains the data: good solutions are drawn often, absurd ones almost never
-  \item compute the predictions of each solution
-  \item predict their \key{average}
-\end{enumerate}
-\takeaway{Like asking 300 people instead of one: each is wrong in their own way, errors cancel out.}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{Gibbs sampling: one round is like one ALS round, but drawing}
-Drawing all 610 users and 4\,980 movies at once is impossible. Gibbs sampling, like ALS,
-\key{alternates}: users with the movies fixed, then movies with the users fixed.
-
-\vspace{0.3em}
-\begin{columns}[c]
-\column{0.5\textwidth}
-\small
-\textbf{For each user} (movies fixed), then \textbf{each movie}:
+\textbf{BPMF is ALS with a random draw.} Like ALS, it alternates: users with the movies
+fixed, then movies with the users fixed. At each step:
 \begin{itemize}
-  \item \textbf{ALS}: take the \key{best} vector (exact formula)
-  \item \textbf{Gibbs}: the plausible vectors form a bell curve around this best vector:
-        \key{draw one point} in it
+  \item \textbf{ALS} computes the optimized matrix (exact formula) and \key{keeps it}
+  \item \textbf{BPMF} computes the same optimized matrix, then \key{draws a random matrix around it}
+        (Gaussian centered on it), and continues from this draw
 \end{itemize}
-\textbf{Regularization}: fixed by hand in ALS, \key{drawn} too in Gibbs.
-\column{0.48\textwidth}
-\begin{tikzpicture}
-\begin{axis}[width=\linewidth, height=4.6cm, axis lines=left, ytick=\empty, xtick={0},
-    xticklabels={best (ALS)}, xlabel={possible values of one hidden number},
-    xmin=-3, xmax=3, ymin=0, ymax=1.25, clip=false,
-    label style={font=\footnotesize}, tick label style={font=\footnotesize}, domain=-3:3, samples=120]
-  \addplot[very thick, accent] {exp(-x^2/(2*0.35^2))};
-  \addplot[very thick, warm] {0.45*exp(-x^2/(2*1.2^2))};
-  \node[accent, font=\footnotesize, anchor=south] at (axis cs:0,1.0) {500 ratings};
-  \node[warm, font=\footnotesize, anchor=south] at (axis cs:2.1,0.12) {1 rating};
-\end{axis}
-\end{tikzpicture}
-\end{columns}
-\takeaway{Many ratings: every draw is close to ALS. Few ratings: draws vary a lot.}
+
+\vspace{0.4em}
+\begin{itemize}
+  \item The spread of the draw depends on the data: \key{small} for a user or movie with many
+        ratings, \key{large} for one with few ratings
+  \item Each round gives one plausible solution; the final prediction is the \key{average}
+        of the predictions of 300 rounds
+  \item The regularization is drawn too: no $\lambda$ to tune
+\end{itemize}
+\takeaway{Averaging the draws cancels what is uncertain (rarely rated movies) and keeps what is certain.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
@@ -414,7 +386,7 @@ each movie $i \in S_u$ (rated by $u$) gives $x_i = (I_i, 1)$ and a target $t_{ui
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{What is actually run: one single chain of 400 rounds}
+\begin{frame}{ALS vs BPMF}
 \begin{columns}[T]
 \column{0.44\textwidth}
 \colorbox{soft!12}{\parbox{0.95\linewidth}{
@@ -454,40 +426,6 @@ predict with the sum / 300 = the \key{average}
 \end{tikzpicture}
 \end{center}
 \takeaway{Not 300 separate runs: \key{one} chain, each round starts from the previous one; every round after 100 gives one solution.}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{Why the average of random draws is good}
-\begin{columns}[c]
-\column{0.5\textwidth}
-\textbf{One draw alone is bad}: it contains a random part
-(validation error 1.02, worse than the global mean).
-
-\vspace{0.8em}
-\textbf{The average of 300 draws}:
-\begin{itemize}
-  \item what is \key{certain} (well rated movies) is the same in every draw: it is kept
-  \item what is \key{uncertain} (movies with 1 rating) goes in all directions from one draw
-        to the next: it cancels out, and the prediction falls back to the biases
-\end{itemize}
-\column{0.47\textwidth}
-\begin{tikzpicture}[x=1.1cm, y=1cm, every node/.style={font=\footnotesize}]
-  \draw[->, soft] (0,0) -- (5,0);
-  \node[soft] at (2.5,-0.65) {predicted rating};
-  \foreach \x/\l in {0.5/1, 1.5/2, 2.5/3, 3.5/4, 4.5/5} \draw[soft] (\x,0.08) -- (\x,-0.08) node[below] {\l};
-  \node[accent, anchor=west] at (0,2.35) {\textbf{popular movie}: draws agree};
-  \foreach \x in {3.3,3.4,3.45,3.5,3.55,3.6,3.7} \fill[accent] (\x,1.95) circle (2.5pt);
-  \draw[accent, very thick] (3.5,1.65) -- (3.5,2.25);
-  \node[warm, anchor=west] at (0,1.25) {\textbf{movie with 1 rating}: draws disagree};
-  \foreach \x in {1.0,1.6,2.3,3.0,3.6,4.2,4.6} \fill[warm] (\x,0.8) circle (2.5pt);
-  \draw[warm, very thick] (2.9,0.5) -- (2.9,1.1);
-\end{tikzpicture}
-
-\vspace{0.3em}
-\muted{\footnotesize Dots: 7 draws for one user; bar: their average.\\
-For the 1-rating movie, the average lands near the biases' prediction.}
-\end{columns}
-\takeaway{An \key{automatic regularization}, strong where we know little, weak where we know a lot. ALS uses the same $\lambda$ everywhere.}
 \end{frame}
 
 %-----------------------------------------------------------------------------

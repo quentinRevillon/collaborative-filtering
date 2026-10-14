@@ -305,33 +305,89 @@ Factorization of residuals, ALS & \key{0.872} \\
 \textbf{Same model} as factorization d: \;
 $r_{ui} \approx \mu + b_u + b_i + U_u^\top I_i$ \; \muted{\footnotesize (Salakhutdinov \& Mnih 2008)}
 
-\vspace{0.6em}
-\begin{columns}[T]
-\column{0.49\textwidth}
-\colorbox{soft!12}{\parbox{0.95\linewidth}{
-\textbf{ALS / gradient descent}\\[0.3em]
+\vspace{0.8em}
+\textbf{The problem with ALS.} With 1\,\% of the ratings, \key{many} solutions $(I, U)$
+explain the known ratings almost equally well. ALS keeps only \key{one} of them, and
+its choice on rarely rated movies is largely luck.
+
+\vspace{0.8em}
+\textbf{The BPMF idea}, in three steps:
+\begin{enumerate}
+  \item draw \key{hundreds} of solutions at random, each with a probability proportional
+        to how well it explains the data: good solutions are drawn often, absurd ones almost never
+  \item compute the predictions of each solution
+  \item predict their \key{average}
+\end{enumerate}
+\takeaway{Like asking 300 people instead of one: each is wrong in their own way, errors cancel out.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{How to draw solutions: Gibbs sampling}
+Drawing all 610 users and 4\,980 movies at once is impossible. Gibbs sampling draws
+\key{one block at a time, the others fixed}, exactly like ALS alternates:
+
+\vspace{0.3em}
+\begin{columns}[c]
+\column{0.5\textwidth}
 \small
+\textbf{For each user} (movies fixed), then \textbf{each movie}:
 \begin{itemize}
-  \item search \key{one} solution $(I, U)$ minimizing the cost
-  \item $\lambda$ chosen by hand on validation
+  \item \textbf{ALS}: take the \key{best} vector (exact formula)
+  \item \textbf{Gibbs}: the plausible vectors form a bell curve around this best vector:
+        \key{draw one point} in it
 \end{itemize}
-}}
-\column{0.49\textwidth}
-\colorbox{accent!8}{\parbox{0.95\linewidth}{
-\textbf{BPMF}\\[0.3em]
-\small
-\begin{itemize}
-  \item draw \key{many} plausible solutions at random (Gibbs sampling: like ALS, users then movies, but each row is \emph{drawn} instead of set to its best value)
-  \item predict the \key{average} of their predictions
-  \item the regularization is drawn too: no $\lambda$ to tune
-\end{itemize}
-}}
+\textbf{Regularization}: fixed by hand in ALS, \key{drawn} too in Gibbs.
+
+\vspace{0.4em}
+400 rounds; the first 100 are thrown away (they start from random values).
+\column{0.48\textwidth}
+\begin{tikzpicture}
+\begin{axis}[width=\linewidth, height=4.6cm, axis lines=left, ytick=\empty, xtick={0},
+    xticklabels={best (ALS)}, xlabel={possible values of one hidden number},
+    xmin=-3, xmax=3, ymin=0, ymax=1.25, clip=false,
+    label style={font=\footnotesize}, tick label style={font=\footnotesize}, domain=-3:3, samples=120]
+  \addplot[very thick, accent] {exp(-x^2/(2*0.35^2))};
+  \addplot[very thick, warm] {0.45*exp(-x^2/(2*1.2^2))};
+  \node[accent, font=\footnotesize, anchor=south] at (axis cs:0,1.0) {500 ratings};
+  \node[warm, font=\footnotesize, anchor=south] at (axis cs:2.1,0.12) {1 rating};
+\end{axis}
+\end{tikzpicture}
 \end{columns}
-\vspace{0.6em}
-\begin{itemize}\small
-  \item Settings tried on validation: rank 5, 10, 20; noise level fixed or drawn
-  \item Kept: rank 20, 100 first draws thrown away, then \key{300 draws averaged}
+\takeaway{Many ratings: every draw is close to ALS. Few ratings: draws vary a lot.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Why the average of random draws is good}
+\begin{columns}[c]
+\column{0.5\textwidth}
+\textbf{One draw alone is bad}: it contains a random part
+(validation error 1.02, worse than the global mean).
+
+\vspace{0.8em}
+\textbf{The average of 300 draws}:
+\begin{itemize}
+  \item what is \key{certain} (well rated movies) is the same in every draw: it is kept
+  \item what is \key{uncertain} (movies with 1 rating) goes in all directions from one draw
+        to the next: it cancels out, and the prediction falls back to the biases
 \end{itemize}
+\column{0.47\textwidth}
+\begin{tikzpicture}[x=1.1cm, y=1cm, every node/.style={font=\footnotesize}]
+  \draw[->, soft] (0,0) -- (5,0);
+  \node[soft] at (2.5,-0.65) {predicted rating};
+  \foreach \x/\l in {0.5/1, 1.5/2, 2.5/3, 3.5/4, 4.5/5} \draw[soft] (\x,0.08) -- (\x,-0.08) node[below] {\l};
+  \node[accent, anchor=west] at (0,2.35) {\textbf{popular movie}: draws agree};
+  \foreach \x in {3.3,3.4,3.45,3.5,3.55,3.6,3.7} \fill[accent] (\x,1.95) circle (2.5pt);
+  \draw[accent, very thick] (3.5,1.65) -- (3.5,2.25);
+  \node[warm, anchor=west] at (0,1.25) {\textbf{movie with 1 rating}: draws disagree};
+  \foreach \x in {1.0,1.6,2.3,3.0,3.6,4.2,4.6} \fill[warm] (\x,0.8) circle (2.5pt);
+  \draw[warm, very thick] (2.9,0.5) -- (2.9,1.1);
+\end{tikzpicture}
+
+\vspace{0.3em}
+\muted{\footnotesize Dots: 7 draws for one user; bar: their average.\\
+For the 1-rating movie, the average lands near the biases' prediction.}
+\end{columns}
+\takeaway{An \key{automatic regularization}, strong where we know little, weak where we know a lot. ALS uses the same $\lambda$ everywhere.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
@@ -367,7 +423,7 @@ Factorization, ALS (best) & 0.872 \\
 
 \vspace{0.6em}
 \begin{itemize}\small
-  \item One draw alone is worse than the global mean
+  \item Settings tried on validation: rank 5, 10, 20; kept rank 20, \key{300 draws}
   \item The average of 300 beats every course method: $-0.010$ vs the biases
   \item Cost: 44\,s instead of 1.5\,s for ALS
 \end{itemize}

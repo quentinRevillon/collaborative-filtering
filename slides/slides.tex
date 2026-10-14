@@ -322,9 +322,9 @@ its choice on rarely rated movies is largely luck.
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{How to draw solutions: Gibbs sampling}
-Drawing all 610 users and 4\,980 movies at once is impossible. Gibbs sampling draws
-\key{one block at a time, the others fixed}, exactly like ALS alternates:
+\begin{frame}{Gibbs sampling: one round is like one ALS round, but drawing}
+Drawing all 610 users and 4\,980 movies at once is impossible. Gibbs sampling, like ALS,
+\key{alternates}: users with the movies fixed, then movies with the users fixed.
 
 \vspace{0.3em}
 \begin{columns}[c]
@@ -337,9 +337,6 @@ Drawing all 610 users and 4\,980 movies at once is impossible. Gibbs sampling dr
         \key{draw one point} in it
 \end{itemize}
 \textbf{Regularization}: fixed by hand in ALS, \key{drawn} too in Gibbs.
-
-\vspace{0.4em}
-400 rounds; the first 100 are thrown away (they start from random values).
 \column{0.48\textwidth}
 \begin{tikzpicture}
 \begin{axis}[width=\linewidth, height=4.6cm, axis lines=left, ytick=\empty, xtick={0},
@@ -354,6 +351,49 @@ Drawing all 610 users and 4\,980 movies at once is impossible. Gibbs sampling dr
 \end{tikzpicture}
 \end{columns}
 \takeaway{Many ratings: every draw is close to ALS. Few ratings: draws vary a lot.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{What is actually run: one single chain of 400 rounds}
+\begin{columns}[T]
+\column{0.44\textwidth}
+\colorbox{soft!12}{\parbox{0.95\linewidth}{
+\textbf{ALS}\\[0.3em]
+\small
+start from random factors\\
+\textbf{repeat 15 times:}\\
+\hspace*{1em}users $\leftarrow$ best, given movies\\
+\hspace*{1em}movies $\leftarrow$ best, given users\\[0.3em]
+predict with the \key{last} factors
+}}
+\column{0.54\textwidth}
+\colorbox{accent!8}{\parbox{0.95\linewidth}{
+\textbf{Gibbs sampling (BPMF)}\\[0.3em]
+\small
+start from random factors\\
+\textbf{repeat 400 times} (round $t$):\\
+\hspace*{1em}users' regularization $\leftarrow$ drawn\\
+\hspace*{1em}users $\leftarrow$ \key{drawn}, given movies\\
+\hspace*{1em}movies' regularization $\leftarrow$ drawn\\
+\hspace*{1em}movies $\leftarrow$ \key{drawn}, given users\\
+\hspace*{1em}if $t > 100$: add this round's predictions\\
+\hspace*{1em}\phantom{if $t > 100$:} (all 610 $\times$ 4\,980 cells) to a sum\\[0.3em]
+predict with the sum / 300 = the \key{average}
+}}
+\end{columns}
+
+\vspace{0.6em}
+\begin{center}
+\begin{tikzpicture}[x=0.028cm, y=1cm, every node/.style={font=\footnotesize}]
+  \fill[soft!40] (0,0) rectangle (100,0.4);
+  \fill[accent!60] (100,0) rectangle (400,0.4);
+  \node at (50,0.2) {thrown away};
+  \node[white] at (250,0.2) {\textbf{300 rounds averaged}};
+  \foreach \t in {0,100,400} \node[below] at (\t,0) {\t};
+  \node[right] at (405,0.2) {rounds};
+\end{tikzpicture}
+\end{center}
+\takeaway{Not 300 separate runs: \key{one} chain, each round starts from the previous one; every round after 100 gives one solution.}
 \end{frame}
 
 %-----------------------------------------------------------------------------

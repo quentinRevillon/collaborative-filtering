@@ -233,12 +233,46 @@ Gradient descent, $\lambda = 0.1$ & 0.702 & 0.876 \\
 \begin{itemize}
   \item \textbf{User-based} (course): the $k$ most similar users who rated movie $i$
   \item \textbf{Item-based}: the $k$ movies rated by $u$ most similar to movie $i$
-  \item $s$: Pearson correlation over common ratings; \textbf{shrunk} version multiplies it by $\frac{n}{n + 100}$ ($n$ = number of common ratings)\\
-        \muted{\footnotesize Not in the course: with 2 common ratings, a correlation of 1 is often luck and becomes 0.02; with 300, it stays 0.75.}
+  \item $s_{ij}$: similarity between movies $i$ and $j$, Pearson or shrunk (next slide)
   \item $\beta = 0.2$: our addition, pulls the correction back to the biases when the neighbors are few
   \item $b_{ui} = \mu + b_u + b_i$; no neighbor at all $\to$ use the baseline
   \item $k \in \{10, 20, 40, 80\}$ chosen on validation
 \end{itemize}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{3. kNN: the similarity $s_{ij}$}
+\textbf{Pearson correlation} (course), over the $n_{ij}$ users who rated both movies $i$ and $j$:
+\[
+  \mathrm{Pearson}(i, j) =
+  \frac{\sum_{u} (r_{ui} - \bar r_i)(r_{uj} - \bar r_j)}
+       {\sqrt{\sum_{u} (r_{ui} - \bar r_i)^2}\,\sqrt{\sum_{u} (r_{uj} - \bar r_j)^2}}
+  \qquad \muted{\small\bar r_i: \text{mean rating of movie } i}
+\]
+\textbf{Shrunk Pearson} (our addition, Koren 2008):
+\[
+  s_{ij} = \frac{n_{ij}}{n_{ij} + \textcolor{accent}{100}} \times \mathrm{Pearson}(i, j)
+\]
+\begin{columns}[c]
+\column{0.45\textwidth}
+\small
+\begin{tabular}{@{}cc@{}}
+\toprule
+common users $n_{ij}$ & Pearson $= 1$ becomes \\
+\midrule
+2 & 0.02 \\
+20 & 0.17 \\
+100 & 0.50 \\
+300 & 0.75 \\
+\bottomrule
+\end{tabular}
+\column{0.52\textwidth}
+\begin{itemize}\small
+  \item With 2 common users, a correlation of 1 is often \key{luck}
+  \item The factor trusts a similarity only when many users support it, like $\lambda$ for the biases
+  \item Item-based, raw ratings: 0.975 $\to$ \key{0.961} on test
+\end{itemize}
+\end{columns}
 \end{frame}
 
 %-----------------------------------------------------------------------------

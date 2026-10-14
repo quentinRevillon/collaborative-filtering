@@ -1,7 +1,9 @@
 % A1 preliminary presentation slides (5 minutes), group 40 "La piscine".
-% Follows the assignment guidelines: MF (ALS / gradient descent), alternatives, baseline,
-% clear protocol, hyperparameters, regularization, data splits, computational cost, lessons.
-% Methods are presented by increasing complexity, in the order of the course.
+% Follows the assignment guidelines: matrix factorization (alternating least squares and
+% gradient descent), alternatives, baseline, clear protocol, hyperparameters, regularization,
+% data splits, computational cost, lessons. Every method tested is listed by increasing
+% complexity, with its test error and whether it is kept in the submitted model.
+% Method names are written in full; acronyms only appear in brackets, as the paper names.
 % Build (from slides/): pdflatex slides.tex (twice), then copy slides.pdf to the repository root.
 % Every number comes from results/*.csv (written by experiments/*.py).
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -33,6 +35,8 @@
 
 \newcommand{\key}[1]{\textcolor{accent}{\textbf{#1}}}
 \newcommand{\muted}[1]{\textcolor{soft}{#1}}
+\newcommand{\kept}{\key{kept}}
+\newcommand{\no}{\muted{--}}
 % Take-away box at the bottom of a slide.
 \newcommand{\takeaway}[1]{\vfill\begin{center}\colorbox{accent!8}{\parbox{0.9\textwidth}{\centering #1}}\end{center}}
 
@@ -85,62 +89,84 @@ User 273 & 4.5 & \muted{--} & 5   & \muted{--} \\
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{Task, metric and protocol}
+\begin{frame}{Task, error measure and protocol}
 \begin{columns}[T]
 \column{0.47\textwidth}
 \textbf{Task}: fill every empty cell.\\[0.5em]
-\textbf{Metric}: RMSE, in stars (lower is better)
+\textbf{Error}: root mean squared error (RMSE), in stars, lower is better
 \[
   \sqrt{\frac{1}{|T|}\sum_{(u,i)\in T} (r_{ui} - \hat r_{ui})^2}
 \]
 \muted{\small Ex.: true 4 and 3, predicted 3 and 3 $\to$ 0.71.}
 
 \vspace{0.4em}
-\textbf{Budget}: 4 CPU threads, 20 min, no GPU.
+\textbf{Budget}: 4 processor threads, 20 min, no graphics card.
 
 \column{0.5\textwidth}
 \textbf{Data splits}
 \begin{center}
 \begin{tikzpicture}[x=1cm,y=1cm, every node/.style={font=\small}]
-  \fill[accent!70] (0,1.6) rectangle (3.8,2.2);
-  \fill[warm!80]   (3.8,1.6) rectangle (4.8,2.2);
-  \node[white] at (1.9,1.9) {\textbf{train 90\,\%}};
-  \node[white] at (4.3,1.9) {\textbf{valid}};
+  \fill[accent!70] (0,1.6) rectangle (3.6,2.2);
+  \fill[warm!80]   (3.6,1.6) rectangle (4.8,2.2);
+  \node[white] at (1.8,1.9) {\textbf{training 90\,\%}};
+  \node[white] at (4.2,1.9) {\textbf{valid.}};
   \fill[soft!45] (0,0.6) rectangle (4.8,1.2);
   \node at (2.4,0.9) {\textbf{test} (31\,598 other ratings)};
 \end{tikzpicture}
 \end{center}
 \begin{itemize}\small
-  \item Hyperparameters chosen on \key{valid} only
-  \item Refit on all of train, scored \key{once} on test
-  \item Platform: train + test as input, hidden ratings for the score
+  \item Settings chosen on the \key{validation} ratings only
+  \item Refit on all training ratings, scored \key{once} on test
+  \item Platform: training + test as input, hidden ratings for the score
 \end{itemize}
 \end{columns}
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{Methods compared, by increasing complexity}
-\small
-\begin{tabular}{@{}rlp{6.2cm}l@{}}
+\begin{frame}{All methods tested (1/2): from the baseline to factorization}
+\footnotesize\setlength{\tabcolsep}{3pt}\hspace*{-0.45cm}%
+\begin{tabular}{@{}rllcc@{}}
 \toprule
- & \textbf{Method} & \textbf{Idea} & \textbf{Course} \\
+ & \textbf{Method} & \textbf{Idea} & \textbf{Test error} & \textbf{Kept?} \\
 \midrule
-1 & Global mean & same value everywhere & \muted{baseline} \\
-2 & Biases & mean + user effect + movie effect & \muted{baseline} \\
-3 & Biases + genres & unknown movies resemble their genre & background knowledge \\
-4 & Item $k$NN & how did the user rate similar movies? & neighborhood CF \\
-5 & \key{MF: GD, ALS} & $R \approx I U^\top$, $k$ hidden tastes & \key{required} \\
-6 & Soft-Impute & low rank without fixing $k$ & alternative \\
-7 & AutoRec & neural network (auto-encoder) & deep MF \\
-8 & GC-MC, GLocal-K & recent graph / kernel neural networks & deep, literature \\
-9 & BPMF & MF, averaged over many sampled solutions & alternative \\
-10 & Bayesian FM & 9 + who rated what + genres & alternative \\
-11 & \key{Stacked ensemble} & weighted sum of 10, 4 and a corrected FM & alternative \\
+1 & Global mean & the same value (3.52) everywhere & 1.037 & \no \\
+2 & User and movie biases & mean + user effect + movie effect & 0.875 & \no \\
+3 & Biases guided by genres & a rare movie resembles its genres and decade & 0.874 & \no \\
+4 & Nearest neighbors, movies & user's ratings of the 40 most similar movies & 0.871 & \kept \\
+5 & Nearest neighbors, users & ratings of the 40 most similar users & 0.875 & \no \\
+6 & Matrix factorization, gradient descent & $k$ hidden tastes, learned by small steps & 0.878 & \no \\
+7 & Matrix factorization, least squares & same, exact formula, users then movies & 0.873 & \no \\
+8 & Soft-Impute & low rank, weak patterns removed & 0.872 & \no \\
+9 & Linear blend of 2, 3, 4, 7, 8 & weighted sum, weights learned on validation & 0.868 & \no \\
 \bottomrule
 \end{tabular}
 
-\vspace{0.6em}
-Every model predicts the residual left by the biases (2), and is compared to them.
+\vspace{0.5em}
+\muted{\footnotesize Every model from 3 on predicts what the biases (2) do not explain. 228 settings
+tried for factorization, 147 for methods 3--9.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{All methods tested (2/2): neural, Bayesian, ensemble}
+\footnotesize\setlength{\tabcolsep}{3pt}\hspace*{-0.45cm}%
+\begin{tabular}{@{}rllcc@{}}
+\toprule
+ & \textbf{Method} & \textbf{Idea} & \textbf{Test error} & \textbf{Kept?} \\
+\midrule
+10 & Auto-encoder (AutoRec) & neural net: compress, then rebuild a movie & 0.872 & \no \\
+11 & Graph neural network (GC-MC) & users and movies as a graph of ratings & 0.879 & \no \\
+12 & Kernel auto-encoder (GLocal-K) & auto-encoder with smooth kernels & 0.897 & \no \\
+13 & Movie-to-movie regression (EASE) & each movie predicted from all others & \muted{0.890 val.} & \no \\
+14 & Bayesian matrix factorization & 7, averaged over 300 random solutions & 0.865 & \no \\
+15 & Bayesian factorization machine & 14 + who rated what + genres & 0.855 & \kept \\
+16 & Same, without genres & a different model, for diversity & 0.856 & \kept \\
+17 & Variants of 15 & ordered ratings, 3 chains, other ranks & 0.855--0.859 & \no \\
+18 & 15 + neighbors on its errors & correct 15 with similar movies' errors & 0.856 & \no \\
+19 & 15 + boosted trees on its errors & learn 15's error from counts, means & 0.849 & \kept \\
+20 & \key{Final ensemble} & \key{weighted sum of 4, 15, 16, 19} & \key{0.847} & \key{submitted} \\
+\bottomrule
+\end{tabular}
+\takeaway{Neural networks do no better than simple models; averaging (14--20) is what pays.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
@@ -155,27 +181,27 @@ Every model predicts the residual left by the biases (2), and is compared to the
 \]
 \textbf{Regularization} $\lambda$: \emph{Party Girl} has a single rating, a 5.\\
 Its bias drops from $+1.5$ to $+0.45$: deviations are divided by (count $+\lambda$), $\lambda = 2$.
-\takeaway{RMSE: global mean \textbf{1.037} $\;\to\;$ biases \key{0.875}.}
+\takeaway{Error: global mean \textbf{1.037} $\;\to\;$ biases \key{0.875}.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{Neighborhood CF: item $k$NN}
+\begin{frame}{Nearest neighbors (neighborhood-based filtering)}
 \begin{columns}[c]
 \column{0.55\textwidth}
-Course formula, applied to the residuals $e$ of the biases:
+Course formula, applied to what the biases do not explain ($e$):
 \[
   \hat r_{ui} = b_{ui} + \frac{\sum_{j \in N_k(i;u)} s_{ij}\, e_{uj}}{\textcolor{accent}{\beta} + \sum_{j} |s_{ij}|}
 \]
 \begin{itemize}
-  \item $s_{ij}$: Pearson similarity, shrunk when few common users
-  \item Item-based (movies compared over users)
+  \item $s_{ij}$: correlation between movies $i$ and $j$, reduced when few users rated both
+  \item $N_k(i;u)$: the $k$ movies rated by $u$ most similar to $i$
   \item \key{$\beta$}: our addition, damps the correction when neighbors are few or weak
 \end{itemize}
 \column{0.42\textwidth}
 \small
 \begin{tabular}{@{}lc@{}}
 \toprule
-$k = 40$ & valid RMSE \\
+$k = 40$ & validation error \\
 \midrule
 course formula ($\beta = 0$) & 0.908 \\
 $\beta = 0.2$ & \key{0.885} \\
@@ -183,29 +209,30 @@ $\beta = 0.2$ & \key{0.885} \\
 \end{tabular}
 
 \vspace{0.4em}
-\muted{\footnotesize With 1--3 neighbors, the course formula copies one neighbor's residual.}
+\muted{\footnotesize With 1--3 neighbors, the course formula copies one neighbor's value.\\
+Comparing movies (0.871) works better than comparing users (0.875).}
 \end{columns}
-\takeaway{Test RMSE \key{0.871}: best on popular movies, no help on rare ones.}
+\takeaway{Best on popular movies, so \key{kept} in the final ensemble.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{Matrix factorization: GD and ALS}
+\begin{frame}{Matrix factorization: two ways to compute it}
 \begin{columns}[c]
 \column{0.53\textwidth}
 \[
   \min_{I,U} \sum_{(i,u)\,\text{observed}} \bigl(r_{iu} - I_i^\top U_u\bigr)^2 + \lambda\bigl(\|I\|_F^2 + \|U\|_F^2\bigr)
 \]
 \begin{itemize}
-  \item \textbf{GD} (stochastic): small steps on each rating
-  \item \textbf{ALS}: $U$ fixed, $I$ in closed form, then swap
-  \item Hyperparameters: rank $k$ (1--50), $\lambda$, learning rate; 228 settings
+  \item \textbf{Gradient descent}: small steps, one rating at a time
+  \item \textbf{Alternating least squares}: $U$ fixed, exact formula for $I$, then swap
+  \item Settings: rank $k$ (1--50), $\lambda$, step size
 \end{itemize}
 \column{0.44\textwidth}
 \textbf{Without $\lambda$, it learns by heart}\\[0.3em]
 \small
 \begin{tabular}{@{}lcc@{}}
 \toprule
-ALS, $k = 50$ & train & valid \\
+$k = 50$ & training & validation \\
 \midrule
 $\lambda \approx 0$ & 0.00 & 1.21 \\
 $\lambda = 10$ & 0.68 & \key{0.89} \\
@@ -213,25 +240,25 @@ $\lambda = 10$ & 0.68 & \key{0.89} \\
 \end{tabular}
 
 \vspace{0.4em}
-\muted{\footnotesize $\lambda \geq 15$: factors vanish, back to the biases.}
+\muted{\footnotesize $\lambda \geq 15$: hidden tastes vanish, back to the biases.}
 \end{columns}
-\takeaway{ALS \key{0.873}, GD 0.878: only 0.002 better than the biases.}
+\takeaway{Least squares 0.873, gradient descent 0.878: only 0.002 better than the biases.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{Bayesian MF: average many solutions}
+\begin{frame}{Bayesian factorization: average many solutions}
 \begin{columns}[c]
 \column{0.44\textwidth}
 \begin{itemize}
   \item With so few ratings, \key{many solutions} fit the data
-  \item Gibbs sampling draws hundreds of them; we \key{average} their predictions
-  \item $\lambda$ is sampled too: no tuning
-  \item \textbf{Bayesian FM} also uses \emph{who rated what} and genres
+  \item We draw hundreds of them at random (Gibbs sampling) and \key{average} their predictions
+  \item $\lambda$ is drawn too: nothing to tune
+  \item The \textbf{factorization machine} also knows \emph{who rated what} and the genres
 \end{itemize}
 \column{0.54\textwidth}
 \begin{tikzpicture}
 \begin{axis}[width=\linewidth, height=5.4cm, xmode=log,
-    xlabel={number of averaged solutions}, ylabel={valid RMSE},
+    xlabel={number of averaged solutions}, ylabel={validation error},
     ymin=0.86, ymax=1.06, xmin=1, xmax=2000,
     axis lines=left, tick label style={font=\footnotesize}, label style={font=\small},
     yticklabel style={/pgf/number format/.cd, fixed, precision=2}]
@@ -245,87 +272,51 @@ $\lambda = 10$ & 0.68 & \key{0.89} \\
 \end{axis}
 \end{tikzpicture}
 \end{columns}
-\takeaway{One solution is \textbf{worse} than the global mean; the average of 2\,000 beats every single model.}
+\takeaway{One solution is \textbf{worse} than the global mean; the average of 2\,000 is the best single model (0.855).}
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{Final model: a stacked ensemble}
+\begin{frame}{Final model: an ensemble of four kept models}
 \begin{columns}[c]
 \column{0.56\textwidth}
 \begin{tikzpicture}[x=1cm, y=1cm, every node/.style={font=\small},
-    member/.style={draw=accent, fill=accent!8, rounded corners=2pt, minimum width=3.8cm, minimum height=0.6cm}]
-  \foreach \y/\name/\w in {2.25/FM + GBDT correction/0.53, 1.5/{FM, no genres}/0.27,
-                           0.75/Item $k$NN/0.25, 0/Bayesian FM/0.01} {
+    member/.style={draw=accent, fill=accent!8, rounded corners=2pt, minimum width=4.4cm, minimum height=0.6cm, font=\footnotesize}]
+  \foreach \y/\name/\w in {2.25/(19) machine + boosted trees/0.53, 1.5/(16) machine without genres/0.27,
+                           0.75/(4) nearest neighbors/0.25, 0/(15) factorization machine/0.01} {
     \node[member] at (0,\y) {\name};
-    \node[font=\footnotesize, text=accent] at (2.55,\y) {$\times$\,\w};
-    \draw[->, thick, soft] (3.0,\y) -- (3.75,1.125);
+    \node[font=\footnotesize, text=accent] at (2.75,\y) {$\times$\,\w};
+    \draw[->, thick, soft] (3.2,\y) -- (3.95,1.125);
   }
-  \node[draw=warm, fill=warm!15, circle, minimum size=0.8cm] (s) at (4.1,1.125) {$\Sigma$};
-  \node (r) at (5.2,1.125) {$\hat r_{ui}$};
+  \node[draw=warm, fill=warm!15, circle, minimum size=0.8cm] (s) at (4.3,1.125) {$\Sigma$};
+  \node (r) at (5.3,1.125) {$\hat r_{ui}$};
   \draw[->, thick] (s) -- (r);
 \end{tikzpicture}
 
 \vspace{0.5em}
 \footnotesize
-\textbf{GBDT correction}: 300 small decision trees learn the FM's \emph{error} from the
-user's and movie's rating count, mean and spread. Trained on out-of-fold errors
-(FM refitted 5 times without one fifth of the ratings).
+\textbf{Boosted trees}: 300 small decision trees learn the machine's \emph{error} from the
+user's and movie's rating count, mean and spread. They learn it on ratings the machine
+did not see (refitted 5 times, each time without one fifth of the ratings).
 \column{0.42\textwidth}
 \footnotesize
-\textbf{Chosen on validation} (5-fold CV)\\[0.3em]
+\textbf{Combinations compared on validation}\\[0.3em]
 \begin{tabular}{@{}lc@{}}
 \toprule
-Members & valid RMSE \\
+Members & validation error \\
 \midrule
-FM alone & 0.8726 \\
-FM + $k$NN + FM no genres & 0.8656 \\
-FM + GBDT & 0.8662 \\
-FM + GBDT + $k$NN & 0.8645 \\
-\key{all four} & \key{0.8636} \\
+15 alone & 0.8726 \\
+15 + 4 + 16 & 0.8656 \\
+19 alone & 0.8662 \\
+19 + 4 & 0.8645 \\
+\key{15 + 4 + 16 + 19} & \key{0.8636} \\
 \bottomrule
 \end{tabular}
 
 \vspace{0.4em}
-\muted{\footnotesize Weights: ridge regression on validation, then frozen.\\
-No gain: ordinal FM, 3 FM chains, EASE, $k$NN on FM errors.}
+\muted{\footnotesize Weights: linear regression on the validation ratings, then frozen,
+so each model is fitted only once on the platform.}
 \end{columns}
-\takeaway{Test RMSE \key{0.847} (FM alone 0.855); \key{4.6 min} on train + test, limit 20 min.}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{Results on test, by increasing complexity}
-\begin{columns}[c]
-\column{0.6\textwidth}
-\footnotesize\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}rlccr@{}}
-\toprule
- & \textbf{Method} & \textbf{RMSE} & \textbf{vs biases} & \textbf{Fit time} \\
-\midrule
-1 & Global mean     & 1.037 & $+0.162$ & 0\,s \\
-2 & Biases          & 0.875 & ---      & 0.01\,s \\
-3 & Biases + genres & 0.874 & $-0.001$ & 0.04\,s \\
-4 & Item $k$NN      & 0.871 & $-0.004$ & 1.1\,s \\
-5 & MF -- GD        & 0.878 & $+0.003$ & 0.5\,s \\
-  & MF -- ALS       & 0.873 & $-0.002$ & 1.5\,s \\
-6 & Soft-Impute     & 0.872 & $-0.003$ & 4.7\,s \\
-7 & AutoRec         & 0.872 & $-0.002$ & 17\,s \\
-8 & GC-MC           & 0.879 & $+0.005$ & 21\,s \\
-  & GLocal-K        & 0.897 & $+0.022$ & 4\,min \\
-9 & BPMF            & 0.865 & $-0.010$ & 44\,s \\
-10 & Bayesian FM    & 0.855 & $-0.019$ & 60\,s \\
-11 & \key{Stacked ensemble} & \key{0.847} & \key{$-0.028$} & 3\,min \\
-\midrule
-  & Ridge blend of 2--6 & 0.868 & $-0.006$ & 7.7\,s \\
-\bottomrule
-\end{tabular}
-\column{0.37\textwidth}
-\begin{itemize}
-  \item The biases do \key{90\,\%} of the work
-  \item Complexity alone does not pay: neural networks do no better than ALS
-  \item What pays: \key{averaging} (Bayesian, ensembles)
-  \item Ensemble submitted: \key{4.6 min} on train + test \muted{(limit 20 min)}
-\end{itemize}
-\end{columns}
+\takeaway{Test error \key{0.847} vs 0.855 for model 15 alone; \key{4.6 min} on the platform input.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
@@ -334,10 +325,10 @@ No gain: ordinal FM, 3 FM chains, EASE, $k$NN on FM errors.}
 \column{0.5\textwidth}
 \textbf{Lessons}
 \begin{itemize}
-  \item At 1\,\% density, the risk is \key{learning by heart}: regularization decides everything
-  \item The course $k$NN formula needs damping with few neighbors
+  \item At 1\,\% density, the biases do \key{90\,\%} of the work
+  \item The risk is \key{learning by heart}: regularization decides everything
+  \item The course neighbor formula needs damping with few neighbors
   \item Averaging many solutions \key{beats} searching for the best one
-  \item Knowing \emph{who rated a movie} helps more than its genres
   \item Different models make different errors: the \key{ensemble} gains a further 0.008
 \end{itemize}
 \column{0.5\textwidth}
@@ -346,7 +337,7 @@ No gain: ordinal FM, 3 FM chains, EASE, $k$NN on FM errors.}
   \item One validation split (3\,160 ratings): gaps of 0.001 are not significant
   \item Local score $\neq$ platform score (2$\times$ more input ratings)
   \item Ensemble weights learned on 3\,160 ratings, then frozen
-  \item Next: check the tuning with 2$\times$ more ratings
+  \item Next: check the settings with 2$\times$ more ratings
 \end{itemize}
 \end{columns}
 \end{frame}

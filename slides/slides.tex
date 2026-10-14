@@ -36,7 +36,7 @@
 \newcommand{\takeaway}[1]{\vfill\begin{center}\colorbox{accent!8}{\parbox{0.9\textwidth}{\centering #1}}\end{center}}
 
 \title{The course methods, step by step}
-\subtitle{Mean and biases, nearest neighbors, matrix factorization}
+\subtitle{Mean and biases, matrix factorization, nearest neighbors}
 \author{Quentin Revillon\\[2pt] {\small Group 40 --- La piscine}}
 \institute{DataLab A1 --- Master IASD}
 \date{October 2026}
@@ -109,10 +109,10 @@ $\mu$ + both, \key{regularized} ($\lambda = 2$) & 0.776 & \key{0.875} \\
 \begin{frame}{Why regularize the biases}
 \begin{columns}[c]
 \column{0.48\textwidth}
-\textbf{\emph{Party Girl}} has a single rating, a 5.
+\textbf{\emph{Harry Potter and the Order of the Phoenix}} has a single rating, a 1.
 \begin{itemize}
-  \item $\lambda = 0$: its bias is $\approx +1.5$, on the word of one person
-  \item $\lambda = 2$: the sum of deviations is divided by (number of ratings $+ 2$) $\to$ \key{$+0.45$}
+  \item $\lambda = 0$: its bias is $-1.96$: a ``terrible'' movie, on the word of one person
+  \item $\lambda = 2$: the sum of deviations is divided by (number of ratings $+ 2$) $\to$ \key{$-0.65$}
   \item A movie with 100 ratings is barely affected (102 instead of 100)
 \end{itemize}
 \vspace{0.3em}
@@ -134,63 +134,7 @@ Half of the movies have 3 ratings or fewer: this matters for most of the matrix.
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{2. Nearest neighbors: what we tried}
-\begin{columns}[c]
-\column{0.48\textwidth}
-\textbf{Course formula} (raw ratings)
-\[
-  \hat r_{ui} = \frac{\sum_{j \in N_k(i;u)} s_{ij}\, r_{uj}}{\sum_j |s_{ij}|}
-\]
-\column{0.5\textwidth}
-\textbf{On the residuals of the biases}
-\[
-  \hat r_{ui} = b_{ui} + \frac{\sum_j s_{ij}\, (r_{uj} - b_{uj})}{\textcolor{accent}{\beta} + \sum_j |s_{ij}|}
-\]
-\end{columns}
-\begin{itemize}
-  \item \textbf{User-based} (course): the $k$ most similar users who rated movie $i$
-  \item \textbf{Item-based}: the $k$ movies rated by $u$ most similar to movie $i$
-  \item $s$: Pearson correlation over common ratings; \textbf{shrunk} version multiplies it by $\frac{n}{n + 100}$ ($n$ = number of common ratings)\\
-        \muted{\footnotesize Not in the course: with 2 common ratings, a correlation of 1 is often luck and becomes 0.02; with 300, it stays 0.75.}
-  \item $\beta = 0.2$: our addition, pulls the correction back to the biases when the neighbors are few
-  \item $b_{ui} = \mu + b_u + b_i$; no neighbor at all $\to$ use the baseline
-  \item $k \in \{10, 20, 40, 80\}$ chosen on validation
-\end{itemize}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{2. Nearest neighbors: results}
-\begin{columns}[c]
-\column{0.6\textwidth}
-\small
-\begin{tabular}{@{}llccc@{}}
-\toprule
- & \textbf{Variant} & $k$ & \textbf{train.} & \textbf{test} \\
-\midrule
-Raw ratings & user-based, Pearson & 40 & 0.868 & 1.027 \\
- & user-based, shrunk & 20 & 0.890 & 1.019 \\
- & item-based, Pearson & 80 & 0.730 & 0.975 \\
- & item-based, shrunk & 40 & 0.700 & 0.961 \\
-\midrule
-Residuals & item-based, shrunk & 80 & 0.428 & 0.891 \\
-of biases & + damping $\beta = 0.2$ & 40 & 0.505 & \key{0.871} \\
-\midrule
- & \muted{biases alone} & & \muted{0.776} & \muted{0.875} \\
-\bottomrule
-\end{tabular}
-\column{0.38\textwidth}
-\begin{itemize}\small
-  \item On raw ratings, the course formula is \key{worse than the biases}: an average of 1--3 neighbors ignores how high the user rates
-  \item Comparing movies beats comparing users (each movie is compared over 610 users)
-  \item Working on residuals: $-0.07$
-  \item Damping: another $-0.02$
-\end{itemize}
-\end{columns}
-\takeaway{Best nearest neighbors: \key{0.871}, only 0.004 better than the biases.}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{3. Matrix factorization: four ways to apply it}
+\begin{frame}{2. Matrix factorization: four ways to apply it}
 Course: $R \approx I U^\top$, each user and movie described by $k$ hidden numbers,
 \[
   \min_{I,U} \sum_{\text{obs.}} \bigl(r_{ui} - \text{base}_{ui} - U_u^\top I_i\bigr)^2 + \textcolor{accent}{\lambda}\bigl(\|I\|_F^2 + \|U\|_F^2\bigr)
@@ -216,7 +160,7 @@ d & biases learned \emph{with} the factors & $\mu + b_u + b_i$, updated at every
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{3. Matrix factorization: results (test error)}
+\begin{frame}{2. Matrix factorization: results (test error)}
 \begin{columns}[c]
 \column{0.6\textwidth}
 \footnotesize\setlength{\tabcolsep}{4pt}
@@ -247,7 +191,7 @@ d: $k = 20$, $\lambda_{\text{factors}} = 10$, $\lambda_{\text{biases}} = 2$.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{3. Matrix factorization: learning by heart}
+\begin{frame}{2. Matrix factorization: learning by heart}
 \begin{columns}[c]
 \column{0.5\textwidth}
 \small
@@ -273,6 +217,62 @@ Gradient descent, $\lambda = 0.1$ & 0.702 & 0.876 \\
 \end{frame}
 
 %-----------------------------------------------------------------------------
+\begin{frame}{3. Nearest neighbors: what we tried}
+\begin{columns}[c]
+\column{0.48\textwidth}
+\textbf{Course formula} (raw ratings)
+\[
+  \hat r_{ui} = \frac{\sum_{j \in N_k(i;u)} s_{ij}\, r_{uj}}{\sum_j |s_{ij}|}
+\]
+\column{0.5\textwidth}
+\textbf{On the residuals of the biases}
+\[
+  \hat r_{ui} = b_{ui} + \frac{\sum_j s_{ij}\, (r_{uj} - b_{uj})}{\textcolor{accent}{\beta} + \sum_j |s_{ij}|}
+\]
+\end{columns}
+\begin{itemize}
+  \item \textbf{User-based} (course): the $k$ most similar users who rated movie $i$
+  \item \textbf{Item-based}: the $k$ movies rated by $u$ most similar to movie $i$
+  \item $s$: Pearson correlation over common ratings; \textbf{shrunk} version multiplies it by $\frac{n}{n + 100}$ ($n$ = number of common ratings)\\
+        \muted{\footnotesize Not in the course: with 2 common ratings, a correlation of 1 is often luck and becomes 0.02; with 300, it stays 0.75.}
+  \item $\beta = 0.2$: our addition, pulls the correction back to the biases when the neighbors are few
+  \item $b_{ui} = \mu + b_u + b_i$; no neighbor at all $\to$ use the baseline
+  \item $k \in \{10, 20, 40, 80\}$ chosen on validation
+\end{itemize}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{3. Nearest neighbors: results}
+\begin{columns}[c]
+\column{0.6\textwidth}
+\small
+\begin{tabular}{@{}llccc@{}}
+\toprule
+ & \textbf{Variant} & $k$ & \textbf{train.} & \textbf{test} \\
+\midrule
+Raw ratings & user-based, Pearson & 40 & 0.868 & 1.027 \\
+ & user-based, shrunk & 20 & 0.890 & 1.019 \\
+ & item-based, Pearson & 80 & 0.730 & 0.975 \\
+ & item-based, shrunk & 40 & 0.700 & 0.961 \\
+\midrule
+Residuals & item-based, shrunk & 80 & 0.428 & 0.891 \\
+of biases & + damping $\beta = 0.2$ & 40 & 0.505 & \key{0.871} \\
+\midrule
+ & \muted{biases alone} & & \muted{0.776} & \muted{0.875} \\
+\bottomrule
+\end{tabular}
+\column{0.38\textwidth}
+\begin{itemize}\small
+  \item On raw ratings, the course formula is \key{worse than the biases}: an average of 1--3 neighbors ignores how high the user rates
+  \item Comparing movies beats comparing users (each movie is compared over 610 users)
+  \item Working on residuals: $-0.07$
+  \item Damping: another $-0.02$
+\end{itemize}
+\end{columns}
+\takeaway{Best nearest neighbors: \key{0.871}, only 0.004 better than the biases.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
 \begin{frame}{Summary of the course methods}
 \begin{columns}[c]
 \column{0.52\textwidth}
@@ -283,8 +283,8 @@ Gradient descent, $\lambda = 0.1$ & 0.702 & 0.876 \\
 \midrule
 Mean only & 1.037 \\
 Mean + biases, $\lambda = 2$ & 0.875 \\
-Nearest neighbors on residuals, damped & \key{0.871} \\
 Factorization of residuals, ALS & \key{0.872} \\
+Nearest neighbors on residuals, damped & \key{0.871} \\
 \bottomrule
 \end{tabular}
 \column{0.45\textwidth}

@@ -37,8 +37,8 @@
 
 \title{The course methods, step by step}
 \subtitle{Mean and biases, matrix factorization, kNN}
-\author{Quentin Revillon\\[2pt] {\small Group 40 --- La piscine}}
-\institute{DataLab A1 --- Master IASD}
+\author{Quentin Revillon, Vincent Ami\\[2pt] {\small Group 40, La piscine}}
+\institute{DataLab A1, Master IASD}
 \date{October 2026}
 
 \begin{document}
@@ -52,7 +52,7 @@
 \begin{frame}{Setting and protocol}
 \begin{columns}[T]
 \column{0.5\textwidth}
-\textbf{Data}: 610 users $\times$ 4\,980 movies, ratings 0.5--5,
+\textbf{Data}: 610 users $\times$ 4\,980 movies, ratings 0.5 to 5,
 \key{1\,\%} of the cells observed (31\,598 ratings).
 
 \vspace{0.6em}
@@ -172,7 +172,7 @@ d & biases learned \emph{with} the factors & $\mu + b_u + b_i$, updated at every
 a. raw ratings & 1.316 & 0.992 & 0.958 & 0.930 \\
 b. minus mean & 1.226 & 0.959 & 1.006 & 0.964 \\
 c. minus mean + biases & 1.134 & \key{0.872} & 0.897 & 0.876 \\
-d. biases learned jointly & --- & 0.873 & --- & 0.878 \\
+d. biases learned jointly & n/a & 0.873 & n/a & 0.878 \\
 \midrule
 \muted{biases alone} & \multicolumn{4}{c}{\muted{0.875}} \\
 \bottomrule
@@ -263,7 +263,7 @@ of biases & + damping $\beta = 0.2$ & 40 & 0.505 & \key{0.871} \\
 \end{tabular}
 \column{0.38\textwidth}
 \begin{itemize}\small
-  \item On raw ratings, the course formula is \key{worse than the biases}: an average of 1--3 neighbors ignores how high the user rates
+  \item On raw ratings, the course formula is \key{worse than the biases}: an average of 1 to 3 neighbors ignores how high the user rates
   \item Comparing movies beats comparing users (each movie is compared over 610 users)
   \item Working on residuals: $-0.07$
   \item Damping: another $-0.02$
@@ -292,7 +292,7 @@ kNN on residuals, damped & \key{0.871} \\
   \item The biases do \key{90\,\%} of the work
   \item Regularization is never optional: without it, every method learns by heart
   \item The course formulas, applied to raw ratings, are worse than the biases
-  \item Applied to what the biases leave, they gain 0.003--0.004
+  \item Applied to what the biases leave, they gain 0.003 to 0.004
 \end{itemize}
 \end{columns}
 \takeaway{At 1\,\% density, first remove what is easy to estimate (mean, biases), then regularize.}

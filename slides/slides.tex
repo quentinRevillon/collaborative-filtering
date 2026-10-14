@@ -152,7 +152,8 @@ Half of the movies have 3 ratings or fewer: this matters for most of the matrix.
 \begin{itemize}
   \item \textbf{User-based} (course): the $k$ most similar users who rated movie $i$
   \item \textbf{Item-based}: the $k$ movies rated by $u$ most similar to movie $i$
-  \item $s$: Pearson correlation over common ratings; \textbf{shrunk} version multiplies it by $\frac{n}{n + 100}$ ($n$ = number of common ratings)
+  \item $s$: Pearson correlation over common ratings; \textbf{shrunk} version multiplies it by $\frac{n}{n + 100}$ ($n$ = number of common ratings)\\
+        \muted{\footnotesize Not in the course: with 2 common ratings, a correlation of 1 is often luck and becomes 0.02; with 300, it stays 0.75.}
   \item $\beta = 0.2$: our addition, pulls the correction back to the biases when the neighbors are few
   \item $b_{ui} = \mu + b_u + b_i$; no neighbor at all $\to$ use the baseline
   \item $k \in \{10, 20, 40, 80\}$ chosen on validation
@@ -297,6 +298,81 @@ Factorization of residuals, ALS & \key{0.872} \\
 \end{itemize}
 \end{columns}
 \takeaway{At 1\,\% density, first remove what is easy to estimate (mean, biases), then regularize.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Additional experiment: Bayesian matrix factorization (BPMF)}
+\textbf{Same model} as factorization d: \;
+$r_{ui} \approx \mu + b_u + b_i + U_u^\top I_i$ \; \muted{\footnotesize (Salakhutdinov \& Mnih 2008)}
+
+\vspace{0.6em}
+\begin{columns}[T]
+\column{0.49\textwidth}
+\colorbox{soft!12}{\parbox{0.95\linewidth}{
+\textbf{ALS / gradient descent}\\[0.3em]
+\small
+\begin{itemize}
+  \item search \key{one} solution $(I, U)$ minimizing the cost
+  \item $\lambda$ chosen by hand on validation
+\end{itemize}
+}}
+\column{0.49\textwidth}
+\colorbox{accent!8}{\parbox{0.95\linewidth}{
+\textbf{BPMF}\\[0.3em]
+\small
+\begin{itemize}
+  \item draw \key{many} plausible solutions at random (Gibbs sampling: like ALS, users then movies, but each row is \emph{drawn} instead of set to its best value)
+  \item predict the \key{average} of their predictions
+  \item the regularization is drawn too: no $\lambda$ to tune
+\end{itemize}
+}}
+\end{columns}
+\vspace{0.6em}
+\begin{itemize}\small
+  \item Settings tried on validation: rank 5, 10, 20; noise level fixed or drawn
+  \item Kept: rank 20, 100 first draws thrown away, then \key{300 draws averaged}
+\end{itemize}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Additional experiment: BPMF results}
+\begin{columns}[c]
+\column{0.52\textwidth}
+\begin{tikzpicture}
+\begin{axis}[width=\linewidth, height=5.4cm, xmode=log,
+    xlabel={number of averaged draws}, ylabel={validation error},
+    ymin=0.87, ymax=1.04, xmin=1, xmax=300,
+    axis lines=left, tick label style={font=\footnotesize}, label style={font=\small},
+    yticklabel style={/pgf/number format/.cd, fixed, precision=2}]
+  \addplot[very thick, accent] coordinates {(1,1.0246) (2,0.9728) (3,0.9487) (5,0.932) (10,0.9149)
+    (20,0.9034) (50,0.8936) (100,0.8892) (150,0.89) (200,0.8893) (250,0.8883) (300,0.8881)};
+  \addplot[thick, soft, dashed] coordinates {(1,1.020) (300,1.020)};
+  \addplot[thick, warm, dashed] coordinates {(1,0.8909) (300,0.8909)};
+  \node[soft, font=\footnotesize, anchor=south east] at (axis cs:300,1.020) {one draw alone};
+  \node[warm, font=\footnotesize, anchor=south east] at (axis cs:300,0.8909) {biases};
+  \node[accent, font=\footnotesize, anchor=south west] at (axis cs:3,0.955) {average of draws};
+\end{axis}
+\end{tikzpicture}
+\column{0.46\textwidth}
+\small
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Method} & \textbf{test error} \\
+\midrule
+Mean + biases & 0.875 \\
+Factorization, ALS (best) & 0.872 \\
+\key{BPMF} & \key{0.865} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.6em}
+\begin{itemize}\small
+  \item One draw alone is worse than the global mean
+  \item The average of 300 beats every course method: $-0.010$ vs the biases
+  \item Cost: 44\,s instead of 1.5\,s for ALS
+\end{itemize}
+\end{columns}
+\takeaway{Averaging many factorizations works better than searching for the best one.}
 \end{frame}
 
 \end{document}

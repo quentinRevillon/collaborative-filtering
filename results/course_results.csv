@@ -1,0 +1,26 @@
+variant,settings,train_rmse,valid_rmse,test_rmse
+global mean,{},1.0326,1.0626,1.0369
+mean + user biases,"{""lam"": 2.0}",0.9238,0.9661,0.9433
+mean + movie biases,"{""lam"": 2.0}",0.8707,0.9906,0.9663
+"mean + both biases, no regularization","{""lam"": 0.0}",0.7469,0.916,0.9042
+"mean + both biases, regularized","{""lam"": 2}",0.7755,0.8909,0.8746
+"kNN course formula, user-based, Pearson","{""k"": 40}",0.8678,1.0453,1.0266
+"kNN course formula, user-based, shrunk Pearson","{""k"": 20}",0.8896,1.038,1.0185
+"kNN course formula, item-based, Pearson","{""k"": 80}",0.7301,0.9993,0.9749
+"kNN course formula, item-based, shrunk Pearson","{""k"": 40}",0.7002,0.9874,0.9611
+"kNN on residuals of mean + biases, item-based","{""k"": 80}",0.4283,0.9074,0.8906
+"kNN on residuals of mean + biases, item-based, damped","{""k"": 40}",0.5052,0.8848,0.8705
+"MF on none, ALS, no regularization","{""rank"": 5}",0.4846,1.4551,1.3156
+"MF on none, ALS, regularized","{""rank"": 2, ""lam"": 1.0}",0.6752,1.1783,0.9916
+"MF on none, gradient descent, no regularization","{""rank"": 2}",0.7166,1.1379,0.9583
+"MF on none, gradient descent, regularized","{""rank"": 2, ""lam"": 0.05}",0.7379,1.1158,0.9303
+"MF on mean, ALS, no regularization","{""rank"": 2}",0.7312,1.2513,1.2257
+"MF on mean, ALS, regularized","{""rank"": 5, ""lam"": 5.0}",0.6625,0.9786,0.9591
+"MF on mean, gradient descent, no regularization","{""rank"": 2}",0.8085,1.0318,1.006
+"MF on mean, gradient descent, regularized","{""rank"": 20, ""lam"": 0.1}",0.7367,1.0039,0.9635
+"MF on biases, ALS, no regularization","{""rank"": 2}",0.6007,1.1579,1.1336
+"MF on biases, ALS, regularized","{""rank"": 20, ""lam"": 10.0}",0.675,0.8888,0.8717
+"MF on biases, gradient descent, no regularization","{""rank"": 2}",0.7135,0.9134,0.8973
+"MF on biases, gradient descent, regularized","{""rank"": 20, ""lam"": 0.1}",0.7023,0.8909,0.8764
+"MF + biases learned jointly, ALS, regularized","{""rank"": 20, ""lam_f"": 10.0, ""lam_b"": 2.0}",0.6723,0.8899,0.8725
+"MF + biases learned jointly, gradient descent, regularized","{""rank"": 20, ""lam_f"": 0.2, ""lam_b"": 0.05}",0.7556,0.8932,0.8775

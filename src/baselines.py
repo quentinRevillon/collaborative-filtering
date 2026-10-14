@@ -28,8 +28,8 @@ def biases(train, shape, lam, n_iter=20):
     ni = np.bincount(i, minlength=shape[1])
     bu = np.zeros(shape[0])
     for _ in range(n_iter):
-        bi = np.bincount(i, r - mu - bu[u], minlength=shape[1]) / (lam + ni)
-        bu = np.bincount(u, r - mu - bi[i], minlength=shape[0]) / (lam + nu)
+        bi = np.bincount(i, r - mu - bu[u], minlength=shape[1]) / np.maximum(lam + ni, 1e-12)  # 0 if unrated
+        bu = np.bincount(u, r - mu - bi[i], minlength=shape[0]) / np.maximum(lam + nu, 1e-12)
     return mu, bu, bi
 
 

@@ -203,7 +203,8 @@ Half of the movies have 3 ratings or fewer: this matters for most of the matrix.
 \begin{itemize}
   \item \textbf{User-based} (course): the $k$ most similar users who rated movie $i$
   \item \textbf{Item-based}: the $k$ movies rated by $u$ most similar to movie $i$
-  \item $s$: correlation over common ratings, optionally \textbf{shrunk} when they are few: $\times \frac{n}{n + 100}$
+  \item $s$: Pearson correlation over the $n$ users who rated both (course)
+  \item \textbf{Shrunk} $s$ (our addition): $s \times \frac{n}{n + 100}$. With $n = 2$ common users, a correlation of 1 is often luck: it becomes 0.02; with $n = 300$, 0.75
   \item \textcolor{accent}{$\beta = 0.2$}: our addition, pulls back to the biases when neighbors are few
   \item $k \in \{10, 20, 40, 80\}$ chosen on validation
 \end{itemize}

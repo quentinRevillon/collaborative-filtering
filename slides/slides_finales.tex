@@ -1,0 +1,345 @@
+% Full deck (all methods tested, "slides finales"), group 40 "La piscine".
+% Follows the assignment guidelines: matrix factorization (alternating least squares and
+% gradient descent), alternatives, baseline, clear protocol, hyperparameters, regularization,
+% data splits, computational cost, lessons. Every method tested is listed by increasing
+% complexity, with its test error and whether it is kept in the submitted model.
+% Method names are written in full; acronyms only appear in brackets, as the paper names.
+% Build (from slides/): pdflatex slides_finales.tex (twice).
+% Every number comes from results/*.csv (written by experiments/*.py).
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\definecolor{accent}{HTML}{2A6FDB}
+\definecolor{warm}{HTML}{E8833A}
+\definecolor{ink}{HTML}{222222}
+\definecolor{soft}{HTML}{8A8A8A}
+
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{frametitle}{fg=accent}
+\setbeamercolor{title}{fg=accent}
+\setbeamercolor{normal text}{fg=ink}
+\setbeamercolor{structure}{fg=accent}
+\setbeamerfont{frametitle}{series=\bfseries, size=\Large}
+\setbeamertemplate{itemize item}{\color{accent}$\bullet$}
+\setbeamertemplate{footline}{\hfill\textcolor{soft}{\scriptsize\insertframenumber/\inserttotalframenumber}\hspace{1em}\vspace{0.6em}}
+
+\newcommand{\key}[1]{\textcolor{accent}{\textbf{#1}}}
+\newcommand{\muted}[1]{\textcolor{soft}{#1}}
+\newcommand{\kept}{\key{kept}}
+\newcommand{\no}{\muted{--}}
+% Take-away box at the bottom of a slide.
+\newcommand{\takeaway}[1]{\vfill\begin{center}\colorbox{accent!8}{\parbox{0.9\textwidth}{\centering #1}}\end{center}}
+
+\title{What can we learn beyond the biases?}
+\subtitle{Completing a movie rating matrix that is 1\,\% full}
+\author{Quentin Revillon\\[2pt] {\small Group 40 --- La piscine}}
+\institute{DataLab A1 --- Master IASD}
+\date{15 October 2026}
+
+\begin{document}
+
+%-----------------------------------------------------------------------------
+\begin{frame}
+\titlepage
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{The data: an almost empty matrix}
+\begin{columns}[c]
+\column{0.5\textwidth}
+\begin{itemize}
+  \item \key{One row = one user} (610)
+  \item \key{One column = one movie} (4\,980)
+  \item \key{One cell} = a rating, 0.5 to 5 stars\\
+        \muted{or empty: the user did not rate it}
+\end{itemize}
+\vspace{0.8em}
+\begin{itemize}
+  \item Only \key{1\,\%} of the cells are observed
+  \item Half of the movies have \key{3 ratings or fewer}
+  \item Side information: title, year, genres
+\end{itemize}
+\column{0.48\textwidth}
+\small\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lcccc}
+ & \rotatebox{70}{\footnotesize Forrest Gump} & \rotatebox{70}{\footnotesize Shawshank} & \rotatebox{70}{\footnotesize Pulp Fiction} & \rotatebox{70}{\footnotesize Silence of the Lambs} \\
+\midrule
+User 413 & 5   & \muted{--} & \muted{--} & \muted{--} \\
+User 473 & \muted{--} & \muted{--} & 4   & 4.5 \\
+User 598 & 3.5 & \muted{--} & 5   & 3   \\
+User 447 & \muted{--} & \muted{--} & \muted{--} & \muted{--} \\
+User 273 & 4.5 & \muted{--} & 5   & \muted{--} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.4em}
+\muted{\footnotesize The 5 most active users, 4 of the most rated movies.}
+\end{columns}
+\takeaway{Even here, most cells are empty.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Task, error measure and protocol}
+\begin{columns}[T]
+\column{0.47\textwidth}
+\textbf{Task}: fill every empty cell.\\[0.5em]
+\textbf{Error}: root mean squared error (RMSE), in stars, lower is better
+\[
+  \sqrt{\frac{1}{|T|}\sum_{(u,i)\in T} (r_{ui} - \hat r_{ui})^2}
+\]
+\muted{\small Ex.: true 4 and 3, predicted 3 and 3 $\to$ 0.71.}
+
+\vspace{0.4em}
+\textbf{Budget}: 4 processor threads, 20 min, no graphics card.
+
+\column{0.5\textwidth}
+\textbf{Data splits}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm, every node/.style={font=\small}]
+  \fill[accent!70] (0,1.6) rectangle (3.6,2.2);
+  \fill[warm!80]   (3.6,1.6) rectangle (4.8,2.2);
+  \node[white] at (1.8,1.9) {\textbf{training 90\,\%}};
+  \node[white] at (4.2,1.9) {\textbf{valid.}};
+  \fill[soft!45] (0,0.6) rectangle (4.8,1.2);
+  \node at (2.4,0.9) {\textbf{test} (31\,598 other ratings)};
+\end{tikzpicture}
+\end{center}
+\begin{itemize}\small
+  \item Settings chosen on the \key{validation} ratings only
+  \item Refit on all training ratings, scored \key{once} on test
+  \item Platform: training + test as input, hidden ratings for the score
+\end{itemize}
+\end{columns}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{All methods tested (1/2): from the baseline to factorization}
+\footnotesize\setlength{\tabcolsep}{3pt}\hspace*{-0.45cm}%
+\begin{tabular}{@{}rllcc@{}}
+\toprule
+ & \textbf{Method} & \textbf{Idea} & \textbf{Test error} & \textbf{Kept?} \\
+\midrule
+1 & Global mean & the same value (3.52) everywhere & 1.037 & \no \\
+2 & User and movie biases & mean + user effect + movie effect & 0.875 & \no \\
+3 & Biases guided by genres & a rare movie resembles its genres and decade & 0.874 & \no \\
+4 & Nearest neighbors, movies & user's ratings of the 40 most similar movies & 0.871 & \kept \\
+5 & Nearest neighbors, users & ratings of the 40 most similar users & 0.875 & \no \\
+6 & Matrix factorization, gradient descent & $k$ hidden tastes, learned by small steps & 0.878 & \no \\
+7 & Matrix factorization, least squares & same, exact formula, users then movies & 0.873 & \no \\
+8 & Soft-Impute & low rank, weak patterns removed & 0.872 & \no \\
+9 & Linear blend of 2, 3, 4, 7, 8 & weighted sum, weights learned on validation & 0.868 & \no \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.5em}
+\muted{\footnotesize Every model from 3 on predicts what the biases (2) do not explain. 228 settings
+tried for factorization, 147 for methods 3--9.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{All methods tested (2/2): neural, Bayesian, ensemble}
+\footnotesize\setlength{\tabcolsep}{3pt}\hspace*{-0.45cm}%
+\begin{tabular}{@{}rllcc@{}}
+\toprule
+ & \textbf{Method} & \textbf{Idea} & \textbf{Test error} & \textbf{Kept?} \\
+\midrule
+10 & Auto-encoder (AutoRec) & neural net: compress, then rebuild a movie & 0.872 & \no \\
+11 & Graph neural network (GC-MC) & users and movies as a graph of ratings & 0.879 & \no \\
+12 & Kernel auto-encoder (GLocal-K) & auto-encoder with smooth kernels & 0.897 & \no \\
+13 & Movie-to-movie regression (EASE) & each movie predicted from all others & \muted{0.890 val.} & \no \\
+14 & Bayesian matrix factorization & 7, averaged over 300 random solutions & 0.865 & \no \\
+15 & Bayesian factorization machine & 14 + who rated what + genres & 0.855 & \kept \\
+16 & Same, without genres & a different model, for diversity & 0.856 & \kept \\
+17 & Variants of 15 & ordered ratings, 3 chains, other ranks & 0.855--0.859 & \no \\
+18 & 15 + neighbors on its errors & correct 15 with similar movies' errors & 0.856 & \no \\
+19 & 15 + boosted trees on its errors & learn 15's error from counts, means & 0.849 & \kept \\
+20 & \key{Final ensemble} & \key{weighted sum of 4, 15, 16, 19} & \key{0.847} & \key{submitted} \\
+\bottomrule
+\end{tabular}
+\takeaway{Neural networks do no better than simple models; averaging (14--20) is what pays.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Baseline: biases, and why regularization matters}
+\[
+  \hat r_{ui} = \text{global mean} + b_u + b_i
+\]
+\textbf{Real example}: user 0 and \emph{Grumpier Old Men}
+\[
+  3.52 \;+\; \underbrace{0.63}_{\text{rates high}} \;-\; \underbrace{0.36}_{\text{average movie}}
+  \;=\; \key{3.80} \qquad \muted{\text{(true rating: 4)}}
+\]
+\textbf{Regularization} $\lambda$: \emph{Party Girl} has a single rating, a 5.\\
+Its bias drops from $+1.5$ to $+0.45$: deviations are divided by (count $+\lambda$), $\lambda = 2$.
+\takeaway{Error: global mean \textbf{1.037} $\;\to\;$ biases \key{0.875}.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Nearest neighbors (neighborhood-based filtering)}
+\begin{columns}[c]
+\column{0.55\textwidth}
+Course formula, applied to what the biases do not explain ($e$):
+\[
+  \hat r_{ui} = b_{ui} + \frac{\sum_{j \in N_k(i;u)} s_{ij}\, e_{uj}}{\textcolor{accent}{\beta} + \sum_{j} |s_{ij}|}
+\]
+\begin{itemize}
+  \item $s_{ij}$: correlation between movies $i$ and $j$, reduced when few users rated both
+  \item $N_k(i;u)$: the $k$ movies rated by $u$ most similar to $i$
+  \item \key{$\beta$}: our addition, damps the correction when neighbors are few or weak
+\end{itemize}
+\column{0.42\textwidth}
+\small
+\begin{tabular}{@{}lc@{}}
+\toprule
+$k = 40$ & validation error \\
+\midrule
+course formula ($\beta = 0$) & 0.908 \\
+$\beta = 0.2$ & \key{0.885} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.4em}
+\muted{\footnotesize With 1--3 neighbors, the course formula copies one neighbor's value.\\
+Comparing movies (0.871) works better than comparing users (0.875).}
+\end{columns}
+\takeaway{Best on popular movies, so \key{kept} in the final ensemble.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Matrix factorization: two ways to compute it}
+\begin{columns}[c]
+\column{0.53\textwidth}
+\[
+  \min_{I,U} \sum_{(i,u)\,\text{observed}} \bigl(r_{iu} - I_i^\top U_u\bigr)^2 + \lambda\bigl(\|I\|_F^2 + \|U\|_F^2\bigr)
+\]
+\begin{itemize}
+  \item \textbf{Gradient descent}: small steps, one rating at a time
+  \item \textbf{Alternating least squares}: $U$ fixed, exact formula for $I$, then swap
+  \item Settings: rank $k$ (1--50), $\lambda$, step size
+\end{itemize}
+\column{0.44\textwidth}
+\textbf{Without $\lambda$, it learns by heart}\\[0.3em]
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+$k = 50$ & training & validation \\
+\midrule
+$\lambda \approx 0$ & 0.00 & 1.21 \\
+$\lambda = 10$ & 0.68 & \key{0.89} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.4em}
+\muted{\footnotesize $\lambda \geq 15$: hidden tastes vanish, back to the biases.}
+\end{columns}
+\takeaway{Least squares 0.873, gradient descent 0.878: only 0.002 better than the biases.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Bayesian factorization: average many solutions}
+\begin{columns}[c]
+\column{0.44\textwidth}
+\begin{itemize}
+  \item With so few ratings, \key{many solutions} fit the data
+  \item We draw hundreds of them at random (Gibbs sampling) and \key{average} their predictions
+  \item $\lambda$ is drawn too: nothing to tune
+  \item The \textbf{factorization machine} also knows \emph{who rated what} and the genres
+\end{itemize}
+\column{0.54\textwidth}
+\begin{tikzpicture}
+\begin{axis}[width=\linewidth, height=5.4cm, xmode=log,
+    xlabel={number of averaged solutions}, ylabel={validation error},
+    ymin=0.86, ymax=1.06, xmin=1, xmax=2000,
+    axis lines=left, tick label style={font=\footnotesize}, label style={font=\small},
+    yticklabel style={/pgf/number format/.cd, fixed, precision=2}]
+  \addplot[very thick, accent] coordinates {(1,0.9668) (2,0.9352) (3,0.9251) (5,0.9108) (10,0.8981)
+    (20,0.8921) (50,0.8826) (100,0.8799) (200,0.8779) (500,0.8778) (1000,0.8738) (1500,0.873) (1950,0.8728)};
+  \addplot[thick, soft, dashed] coordinates {(1,1.042) (2000,1.042)};
+  \addplot[thick, warm, dashed] coordinates {(1,0.8909) (2000,0.8909)};
+  \node[soft, font=\footnotesize, anchor=south east] at (axis cs:2000,1.042) {one solution alone};
+  \node[warm, font=\footnotesize, anchor=south east] at (axis cs:2000,0.8909) {biases};
+  \node[accent, font=\footnotesize, anchor=south west] at (axis cs:3,0.93) {average of solutions};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\takeaway{One solution is \textbf{worse} than the global mean; the average of 2\,000 is the best single model (0.855).}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Final model: an ensemble of four kept models}
+\begin{columns}[c]
+\column{0.56\textwidth}
+\begin{tikzpicture}[x=1cm, y=1cm, every node/.style={font=\small},
+    member/.style={draw=accent, fill=accent!8, rounded corners=2pt, minimum width=4.4cm, minimum height=0.6cm, font=\footnotesize}]
+  \foreach \y/\name/\w in {2.25/(19) machine + boosted trees/0.53, 1.5/(16) machine without genres/0.27,
+                           0.75/(4) nearest neighbors/0.25, 0/(15) factorization machine/0.01} {
+    \node[member] at (0,\y) {\name};
+    \node[font=\footnotesize, text=accent] at (2.75,\y) {$\times$\,\w};
+    \draw[->, thick, soft] (3.2,\y) -- (3.95,1.125);
+  }
+  \node[draw=warm, fill=warm!15, circle, minimum size=0.8cm] (s) at (4.3,1.125) {$\Sigma$};
+  \node (r) at (5.3,1.125) {$\hat r_{ui}$};
+  \draw[->, thick] (s) -- (r);
+\end{tikzpicture}
+
+\vspace{0.5em}
+\footnotesize
+\textbf{Boosted trees}: 300 small decision trees learn the machine's \emph{error} from the
+user's and movie's rating count, mean and spread. They learn it on ratings the machine
+did not see (refitted 5 times, each time without one fifth of the ratings).
+\column{0.42\textwidth}
+\footnotesize
+\textbf{Combinations compared on validation}\\[0.3em]
+\begin{tabular}{@{}lc@{}}
+\toprule
+Members & validation error \\
+\midrule
+15 alone & 0.8726 \\
+15 + 4 + 16 & 0.8656 \\
+19 alone & 0.8662 \\
+19 + 4 & 0.8645 \\
+\key{15 + 4 + 16 + 19} & \key{0.8636} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.4em}
+\muted{\footnotesize Weights: linear regression on the validation ratings, then frozen,
+so each model is fitted only once on the platform.}
+\end{columns}
+\takeaway{Test error \key{0.847} vs 0.855 for model 15 alone; \key{4.6 min} on the platform input.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{What we learned, and limitations}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Lessons}
+\begin{itemize}
+  \item At 1\,\% density, the biases do \key{90\,\%} of the work
+  \item The risk is \key{learning by heart}: regularization decides everything
+  \item The course neighbor formula needs damping with few neighbors
+  \item Averaging many solutions \key{beats} searching for the best one
+  \item Different models make different errors: the \key{ensemble} gains a further 0.008
+\end{itemize}
+\column{0.5\textwidth}
+\textbf{Limitations and next steps}
+\begin{itemize}
+  \item One validation split (3\,160 ratings): gaps of 0.001 are not significant
+  \item Local score $\neq$ platform score (2$\times$ more input ratings)
+  \item Ensemble weights learned on 3\,160 ratings, then frozen
+  \item Next: check the settings with 2$\times$ more ratings
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\end{document}

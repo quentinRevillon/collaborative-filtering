@@ -386,6 +386,34 @@ Drawing all 610 users and 4\,980 movies at once is impossible. Gibbs sampling, l
 \end{frame}
 
 %-----------------------------------------------------------------------------
+\begin{frame}{The bell curve of one user: its exact parameters}
+User $u$ is described by $w_u = (U_u, b_u)$: its $k$ hidden numbers and its bias. Movies fixed,
+each movie $i \in S_u$ (rated by $u$) gives $x_i = (I_i, 1)$ and a target $t_{ui} = r_{ui} - \mu - b_i$.
+\[
+  w_u \sim \mathcal{N}\bigl(m_u,\, A_u^{-1}\bigr), \quad
+  A_u = \Lambda + \alpha \sum_{i \in S_u} x_i x_i^\top, \quad
+  m_u = A_u^{-1}\Bigl(\Lambda m + \alpha \sum_{i \in S_u} t_{ui}\, x_i\Bigr)
+\]
+\begin{columns}[T]
+\column{0.5\textwidth}
+\small
+\begin{itemize}
+  \item \textbf{Center} $m_u$: the ALS (ridge) solution, pulled towards the average user $m$ instead of 0
+  \item \textbf{Width} $A_u^{-1}$: shrinks as $u$ rates more movies (the sum grows): \key{narrow bell for many ratings, wide for few}
+  \item $\alpha = 2$: confidence in each rating (noise precision), chosen on validation
+\end{itemize}
+\column{0.47\textwidth}
+\small
+\textbf{Prior} $(m, \Lambda)$: the ``regularization'', \key{drawn} at each round from the current users:
+\begin{itemize}
+  \item $\Lambda$ (a $(k{+}1) \times (k{+}1)$ matrix): from a Wishart law, larger when users are close to each other
+  \item $m$: from a Gaussian around the mean of all users
+\end{itemize}
+\end{columns}
+\takeaway{Same formulas for movies. ALS = always taking the center $m_u$, with $\Lambda = \lambda\,\mathrm{Id}$, $m = 0$, $\alpha = 1$.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
 \begin{frame}{What is actually run: one single chain of 400 rounds}
 \begin{columns}[T]
 \column{0.44\textwidth}

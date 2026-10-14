@@ -1,0 +1,19 @@
+model,input,n_fit,fold,rmse,time_s
+global mean,train75,23699,1,1.0361,0.0
+global mean,train,31598,1,1.036,0.0
+global mean,train+half,47397,1,1.036,0.0
+global mean,train75,23699,2,1.0378,0.0
+global mean,train,31598,2,1.0378,0.0
+global mean,train+half,47397,2,1.0377,0.0
+biases,train75,23699,1,0.8837,0.0
+biases,train,31598,1,0.8722,0.0
+biases,train+half,47397,1,0.863,0.0
+biases,train75,23699,2,0.8861,0.0
+biases,train,31598,2,0.8769,0.0
+biases,train+half,47397,2,0.8678,0.0
+item-kNN,train75,23699,1,0.881,2.5
+item-kNN,train,31598,1,0.8678,2.3
+item-kNN,train+half,47397,1,0.8535,2.3
+item-kNN,train75,23699,2,0.8834,2.3
+item-kNN,train,31598,2,0.8732,2.3
+item-kNN,train+half,47397,2,0.859,2.4

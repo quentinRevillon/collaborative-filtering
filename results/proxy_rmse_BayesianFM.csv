@@ -1,0 +1,7 @@
+model,input,n_fit,fold,rmse,time_s
+Bayesian FM,train75,23699,1,0.8712,132.6
+Bayesian FM,train,31598,1,0.8553,178.2
+Bayesian FM,train+half,47397,1,0.8415,200.3
+Bayesian FM,train75,23699,2,0.8757,140.5
+Bayesian FM,train,31598,2,0.8552,163.1
+Bayesian FM,train+half,47397,2,0.8376,186.9

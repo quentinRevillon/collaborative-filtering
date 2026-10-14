@@ -1,0 +1,92 @@
+model,hyperparams,valid_rmse
+EASE-item on biases,"{""lam"": 10.0}",0.8904
+EASE-item on biases,"{""lam"": 100.0}",0.8899
+EASE-item on biases,"{""lam"": 1000.0}",0.8905
+EASE-user on biases,"{""lam"": 10.0}",0.8897
+EASE-user on biases,"{""lam"": 100.0}",0.8896
+EASE-user on biases,"{""lam"": 1000.0}",0.8905
+Bayesian FM,"{""n_iter"": 2000}",0.8728
+EASE-item on FM (in-sample),"{""lam"": 10.0}",0.8727
+EASE-item on FM (in-sample),"{""lam"": 100.0}",0.8728
+EASE-item on FM (in-sample),"{""lam"": 1000.0}",0.8728
+EASE-user on FM (in-sample),"{""lam"": 10.0}",0.8731
+EASE-user on FM (in-sample),"{""lam"": 100.0}",0.8728
+EASE-user on FM (in-sample),"{""lam"": 1000.0}",0.8728
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 20, ""shrink"": 30.0, ""beta"": 0.3}",0.8762
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 20, ""shrink"": 30.0, ""beta"": 1.0}",0.8738
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 20, ""shrink"": 30.0, ""beta"": 3.0}",0.8729
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 20, ""shrink"": 100.0, ""beta"": 0.3}",0.8739
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 20, ""shrink"": 100.0, ""beta"": 1.0}",0.8729
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 20, ""shrink"": 100.0, ""beta"": 3.0}",0.8727
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 80, ""shrink"": 30.0, ""beta"": 0.3}",0.8758
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 80, ""shrink"": 30.0, ""beta"": 1.0}",0.8739
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 80, ""shrink"": 30.0, ""beta"": 3.0}",0.873
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 80, ""shrink"": 100.0, ""beta"": 0.3}",0.8739
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 80, ""shrink"": 100.0, ""beta"": 1.0}",0.873
+kNN on FM (in-sample),"{""axis"": ""item"", ""k"": 80, ""shrink"": 100.0, ""beta"": 3.0}",0.8728
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 20, ""shrink"": 30.0, ""beta"": 0.3}",0.8759
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 20, ""shrink"": 30.0, ""beta"": 1.0}",0.8734
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 20, ""shrink"": 30.0, ""beta"": 3.0}",0.8728
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 20, ""shrink"": 100.0, ""beta"": 0.3}",0.8736
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 20, ""shrink"": 100.0, ""beta"": 1.0}",0.8728
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 20, ""shrink"": 100.0, ""beta"": 3.0}",0.8727
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 80, ""shrink"": 30.0, ""beta"": 0.3}",0.8759
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 80, ""shrink"": 30.0, ""beta"": 1.0}",0.8733
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 80, ""shrink"": 30.0, ""beta"": 3.0}",0.8727
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 80, ""shrink"": 100.0, ""beta"": 0.3}",0.8735
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 80, ""shrink"": 100.0, ""beta"": 1.0}",0.8727
+kNN on FM (in-sample),"{""axis"": ""user"", ""k"": 80, ""shrink"": 100.0, ""beta"": 3.0}",0.8727
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 20, ""shrink"": 30.0, ""beta"": 0.3}",0.8843
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 20, ""shrink"": 30.0, ""beta"": 1.0}",0.8762
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 20, ""shrink"": 30.0, ""beta"": 3.0}",0.8733
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 20, ""shrink"": 100.0, ""beta"": 0.3}",0.8765
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 20, ""shrink"": 100.0, ""beta"": 1.0}",0.8732
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 20, ""shrink"": 100.0, ""beta"": 3.0}",0.8727
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 80, ""shrink"": 30.0, ""beta"": 0.3}",0.8837
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 80, ""shrink"": 30.0, ""beta"": 1.0}",0.8766
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 80, ""shrink"": 30.0, ""beta"": 3.0}",0.8738
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 80, ""shrink"": 100.0, ""beta"": 0.3}",0.8768
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 80, ""shrink"": 100.0, ""beta"": 1.0}",0.8737
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 80, ""shrink"": 100.0, ""beta"": 3.0}",0.8729
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 20, ""shrink"": 30.0, ""beta"": 0.3}",0.888
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 20, ""shrink"": 30.0, ""beta"": 1.0}",0.877
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 20, ""shrink"": 30.0, ""beta"": 3.0}",0.8737
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 20, ""shrink"": 100.0, ""beta"": 0.3}",0.8782
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 20, ""shrink"": 100.0, ""beta"": 1.0}",0.8739
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 20, ""shrink"": 100.0, ""beta"": 3.0}",0.873
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 80, ""shrink"": 30.0, ""beta"": 0.3}",0.8877
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 80, ""shrink"": 30.0, ""beta"": 1.0}",0.8768
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 80, ""shrink"": 30.0, ""beta"": 3.0}",0.8737
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 80, ""shrink"": 100.0, ""beta"": 0.3}",0.8781
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 80, ""shrink"": 100.0, ""beta"": 1.0}",0.8738
+kNN on FM (oof),"{""fold_iter"": 200, ""axis"": ""user"", ""k"": 80, ""shrink"": 100.0, ""beta"": 3.0}",0.873
+FM + GBDT(oof residuals),"{""fold_iter"": 200, ""prior"": 3.0}",0.868
+FM + GBDT(oof residuals),"{""fold_iter"": 200, ""prior"": 10.0}",0.8678
+FM + GBDT(oof residuals),"{""fold_iter"": 200, ""prior"": 30.0}",0.8681
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 20, ""shrink"": 30.0, ""beta"": 0.3}",0.8849
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 20, ""shrink"": 30.0, ""beta"": 1.0}",0.8767
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 20, ""shrink"": 30.0, ""beta"": 3.0}",0.8736
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 20, ""shrink"": 100.0, ""beta"": 0.3}",0.8769
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 20, ""shrink"": 100.0, ""beta"": 1.0}",0.8735
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 20, ""shrink"": 100.0, ""beta"": 3.0}",0.8728
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 80, ""shrink"": 30.0, ""beta"": 0.3}",0.8837
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 80, ""shrink"": 30.0, ""beta"": 1.0}",0.8766
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 80, ""shrink"": 30.0, ""beta"": 3.0}",0.8738
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 80, ""shrink"": 100.0, ""beta"": 0.3}",0.8768
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 80, ""shrink"": 100.0, ""beta"": 1.0}",0.8737
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""item"", ""k"": 80, ""shrink"": 100.0, ""beta"": 3.0}",0.8729
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 20, ""shrink"": 30.0, ""beta"": 0.3}",0.8859
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 20, ""shrink"": 30.0, ""beta"": 1.0}",0.8758
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 20, ""shrink"": 30.0, ""beta"": 3.0}",0.8732
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 20, ""shrink"": 100.0, ""beta"": 0.3}",0.8768
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 20, ""shrink"": 100.0, ""beta"": 1.0}",0.8733
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 20, ""shrink"": 100.0, ""beta"": 3.0}",0.8728
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 80, ""shrink"": 30.0, ""beta"": 0.3}",0.8859
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 80, ""shrink"": 30.0, ""beta"": 1.0}",0.8758
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 80, ""shrink"": 30.0, ""beta"": 3.0}",0.8732
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 80, ""shrink"": 100.0, ""beta"": 0.3}",0.8768
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 80, ""shrink"": 100.0, ""beta"": 1.0}",0.8733
+kNN on FM (oof),"{""fold_iter"": 500, ""axis"": ""user"", ""k"": 80, ""shrink"": 100.0, ""beta"": 3.0}",0.8728
+FM + GBDT(oof residuals),"{""fold_iter"": 500, ""prior"": 3.0}",0.8677
+FM + GBDT(oof residuals),"{""fold_iter"": 500, ""prior"": 10.0}",0.8667
+FM + GBDT(oof residuals),"{""fold_iter"": 500, ""prior"": 30.0}",0.8673

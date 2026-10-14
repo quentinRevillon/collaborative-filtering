@@ -1,0 +1,2 @@
+method,call,valid_cv_rmse,test_rmse,test_acc,fm_test_rmse,fm_valid_rmse,threads,train_test_fit_complete_s
+ensemble,"{""names"": [""fm"", ""knn"", ""fm_iu_ii""], ""alpha"": 10.0, ""fwls"": false}",0.86559,0.8485,0.2535,0.8552,0.8728,3,625.4

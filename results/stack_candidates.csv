@@ -1,0 +1,6 @@
+stack,valid_cv_rmse
+fm,0.8726
+fm+knn+fm_iu_ii,0.86559
+fm_gbdt,0.86623
+fm_gbdt+knn,0.86447
+fm+knn+fm_iu_ii+fm_gbdt,0.86364

@@ -33,7 +33,7 @@
 \title{\textbf{Projet A1 --- Documentation}\\[4pt]
   \large Les données, puis les méthodes testées}
 \author{Groupe 40 \og La piscine \fg{}}
-\date{13 octobre 2026}
+\date{14 octobre 2026}
 
 \begin{document}
 \maketitle
@@ -310,7 +310,7 @@ calculés en alternant : biais des films à biais des utilisateurs fixés, puis 
 vingt fois. Cela prend 0,01 seconde.
 
 \resultat{RMSE \textbf{0,8746} (meilleur réglage : $\lambda = 2$). C'est la méthode de
-référence. C'est aussi ce que fait aujourd'hui le \texttt{generate.py} poussé sur GitHub.}
+référence.}
 
 \begin{definition}{résidu}
 L'écart entre une vraie note et la prédiction des biais. Pour l'utilisateur 0 et
@@ -488,9 +488,72 @@ c'est la moyenne des tirages qui est bonne. Parmi les informations ajoutées à 
 plus utile est la liste des utilisateurs qui ont noté le film (validation : 0,8887 sans
 rien, 0,8762 avec elle seule, 0,8728 avec les trois).
 
-\resultat{BPMF \textbf{0,8646} (44 s) ; FM bayésienne \textbf{0,8552} (60 s ; 93 s sur
-entraînement + test). C'est le meilleur résultat, et le seul gain net sur les biais
-($-0{,}019$).}
+\resultat{BPMF \textbf{0,8646} (44 s) ; FM bayésienne \textbf{0,8552} (60 s ; environ
+3 min sur entraînement + test). C'est le meilleur modèle seul, et le premier gain net sur
+les biais ($-0{,}019$).}
+
+\textbf{Ce qui n'a pas aidé la FM} (expériences \texttt{experiments/run\_fm\_variants.py}) :
+la version \emph{ordinale} (prédire l'un des 10 niveaux de note au lieu d'un nombre :
+validation 0,888 contre 0,874), donner à la FM les notes elles-mêmes et pas seulement
+\og qui a noté quoi \fg{} (0,977 : elle apprend par c\oe ur), un rang plus grand, plus de
+tirages, ou la moyenne de 3 chaînes de tirages indépendantes (test 0,8545 au lieu de
+0,8552, pour 3 fois plus de temps).
+
+\section{Autres méthodes de la littérature}
+
+Testées pour vérifier qu'aucune famille de méthodes connue ne faisait nettement mieux
+(\texttt{experiments/run\_literature\_models.py}, \texttt{experiments/run\_residual\_models.py}) :
+\begin{itemize}
+  \item \textbf{GC-MC} (réseau de neurones sur le graphe utilisateurs--films) : test 0,8792.
+  \item \textbf{GLocal-K} (auto-encodeur à noyau, très bon sur MovieLens-100K) : test 0,8965.
+  \item \textbf{EASE} (régression linéaire film--film, en une formule) sur les résidus des
+        biais ou de la FM : aucun gain (validation 0,8896 et 0,8727).
+  \item \textbf{kNN sur les erreurs de la FM} : aucun gain (0,8556 sur le test).
+\end{itemize}
+Sur si peu de notes, les réseaux de neurones font moins bien que la FM bayésienne.
+
+\section{L'ensemble final}\label{sec:stack}
+
+\textbf{L'idée.} Comme pour le mélange de la section précédente, on combine plusieurs
+prédictions par une somme pondérée, mais cette fois avec la FM bayésienne. On a besoin
+d'une nouvelle brique :
+
+\begin{definition}{correction par arbres de décision (GBDT)}
+Un petit modèle (une somme de 300 arbres de décision peu profonds) apprend l'\emph{erreur}
+de la FM à partir de quelques indices : la prédiction de la FM, et pour l'utilisateur et le
+film, leur nombre de notes, leur note moyenne et l'écart-type de leurs notes. Il apprend
+par exemple que la FM se trompe d'une certaine façon sur les films à 1 ou 2 notes.
+Pour apprendre ces erreurs honnêtement, la FM est recalculée 5 fois, chaque fois sans un
+cinquième des notes, et ses erreurs sont mesurées sur ce cinquième (\emph{out-of-fold}).
+\end{definition}
+
+L'ensemble final combine quatre prédictions, avec des poids appris sur la validation
+(régression ridge) :
+\[
+  \text{prédiction} = -0{,}25 + 0{,}53\,\text{FM corrigée} + 0{,}27\,\text{FM}_2
+  + 0{,}25\,k\text{NN} + 0{,}01\,\text{FM}
+\]
+où FM$_2$ est une seconde FM qui ne connaît que \og qui a noté quoi \fg{} (sans les genres).
+Le $k$NN est utile parce qu'il est bon là où la FM l'est moins : sur les films très notés.
+
+Combinaisons comparées sur la validation (5 plis, \texttt{experiments/run\_stack.py}) :
+FM seule 0,8726 ; FM + $k$NN + FM$_2$ 0,8656 ; FM corrigée 0,8662 ; FM corrigée + $k$NN
+0,8645 ; les quatre 0,8636.
+
+\resultat{RMSE \textbf{0,8470}, accuracy 0,253. Gain de $-0{,}008$ sur la FM seule et de
+$-0{,}028$ sur les biais. C'est ce que fait aujourd'hui \texttt{generate.py}
+(\texttt{src/stack.py}). Les poids sont figés dans le code, pour que chaque modèle ne soit
+calculé qu'une fois sur la plateforme : 4,6 min sur entraînement + test, pour une limite de 20 min.}
+
+\section{Que donnera la plateforme ?}
+
+La plateforme donne à \texttt{generate.py} deux fois plus de notes (entraînement + test).
+Pour l'estimer, on a recalculé la FM sur l'entraînement plus la moitié du test, et mesuré
+la RMSE sur l'autre moitié (puis l'inverse) (\texttt{experiments/run\_platform\_proxy.py}).
+Avec 50\,\% de notes en plus, la RMSE de la FM passe de 0,855 à 0,840. En prolongeant cette
+tendance, on estime la FM seule autour de \textbf{0,83} sur la plateforme, et l'ensemble un
+peu en dessous. Les scores de la plateforme et du test local ne sont pas directement
+comparables : les notes cachées ne sont pas les mêmes.
 
 %=============================================================================
 \part{Récapitulatif}
@@ -512,7 +575,9 @@ entraînement + test). C'est le meilleur résultat, et le seul gain net sur les 
 7 & Mélange des méthodes 2 à 6 & 0,8683 & 7,7 s \\
 8 & AutoRec & 0,8722 & 17 s \\
 9 & BPMF & 0,8646 & 44 s \\
-10 & \textbf{FM bayésienne} & \textbf{0,8552} & 60 s \\
+10 & FM bayésienne & 0,8552 & 60 s \\
+11 & GC-MC, GLocal-K (réseaux de neurones) & 0,8792 / 0,8965 & 20 à 240 s \\
+12 & \textbf{Ensemble final} (FM, FM corrigée, FM$_2$, $k$NN) & \textbf{0,8470} & 3 min \\
 \bottomrule
 \end{tabularx}
 \end{center}
@@ -536,6 +601,13 @@ Soft-Impute, kNN, biais + genres, mélange & \texttt{src/soft\_impute.py}, \text
   \texttt{src/side\_info.py}, \texttt{src/blend.py} ; \texttt{experiments/run\_alternatives.py} \\
 AutoRec & \texttt{src/autorec.py} ; \texttt{experiments/run\_autorec.py} \\
 BPMF, FM bayésienne & \texttt{src/bpmf.py}, \texttt{src/bfm.py} ; \texttt{experiments/run\_bayesian.py} \\
+Variantes de la FM & \texttt{src/bfm.py}, \texttt{src/bfm\_ordinal.py} ; \texttt{experiments/run\_fm\_variants.py} \\
+GC-MC, GLocal-K & \texttt{src/gcmc.py}, \texttt{src/glocalk.py} ; \texttt{experiments/run\_literature\_models.py} \\
+EASE, corrections des résidus & \texttt{src/ease.py}, \texttt{src/residual.py}, \texttt{src/residual\_gbdt.py} ;
+  \texttt{experiments/run\_residual\_models.py} \\
+Ensembles & \texttt{src/ensemble.py}, \texttt{src/stack.py} ; \texttt{experiments/run\_ensemble.py},
+  \texttt{experiments/run\_stack.py} \\
+Estimation du score plateforme & \texttt{experiments/run\_platform\_proxy.py} \\
 Description des données & \texttt{experiments/eda.py} (figures dans \texttt{figures/eda/}) \\
 \bottomrule
 \end{tabularx}

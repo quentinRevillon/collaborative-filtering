@@ -1,0 +1,4 @@
+model,hyperparams,valid_rmse,test_rmse,test_acc
+bfm,"{""n_iter"": 2000}",0.8728,0.8552,0.2541
+fm_oofknn,"{""fold_iter"": 200, ""axis"": ""item"", ""k"": 20, ""shrink"": 100.0, ""beta"": 3.0}",0.8727,0.8556,0.2542
+fm_gbdt,"{""fold_iter"": 500, ""prior"": 10.0}",0.8667,0.8489,0.2528

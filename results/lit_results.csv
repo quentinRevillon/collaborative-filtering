@@ -1,0 +1,3 @@
+model,hyperparams,valid_rmse,test_rmse,fit_time_s
+GC-MC,"{""epochs"": 200, ""dropout"": 0.7}",0.8963,0.8792,20.9
+GLocal-K,"{""epochs_p"": 40, ""epochs_f"": 40}",0.912,0.8965,238.6

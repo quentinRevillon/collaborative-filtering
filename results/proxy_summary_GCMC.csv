@@ -1,0 +1,2 @@
+model,rmse_train75,rmse_train,rmse_proxy,gain_train_to_proxy,est_platform
+GC-MC,0.9037,0.8792,0.8611,0.0181,0.8459

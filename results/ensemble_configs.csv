@@ -1,0 +1,97 @@
+subset,members,blender,alpha,n_inputs,valid_cv_rmse
+fm,fm,ridge,0.1,1,0.87258
+fm,fm,fwls,0.1,5,0.87289
+fm,fm,ridge,1.0,1,0.87258
+fm,fm,fwls,1.0,5,0.87285
+fm,fm,ridge,10.0,1,0.8726
+fm,fm,fwls,10.0,5,0.87273
+fm,fm,ridge,100.0,1,0.87427
+fm,fm,fwls,100.0,5,0.8733
+fm,fm,gbm,,3,0.88458
+fm+knn,fm knn,ridge,0.1,2,0.86682
+fm+knn,fm knn,fwls,0.1,8,0.86739
+fm+knn,fm knn,ridge,1.0,2,0.86682
+fm+knn,fm knn,fwls,1.0,8,0.86725
+fm+knn,fm knn,ridge,10.0,2,0.86679
+fm+knn,fm knn,fwls,10.0,8,0.86679
+fm+knn,fm knn,ridge,100.0,2,0.86731
+fm+knn,fm knn,fwls,100.0,8,0.86654
+fm+knn,fm knn,gbm,,4,0.87807
+fm+knn+bpmf,fm knn bpmf,ridge,0.1,3,0.8671
+fm+knn+bpmf,fm knn bpmf,fwls,0.1,11,0.86851
+fm+knn+bpmf,fm knn bpmf,ridge,1.0,3,0.86708
+fm+knn+bpmf,fm knn bpmf,fwls,1.0,11,0.86823
+fm+knn+bpmf,fm knn bpmf,ridge,10.0,3,0.867
+fm+knn+bpmf,fm knn bpmf,fwls,10.0,11,0.86761
+fm+knn+bpmf,fm knn bpmf,ridge,100.0,3,0.86748
+fm+knn+bpmf,fm knn bpmf,fwls,100.0,11,0.86689
+fm+knn+bpmf,fm knn bpmf,gbm,,5,0.87828
+fm+knn+side,fm knn side,ridge,0.1,3,0.86703
+fm+knn+side,fm knn side,fwls,0.1,11,0.86689
+fm+knn+side,fm knn side,ridge,1.0,3,0.86701
+fm+knn+side,fm knn side,fwls,1.0,11,0.86658
+fm+knn+side,fm knn side,ridge,10.0,3,0.86695
+fm+knn+side,fm knn side,fwls,10.0,11,0.86595
+fm+knn+side,fm knn side,ridge,100.0,3,0.86765
+fm+knn+side,fm knn side,fwls,100.0,11,0.86588
+fm+knn+side,fm knn side,gbm,,5,0.87571
+fm+knn+uknn,fm knn uknn,ridge,0.1,3,0.86687
+fm+knn+uknn,fm knn uknn,fwls,0.1,11,0.86515
+fm+knn+uknn,fm knn uknn,ridge,1.0,3,0.86685
+fm+knn+uknn,fm knn uknn,fwls,1.0,11,0.8653
+fm+knn+uknn,fm knn uknn,ridge,10.0,3,0.86688
+fm+knn+uknn,fm knn uknn,fwls,10.0,11,0.86516
+fm+knn+uknn,fm knn uknn,ridge,100.0,3,0.86809
+fm+knn+uknn,fm knn uknn,fwls,100.0,11,0.86554
+fm+knn+uknn,fm knn uknn,gbm,,5,0.8778
+classic (7),fm bpmf knn side si als biases,ridge,0.1,7,0.86783
+classic (7),fm bpmf knn side si als biases,fwls,0.1,23,0.86824
+classic (7),fm bpmf knn side si als biases,ridge,1.0,7,0.86762
+classic (7),fm bpmf knn side si als biases,fwls,1.0,23,0.86772
+classic (7),fm bpmf knn side si als biases,ridge,10.0,7,0.86732
+classic (7),fm bpmf knn side si als biases,fwls,10.0,23,0.86695
+classic (7),fm bpmf knn side si als biases,ridge,100.0,7,0.86841
+classic (7),fm bpmf knn side si als biases,fwls,100.0,23,0.86621
+classic (7),fm bpmf knn side si als biases,gbm,,9,0.87911
+fm variants,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20,ridge,0.1,6,0.86999
+fm variants,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20,fwls,0.1,20,0.86858
+fm variants,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20,ridge,1.0,6,0.86992
+fm variants,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20,fwls,1.0,20,0.86912
+fm variants,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20,ridge,10.0,6,0.86946
+fm variants,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20,fwls,10.0,20,0.86959
+fm variants,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20,ridge,100.0,6,0.8685
+fm variants,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20,fwls,100.0,20,0.86931
+fm variants,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20,gbm,,8,0.88151
+fm variants+knn,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn,ridge,0.1,7,0.86787
+fm variants+knn,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn,fwls,0.1,23,0.86669
+fm variants+knn,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn,ridge,1.0,7,0.86779
+fm variants+knn,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn,fwls,1.0,23,0.86704
+fm variants+knn,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn,ridge,10.0,7,0.86723
+fm variants+knn,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn,fwls,10.0,23,0.86724
+fm variants+knn,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn,ridge,100.0,7,0.86622
+fm variants+knn,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn,fwls,100.0,23,0.86675
+fm variants+knn,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn,gbm,,9,0.87994
+fm variants+knn+bpmf,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn bpmf,ridge,0.1,8,0.8681
+fm variants+knn+bpmf,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn bpmf,fwls,0.1,26,0.86728
+fm variants+knn+bpmf,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn bpmf,ridge,1.0,8,0.86801
+fm variants+knn+bpmf,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn bpmf,fwls,1.0,26,0.86771
+fm variants+knn+bpmf,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn bpmf,ridge,10.0,8,0.86739
+fm variants+knn+bpmf,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn bpmf,fwls,10.0,26,0.86773
+fm variants+knn+bpmf,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn bpmf,ridge,100.0,8,0.86639
+fm variants+knn+bpmf,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn bpmf,fwls,100.0,26,0.86698
+fm variants+knn+bpmf,fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 knn bpmf,gbm,,10,0.87933
+all (14),fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 bpmf knn uknn side si als biases autorec,ridge,0.1,14,0.86997
+all (14),fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 bpmf knn uknn side si als biases autorec,fwls,0.1,44,0.86763
+all (14),fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 bpmf knn uknn side si als biases autorec,ridge,1.0,14,0.86929
+all (14),fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 bpmf knn uknn side si als biases autorec,fwls,1.0,44,0.86764
+all (14),fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 bpmf knn uknn side si als biases autorec,ridge,10.0,14,0.86779
+all (14),fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 bpmf knn uknn side si als biases autorec,fwls,10.0,44,0.86725
+all (14),fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 bpmf knn uknn side si als biases autorec,ridge,100.0,14,0.86661
+all (14),fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 bpmf knn uknn side si als biases autorec,fwls,100.0,44,0.86631
+all (14),fm fm_ii fm_iu_ii fm_mf fm_r5 fm_r20 bpmf knn uknn side si als biases autorec,gbm,,16,0.87988
+greedy step 1 (a=1),fm,ridge,1.0,1,0.87258
+greedy step 2 (a=1),fm knn,ridge,1.0,2,0.86682
+greedy step 3 (a=1),fm knn fm_iu_ii,ridge,1.0,3,0.86571
+greedy step 1 (a=10),fm,ridge,10.0,1,0.8726
+greedy step 2 (a=10),fm knn,ridge,10.0,2,0.86679
+greedy step 3 (a=10),fm knn fm_iu_ii,ridge,10.0,3,0.86559

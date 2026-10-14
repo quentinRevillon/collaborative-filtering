@@ -1,0 +1,5 @@
+likelihood,features,rank,n_iter,seeds,valid_rmse,valid_acc,time_s
+mix,iu+ii+side,10,1000,1,0.8765,0.2466,245.2
+reg,iu+ii+side,10,1000,6,0.8728,0.2485,519.7
+reg,iu+ii+side,10,2000,3,0.8726,0.2491,529.8
+reg,iu+ii+side,16,2000,1,0.8729,0.2539,300.3

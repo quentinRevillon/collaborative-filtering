@@ -6,9 +6,9 @@ import argparse
 
 from pathlib import Path
 
-from src.bfm import fit_bfm
 from src.data import complete, to_coo
 from src.side_info import item_features
+from src.stack import fit_stack
 
 METADATA = Path(__file__).resolve().parent / "data" / "namesngenre.npy"  # versioned with the code
 
@@ -28,9 +28,8 @@ if __name__ == '__main__':
     print('Ratings Loaded.')
     
 
-    # Bayesian factorization machine with implicit feedback and genres (see src/bfm.py)
-    predict = fit_bfm(to_coo(table), table.shape, item_features(METADATA),
-                      features=("iu", "ii", "side"), rank=10, n_iter=2000)
+    # Stack of Bayesian FMs, item kNN and a GBDT residual correction (see src/stack.py)
+    predict = fit_stack(to_coo(table), table.shape, item_features(METADATA))
     table = complete(predict, table.shape)
 
     

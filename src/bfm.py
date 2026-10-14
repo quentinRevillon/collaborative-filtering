@@ -6,6 +6,10 @@ Every rating (u, i) is described by the features of two relation blocks
     by u (|N(u)|^-1/2 each), i.e. Bayesian SVD++;
   * item block: one-hot of i, plus with "ii" the normalized set of users who rated i
     ("flipped" implicit feedback), plus with "side" the genre / decade features F.
+Optional extra blocks (off by default): "iur" / "iir" same sets valued by the centered
+rating (r - global mean) |N|^-1/2, "us" / "ip" user / item log rating count, all computed on ``train`` only.
+The rating-valued sets contain the target of each training row (mild for "iur", severe
+for "iir" on rarely rated items): they overfit, see experiments/run_fm_variants.py.
 Without extra features the model is Bayesian MF with biases. Every feature group has its
 own Normal-Gamma hyperprior (``group_shapes``). Implicit sets only use the rating positions
 of the model input ``train`` (no leakage of the evaluation positions).
@@ -21,6 +25,7 @@ Usage:
     from src.side_info import item_features
     F = item_features("data/namesngenre.npy")
     predict = fit_bfm(train, shape, F, features=("iu", "ii", "side"), rank=10, n_iter=1000)
+    predict = fit_bfm_chains(train, shape, F, rank=10, n_iter=2000, seeds=(0, 1, 2))  # averaged chains
     r_hat = predict(u, i)
     model, blocks = fit_model(train, shape, F, ("iu",), rank=10, n_iter=500)
     S = sample_scores(model, blocks, u, i)          # per-sample predictions, for MCMC curves
@@ -46,21 +51,49 @@ def implicit(rows, cols, shape):
     return sps.csr_matrix((vals, (rows, cols)), shape=shape)
 
 
+def implicit_rated(rows, cols, r, shape):
+    """CSR (shape) with (r - mean r) / sqrt(row count) at every observed (row, col) position."""
+    n = np.bincount(rows, minlength=shape[0])
+    vals = (r - r.mean()) / np.sqrt(n[rows])
+    return sps.csr_matrix((vals, (rows, cols)), shape=shape)
+
+
+def standardize(x):
+    """Zero-mean, unit-variance columns."""
+    return (x - x.mean(0)) / x.std(0)
+
+
+def log_count(rows, n_rows):
+    """(n_rows, 1) CSR of the standardized log(1 + count) of every row id (count-only: a mean
+    rating feature would contain each training row's own target and overfit)."""
+    return sps.csr_matrix(standardize(np.log1p(np.bincount(rows, minlength=n_rows)))[:, None])
+
+
 def user_blocks(train, shape, features):
-    """List of user-side feature matrices: one-hot, plus implicit items with "iu"."""
+    """List of user-side feature matrices: one-hot, plus implicit items with "iu"
+    (optional: "iur" rating-valued implicit items, "us" user log count)."""
     blocks = [one_hot_rows(shape[0])]
     if "iu" in features:
         blocks.append(implicit(train[0], train[1], shape))
+    if "iur" in features:
+        blocks.append(implicit_rated(train[0], train[1], train[2], shape))
+    if "us" in features:
+        blocks.append(log_count(train[0], shape[0]))
     return blocks
 
 
 def item_blocks(train, shape, F, features):
-    """List of item-side feature matrices: one-hot, plus implicit users ("ii"), plus F ("side")."""
+    """List of item-side feature matrices: one-hot, plus implicit users ("ii"), plus F ("side")
+    (optional: "iir" rating-valued implicit users, "ip" item log count)."""
     blocks = [one_hot_rows(shape[1])]
     if "ii" in features:
         blocks.append(implicit(train[1], train[0], shape[::-1]))
     if "side" in features:
         blocks.append(sps.csr_matrix(F))
+    if "iir" in features:
+        blocks.append(implicit_rated(train[1], train[0], train[2], shape[::-1]))
+    if "ip" in features:
+        blocks.append(log_count(train[1], shape[1]))
     return blocks
 
 
@@ -109,11 +142,11 @@ def sample_scores(model, blocks, u, i):
     return np.array([w0 + gu[u] + gi[i] + np.sum(au[u] * ai[i], 1) for w0, (gu, au), (gi, ai) in parts])
 
 
-def fit_model(train, shape, F, features, rank, n_iter):
+def fit_model(train, shape, F, features, rank, n_iter, seed=SEED):
     """Run the Gibbs sampler; return (myfm model keeping n_iter - BURN_IN samples, feature blocks)."""
     u, i, r = train
     blocks = (user_blocks(train, shape, features), item_blocks(train, shape, F, features))
-    model = myfm.MyFMRegressor(rank=rank, random_seed=SEED)
+    model = myfm.MyFMRegressor(rank=rank, random_seed=seed)
     model.fit(None, r, X_rel=relations(u, i, blocks), n_iter=n_iter, n_kept_samples=n_iter - BURN_IN,
               group_shapes=[b.shape[1] for b in blocks[0] + blocks[1]])
     return model, blocks
@@ -122,4 +155,10 @@ def fit_model(train, shape, F, features, rank, n_iter):
 def fit_bfm(train, shape, F, features=("iu", "ii", "side"), rank=10, n_iter=1000):
     """Fit a Bayesian FM by Gibbs sampling and return predict(u, i) = posterior predictive mean."""
     M = posterior_mean(*fit_model(train, shape, F, features, rank, n_iter))
+    return lambda u, i: M[u, i]
+
+
+def fit_bfm_chains(train, shape, F, features=("iu", "ii", "side"), rank=10, n_iter=2000, seeds=(0, 1, 2)):
+    """Average the posterior means of independent Gibbs chains (one per seed); return predict(u, i)."""
+    M = np.mean([posterior_mean(*fit_model(train, shape, F, features, rank, n_iter, s)) for s in seeds], 0)
     return lambda u, i: M[u, i]

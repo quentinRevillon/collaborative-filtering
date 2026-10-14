@@ -1,0 +1,4 @@
+model,rmse_train75,rmse_train,rmse_proxy,gain_train_to_proxy,est_platform
+global mean,1.037,1.0369,1.0368,0.0001,1.0368
+biases,0.8849,0.8746,0.8654,0.0091,0.8587
+item-kNN,0.8822,0.8705,0.8562,0.0143,0.8479

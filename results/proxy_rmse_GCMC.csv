@@ -1,0 +1,7 @@
+model,input,n_fit,fold,rmse,time_s
+GC-MC,train75,23699,1,0.9018,38.3
+GC-MC,train,31598,1,0.8759,29.7
+GC-MC,train+half,47397,1,0.8588,35.8
+GC-MC,train75,23699,2,0.9056,24.3
+GC-MC,train,31598,2,0.8824,45.4
+GC-MC,train+half,47397,2,0.8634,87.4

@@ -1,0 +1,6 @@
+input,weight
+fm,0.0129
+knn,0.2466
+fm_iu_ii,0.2717
+fm_gbdt,0.5328
+intercept,-0.2463

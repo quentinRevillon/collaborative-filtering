@@ -1,0 +1,2 @@
+model,hyperparams,n_ratings,threads,fit_complete_time_s
+fm_gbdt,"{""fold_iter"": 500, ""prior"": 10.0}",63196,3,446.4

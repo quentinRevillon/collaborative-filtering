@@ -1,0 +1,9 @@
+likelihood,features,rank,n_iter,seeds,valid_rmse,valid_acc,time_s
+reg,iu+ii+side+iur,10,1000,1,0.8798,0.2523,101.2
+reg,iu+ii+side+us+ip,10,1000,1,0.8755,0.2494,82.4
+ord,iu+ii+side,10,2000,1,0.8846,0.2504,336.4
+reg,iu+ii+side,8,1000,1,0.8771,0.2517,86.2
+reg,iu+ii+side,12,1000,1,0.8802,0.251,120.0
+reg,iu+ii+side,16,1000,1,0.8743,0.2517,237.8
+reg,iu+ii+side,10,3000,1,0.8731,0.2517,353.0
+reg,iu+ii+side,10,1000,3,0.8727,0.2482,268.8

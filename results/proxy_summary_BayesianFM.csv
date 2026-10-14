@@ -1,0 +1,2 @@
+model,rmse_train75,rmse_train,rmse_proxy,gain_train_to_proxy,est_platform
+Bayesian FM,0.8734,0.8552,0.8396,0.0157,0.8278

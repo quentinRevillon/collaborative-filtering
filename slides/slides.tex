@@ -350,39 +350,11 @@ fixed, then movies with the users fixed. At each step:
 \begin{itemize}
   \item The spread of the draw depends on the data: \key{small} for a user or movie with many
         ratings, \key{large} for one with few ratings
-  \item Each round gives one plausible solution; the final prediction is the \key{average}
-        of the predictions of 300 rounds
-  \item The regularization is drawn too: no $\lambda$ to tune
+  \item \key{100 warm-up rounds} first, to reach a factorization close to an ALS factorization
+  \item Then \key{300 rounds of averaging}: each round gives one plausible solution, and the
+        final prediction is the \key{average} of their predictions
 \end{itemize}
 \takeaway{Averaging the draws cancels what is uncertain (rarely rated movies) and keeps what is certain.}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{The bell curve of one user: its exact parameters}
-User $u$ is described by $w_u = (U_u, b_u)$: its $k$ hidden numbers and its bias. Movies fixed,
-each movie $i \in S_u$ (rated by $u$) gives $x_i = (I_i, 1)$ and a target $t_{ui} = r_{ui} - \mu - b_i$.
-\[
-  w_u \sim \mathcal{N}\bigl(m_u,\, A_u^{-1}\bigr), \quad
-  A_u = \Lambda + \alpha \sum_{i \in S_u} x_i x_i^\top, \quad
-  m_u = A_u^{-1}\Bigl(\Lambda m + \alpha \sum_{i \in S_u} t_{ui}\, x_i\Bigr)
-\]
-\begin{columns}[T]
-\column{0.5\textwidth}
-\small
-\begin{itemize}
-  \item \textbf{Center} $m_u$: the ALS (ridge) solution, pulled towards the average user $m$ instead of 0
-  \item \textbf{Width} $A_u^{-1}$: shrinks as $u$ rates more movies (the sum grows): \key{narrow bell for many ratings, wide for few}
-  \item $\alpha = 2$: confidence in each rating (noise precision), chosen on validation
-\end{itemize}
-\column{0.47\textwidth}
-\small
-\textbf{Prior} $(m, \Lambda)$: the ``regularization'', \key{drawn} at each round from the current users:
-\begin{itemize}
-  \item $\Lambda$ (a $(k{+}1) \times (k{+}1)$ matrix): from a Wishart law, larger when users are close to each other
-  \item $m$: from a Gaussian around the mean of all users
-\end{itemize}
-\end{columns}
-\takeaway{Same formulas for movies. ALS = always taking the center $m_u$, with $\Lambda = \lambda\,\mathrm{Id}$, $m = 0$, $\alpha = 1$.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
@@ -404,9 +376,7 @@ predict with the \key{last} factors
 \small
 start from random factors\\
 \textbf{repeat 400 times} (round $t$):\\
-\hspace*{1em}users' regularization $\leftarrow$ drawn\\
 \hspace*{1em}users $\leftarrow$ \key{drawn}, given movies\\
-\hspace*{1em}movies' regularization $\leftarrow$ drawn\\
 \hspace*{1em}movies $\leftarrow$ \key{drawn}, given users\\
 \hspace*{1em}if $t > 100$: add this round's predictions\\
 \hspace*{1em}\phantom{if $t > 100$:} (all 610 $\times$ 4\,980 cells) to a sum\\[0.3em]
@@ -419,13 +389,12 @@ predict with the sum / 300 = the \key{average}
 \begin{tikzpicture}[x=0.028cm, y=1cm, every node/.style={font=\footnotesize}]
   \fill[soft!40] (0,0) rectangle (100,0.4);
   \fill[accent!60] (100,0) rectangle (400,0.4);
-  \node at (50,0.2) {thrown away};
+  \node at (50,0.2) {warm-up};
   \node[white] at (250,0.2) {\textbf{300 rounds averaged}};
   \foreach \t in {0,100,400} \node[below] at (\t,0) {\t};
   \node[right] at (405,0.2) {rounds};
 \end{tikzpicture}
 \end{center}
-\takeaway{Not 300 separate runs: \key{one} chain, each round starts from the previous one; every round after 100 gives one solution.}
 \end{frame}
 
 %-----------------------------------------------------------------------------

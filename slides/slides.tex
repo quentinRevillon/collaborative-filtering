@@ -36,7 +36,7 @@
 \newcommand{\takeaway}[1]{\vfill\begin{center}\colorbox{accent!8}{\parbox{0.9\textwidth}{\centering #1}}\end{center}}
 
 \title{The course methods, step by step}
-\subtitle{Mean and biases, matrix factorization, nearest neighbors}
+\subtitle{Mean and biases, matrix factorization, kNN}
 \author{Quentin Revillon\\[2pt] {\small Group 40 --- La piscine}}
 \institute{DataLab A1 --- Master IASD}
 \date{October 2026}
@@ -134,7 +134,7 @@ Half of the movies have 3 ratings or fewer: this matters for most of the matrix.
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{2. Matrix factorization: four ways to apply it}
+\begin{frame}{2. Matrix factorization}
 Course: $R \approx I U^\top$, each user and movie described by $k$ hidden numbers,
 \[
   \min_{I,U} \sum_{\text{obs.}} \bigl(r_{ui} - \text{base}_{ui} - U_u^\top I_i\bigr)^2 + \textcolor{accent}{\lambda}\bigl(\|I\|_F^2 + \|U\|_F^2\bigr)
@@ -217,7 +217,7 @@ Gradient descent, $\lambda = 0.1$ & 0.702 & 0.876 \\
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{3. Nearest neighbors: what we tried}
+\begin{frame}{3. kNN}
 \begin{columns}[c]
 \column{0.48\textwidth}
 \textbf{Course formula} (raw ratings)
@@ -242,7 +242,7 @@ Gradient descent, $\lambda = 0.1$ & 0.702 & 0.876 \\
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{3. Nearest neighbors: results}
+\begin{frame}{3. kNN: results}
 \begin{columns}[c]
 \column{0.6\textwidth}
 \small
@@ -269,7 +269,7 @@ of biases & + damping $\beta = 0.2$ & 40 & 0.505 & \key{0.871} \\
   \item Damping: another $-0.02$
 \end{itemize}
 \end{columns}
-\takeaway{Best nearest neighbors: \key{0.871}, only 0.004 better than the biases.}
+\takeaway{Best kNN: \key{0.871}, only 0.004 better than the biases.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
@@ -284,7 +284,7 @@ of biases & + damping $\beta = 0.2$ & 40 & 0.505 & \key{0.871} \\
 Mean only & 1.037 \\
 Mean + biases, $\lambda = 2$ & 0.875 \\
 Factorization of residuals, ALS & \key{0.872} \\
-Nearest neighbors on residuals, damped & \key{0.871} \\
+kNN on residuals, damped & \key{0.871} \\
 \bottomrule
 \end{tabular}
 \column{0.45\textwidth}

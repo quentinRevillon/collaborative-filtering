@@ -121,7 +121,7 @@ User 273 & 4.5 & \muted{--} & 5   & \muted{--} \\
 %-----------------------------------------------------------------------------
 \begin{frame}{Methods compared, by increasing complexity}
 \small
-\begin{tabular}{@{}rlp{6.6cm}l@{}}
+\begin{tabular}{@{}rlp{6.2cm}l@{}}
 \toprule
  & \textbf{Method} & \textbf{Idea} & \textbf{Course} \\
 \midrule
@@ -132,9 +132,10 @@ User 273 & 4.5 & \muted{--} & 5   & \muted{--} \\
 5 & \key{MF: GD, ALS} & $R \approx I U^\top$, $k$ hidden tastes & \key{required} \\
 6 & Soft-Impute & low rank without fixing $k$ & alternative \\
 7 & AutoRec & neural network (auto-encoder) & deep MF \\
-8 & BPMF & MF, averaged over many sampled solutions & alternative \\
-9 & Bayesian FM & 8 + who rated what + genres & alternative \\
-10 & Stacked ensemble & weighted sum of 9, 4 and a corrected FM & alternative \\
+8 & GC-MC, GLocal-K & recent graph / kernel neural networks & deep, literature \\
+9 & BPMF & MF, averaged over many sampled solutions & alternative \\
+10 & Bayesian FM & 9 + who rated what + genres & alternative \\
+11 & \key{Stacked ensemble} & weighted sum of 10, 4 and a corrected FM & alternative \\
 \bottomrule
 \end{tabular}
 
@@ -244,14 +245,58 @@ $\lambda = 10$ & 0.68 & \key{0.89} \\
 \end{axis}
 \end{tikzpicture}
 \end{columns}
-\takeaway{One solution is \textbf{worse} than the global mean; the average of 2\,000 beats everything else.}
+\takeaway{One solution is \textbf{worse} than the global mean; the average of 2\,000 beats every single model.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Final model: a stacked ensemble}
+\begin{columns}[c]
+\column{0.56\textwidth}
+\begin{tikzpicture}[x=1cm, y=1cm, every node/.style={font=\small},
+    member/.style={draw=accent, fill=accent!8, rounded corners=2pt, minimum width=3.8cm, minimum height=0.6cm}]
+  \foreach \y/\name/\w in {2.25/FM + GBDT correction/0.53, 1.5/{FM, no genres}/0.27,
+                           0.75/Item $k$NN/0.25, 0/Bayesian FM/0.01} {
+    \node[member] at (0,\y) {\name};
+    \node[font=\footnotesize, text=accent] at (2.55,\y) {$\times$\,\w};
+    \draw[->, thick, soft] (3.0,\y) -- (3.75,1.125);
+  }
+  \node[draw=warm, fill=warm!15, circle, minimum size=0.8cm] (s) at (4.1,1.125) {$\Sigma$};
+  \node (r) at (5.2,1.125) {$\hat r_{ui}$};
+  \draw[->, thick] (s) -- (r);
+\end{tikzpicture}
+
+\vspace{0.5em}
+\footnotesize
+\textbf{GBDT correction}: 300 small decision trees learn the FM's \emph{error} from the
+user's and movie's rating count, mean and spread. Trained on out-of-fold errors
+(FM refitted 5 times without one fifth of the ratings).
+\column{0.42\textwidth}
+\footnotesize
+\textbf{Chosen on validation} (5-fold CV)\\[0.3em]
+\begin{tabular}{@{}lc@{}}
+\toprule
+Members & valid RMSE \\
+\midrule
+FM alone & 0.8726 \\
+FM + $k$NN + FM no genres & 0.8656 \\
+FM + GBDT & 0.8662 \\
+FM + GBDT + $k$NN & 0.8645 \\
+\key{all four} & \key{0.8636} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.4em}
+\muted{\footnotesize Weights: ridge regression on validation, then frozen.\\
+No gain: ordinal FM, 3 FM chains, EASE, $k$NN on FM errors.}
+\end{columns}
+\takeaway{Test RMSE \key{0.847} (FM alone 0.855); \key{4.6 min} on train + test, limit 20 min.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
 \begin{frame}{Results on test, by increasing complexity}
 \begin{columns}[c]
 \column{0.6\textwidth}
-\small\setlength{\tabcolsep}{4pt}
+\footnotesize\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}rlccr@{}}
 \toprule
  & \textbf{Method} & \textbf{RMSE} & \textbf{vs biases} & \textbf{Fit time} \\
@@ -264,9 +309,11 @@ $\lambda = 10$ & 0.68 & \key{0.89} \\
   & MF -- ALS       & 0.873 & $-0.002$ & 1.5\,s \\
 6 & Soft-Impute     & 0.872 & $-0.003$ & 4.7\,s \\
 7 & AutoRec         & 0.872 & $-0.002$ & 17\,s \\
-8 & BPMF            & 0.865 & $-0.010$ & 44\,s \\
-9 & Bayesian FM & 0.855 & $-0.019$ & 60\,s \\
-10 & \key{Stacked ensemble} & \key{0.847} & \key{$-0.028$} & 3\,min \\
+8 & GC-MC           & 0.879 & $+0.005$ & 21\,s \\
+  & GLocal-K        & 0.897 & $+0.022$ & 4\,min \\
+9 & BPMF            & 0.865 & $-0.010$ & 44\,s \\
+10 & Bayesian FM    & 0.855 & $-0.019$ & 60\,s \\
+11 & \key{Stacked ensemble} & \key{0.847} & \key{$-0.028$} & 3\,min \\
 \midrule
   & Ridge blend of 2--6 & 0.868 & $-0.006$ & 7.7\,s \\
 \bottomrule
@@ -274,7 +321,7 @@ $\lambda = 10$ & 0.68 & \key{0.89} \\
 \column{0.37\textwidth}
 \begin{itemize}
   \item The biases do \key{90\,\%} of the work
-  \item Complexity alone does not pay: AutoRec $\approx$ ALS
+  \item Complexity alone does not pay: neural networks do no better than ALS
   \item What pays: \key{averaging} (Bayesian, ensembles)
   \item Ensemble submitted: \key{4.6 min} on train + test \muted{(limit 20 min)}
 \end{itemize}
@@ -291,6 +338,7 @@ $\lambda = 10$ & 0.68 & \key{0.89} \\
   \item The course $k$NN formula needs damping with few neighbors
   \item Averaging many solutions \key{beats} searching for the best one
   \item Knowing \emph{who rated a movie} helps more than its genres
+  \item Different models make different errors: the \key{ensemble} gains a further 0.008
 \end{itemize}
 \column{0.5\textwidth}
 \textbf{Limitations and next steps}

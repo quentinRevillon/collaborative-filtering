@@ -1,0 +1,5 @@
+data/*.npy
+output.npy
+__pycache__/
+*.pyc
+.venv/

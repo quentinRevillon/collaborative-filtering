@@ -4,6 +4,8 @@ import os
 from tqdm import tqdm, trange
 import argparse
 
+from src.baselines import Biases
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate a completed ratings table.')
@@ -21,8 +23,8 @@ if __name__ == '__main__':
     
 
     # Any method you want
-    average = np.nanmean(table)
-    table = np.nan_to_num(table, nan=average)
+    # Baseline : biais user + film regularises (lambda regle sur validation, cf. src/run_baselines.py)
+    table = Biases(lam_u=2, lam_i=2).fit(table).predict()
 
     
 

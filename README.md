@@ -1,21 +1,39 @@
-# DataLab A1 — Collaborative filtering (group 40, *La piscine*)
+# DataLab A1: Collaborative filtering (group 40, *La piscine*)
 
 Completion of a sparse users × movies ratings matrix (MovieLens copy, 610 × 4980, ~1 % observed).
 Metric: RMSE on held-out ratings (the platform also reports exact-rating accuracy and running time).
 
+## Submitted method
+
+`generate.py` fits a **Bayesian matrix factorization with biases (BPMF)** by Gibbs sampling
+(`src/bpmf.py`): rank 20, noise precision 2, 100 warm-up rounds, then the predictions of the
+next 300 rounds are averaged. It is the most advanced method presented in `slides.pdf`.
+
+| Fitted on | Scored on | RMSE | Time (4 CPU threads) |
+|---|---|---|---|
+| `ratings_train` | `ratings_test` | 0.8646 | ~1 min |
+| `ratings_train` + `ratings_test` (platform input) | hidden eval set | (platform) | ~1.5 min |
+
 ## Layout
 
 ```
-generate.py              platform entry point (do not change load/save lines)
+generate.py              platform entry point (load/save lines unchanged)
+requirements.txt         libraries installed by the platform (pip install -r requirements.txt)
+slides.pdf               preliminary presentation (source: slides/slides.tex)
+slides/                  slides.tex (main deck), slides_finales.tex/.pdf (deck with every method tested)
 src/                     models, all with the API fit_xxx(train, shape, **hp) -> predict(u, i)
   data.py                loading, splits, metrics, matrix completion helper
   baselines.py           global mean, regularized biases mu + b_u + b_i
+  mf.py, mf_plain.py     matrix factorization (ALS, gradient descent), with or without baseline
+  knn.py, knn_course.py  item / user kNN (course formula and on bias residuals)
+  bpmf.py                Bayesian matrix factorization (submitted)
 experiments/             reproducible experiment scripts (write results/ and figures/)
-  eda.py                 exploratory data analysis
+  run_course_methods.py  course methods: biases, matrix factorization, kNN (numbers of the slides)
+  run_bayesian.py        BPMF and Bayesian factorization machines
   evaluate_output.py     score output.npy on a held-out file
-figures/                 figures used in slides and report
-docs/                    project procedure (LaTeX) and data-first documentation (docs/documentation/)
-data/                    local copy of the .npy files (not versioned)
+results/, figures/       experiment outputs
+docs/                    project procedure and documentation (LaTeX)
+data/                    namesngenre.npy (versioned); ratings_*.npy are not versioned
 ```
 
 ## Usage
@@ -23,7 +41,7 @@ data/                    local copy of the .npy files (not versioned)
 ```bash
 pip install -r requirements.txt
 python generate.py --name data/ratings_train.npy          # writes output.npy
-python experiments/evaluate_output.py --test data/ratings_test.npy
+python experiments/evaluate_output.py --output output.npy --test data/ratings_test.npy
 ```
 
 ## Protocol

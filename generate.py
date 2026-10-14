@@ -4,13 +4,8 @@ import os
 from tqdm import tqdm, trange
 import argparse
 
-from pathlib import Path
-
+from src.bpmf import fit_bpmf
 from src.data import complete, to_coo
-from src.side_info import item_features
-from src.stack import fit_stack
-
-METADATA = Path(__file__).resolve().parent / "data" / "namesngenre.npy"  # versioned with the code
 
 
 if __name__ == '__main__':
@@ -28,8 +23,9 @@ if __name__ == '__main__':
     print('Ratings Loaded.')
     
 
-    # Stack of Bayesian FMs, item kNN and a GBDT residual correction (see src/stack.py)
-    predict = fit_stack(to_coo(table), table.shape, item_features(METADATA))
+    # Bayesian matrix factorization with biases (see src/bpmf.py): rank 20, noise precision 2,
+    # 100 warm-up Gibbs rounds, then the predictions of the next 300 rounds averaged
+    predict = fit_bpmf(to_coo(table), table.shape, rank=20, n_samples=300, burn_in=100, alpha=2.0)
     table = complete(predict, table.shape)
 
     

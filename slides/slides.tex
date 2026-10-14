@@ -1,7 +1,8 @@
 % Slides de la présentation préliminaire A1 (5 minutes), groupe 40 « La piscine ».
-% Compilation (depuis slides/) : pdflatex slides.tex, puis copier slides.pdf à la racine du dépôt.
-% Les figures sont lues dans ../figures/ (produites par experiments/*.py).
-\documentclass[aspectratio=169,10pt]{beamer}
+% Fil : les données, la tâche, puis les méthodes dans l'ordre, chacune avec une idée et un chiffre.
+% Compilation (depuis slides/) : pdflatex slides.tex (deux fois), puis copier slides.pdf à la racine.
+% Les chiffres viennent de results/*.csv (produits par experiments/*.py).
+\documentclass[aspectratio=169,11pt]{beamer}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -10,13 +11,14 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{tikz}
-
-\graphicspath{{../figures/}}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{positioning}
 
 \definecolor{accent}{HTML}{2A6FDB}
 \definecolor{warm}{HTML}{E8833A}
-\definecolor{ok}{HTML}{1A9E5C}
 \definecolor{ink}{HTML}{222222}
+\definecolor{soft}{HTML}{8A8A8A}
 
 \usetheme{default}
 \setbeamertemplate{navigation symbols}{}
@@ -25,16 +27,17 @@
 \setbeamercolor{normal text}{fg=ink}
 \setbeamercolor{structure}{fg=accent}
 \setbeamerfont{frametitle}{series=\bfseries, size=\Large}
-\setbeamertemplate{itemize item}{\color{accent}$\blacktriangleright$}
-\setbeamertemplate{footline}{\hfill\textcolor{gray}{\scriptsize\insertframenumber/\inserttotalframenumber}\hspace{1em}\vspace{0.6em}}
+\setbeamertemplate{itemize item}{\color{accent}$\bullet$}
+\setbeamertemplate{footline}{\hfill\textcolor{soft}{\scriptsize\insertframenumber/\inserttotalframenumber}\hspace{1em}\vspace{0.6em}}
 
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\rhat}{\hat r}
 \newcommand{\key}[1]{\textcolor{accent}{\textbf{#1}}}
+\newcommand{\muted}[1]{\textcolor{soft}{#1}}
+% Encadré « à retenir » en bas de slide.
+\newcommand{\retenir}[1]{\vfill\begin{center}\colorbox{accent!8}{\parbox{0.9\textwidth}{\centering #1}}\end{center}}
 
 \title{Que peut-on apprendre au-delà des biais ?}
-\subtitle{Complétion d'une matrice de notes MovieLens très creuse}
-\author{Groupe 40 --- La piscine}
+\subtitle{Compléter un tableau de notes de films rempli à 1\,\%}
+\author{Quentin Revillon\\[2pt] {\small Groupe 40 --- La piscine}}
 \institute{DataLab A1 --- Master IASD}
 \date{15 octobre 2026}
 
@@ -46,196 +49,215 @@
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{Le problème}
-\begin{columns}[T]
-\column{0.52\textwidth}
+\begin{frame}{Les données : un tableau presque vide}
+\begin{columns}[c]
+\column{0.5\textwidth}
 \begin{itemize}
-  \item Matrice $R$ : \key{610 utilisateurs $\times$ 4\,980 films}, notes de 0,5 à 5
-  \item Seules \key{1\,\%} des cases sont connues
-  \item Objectif : prédire toutes les autres, évaluées en
+  \item \key{Une ligne = un utilisateur} (610)
+  \item \key{Une colonne = un film} (4\,980)
+  \item \key{Une case} = sa note, de 0,5 à 5 étoiles\\
+        \muted{ou vide : il n'a pas vu le film}
 \end{itemize}
-\[
-  \mathrm{RMSE} = \sqrt{\tfrac{1}{|T|} \textstyle\sum_{(u,i)\in T} (r_{ui} - \rhat_{ui})^2}
-\]
-\column{0.45\textwidth}
-\small
-\begin{tabular}{@{}lll@{}}
-\toprule
- & \textbf{Entrée} & \textbf{Score} \\
+\vspace{0.8em}
+\begin{itemize}
+  \item Seules \key{1\,\%} des cases sont remplies
+  \item La moitié des films ont \key{3 notes ou moins}
+\end{itemize}
+\column{0.48\textwidth}
+\small\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lcccc}
+ & \rotatebox{70}{\footnotesize Forrest Gump} & \rotatebox{70}{\footnotesize Shawshank} & \rotatebox{70}{\footnotesize Pulp Fiction} & \rotatebox{70}{\footnotesize Silence of the Lambs} \\
 \midrule
-Local      & train         & test \\
-Plateforme & train + test  & eval (caché) \\
+Util.\ 413 & 5   & \muted{--} & \muted{--} & \muted{--} \\
+Util.\ 473 & \muted{--} & \muted{--} & 4   & 4,5 \\
+Util.\ 598 & 3,5 & \muted{--} & 5   & 3   \\
+Util.\ 447 & \muted{--} & \muted{--} & \muted{--} & \muted{--} \\
+Util.\ 273 & 4,5 & \muted{--} & 5   & \muted{--} \\
 \bottomrule
 \end{tabular}
 
-\vspace{1em}
-Contraintes : CPU, 4 threads, 1\,200\,s.
-\end{columns}
-
-\vspace{1.2em}
-\begin{center}
-\colorbox{accent!8}{\parbox{0.85\textwidth}{\centering
-\textbf{Question :} une fois les biais utilisateur et film retirés,\\
-reste-t-il un signal exploitable ?}}
-\end{center}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{Les données : très creuses, peu de structure au-delà des biais}
-\begin{columns}[T]
-\column{0.40\textwidth}
-\includegraphics[width=\linewidth]{eda/03_long_tail.png}
-\column{0.58\textwidth}
-\includegraphics[width=\linewidth]{eda/10_svd_spectrum.png}
-\end{columns}
 \vspace{0.4em}
-\begin{itemize}
-  \item Un film a \key{3 notes} en médiane ; 21\,\% des notes de test portent sur un film à moins de 5 notes
-  \item Biais seuls : RMSE $1{,}037 \to \key{0{,}875}$
-  \item Résidus : spectre indiscernable d'un bruit permuté au-delà du rang $\approx 5$
-\end{itemize}
+\muted{\footnotesize Les 5 utilisateurs les plus actifs, 4 films parmi les plus notés.}
+\end{columns}
+\retenir{Même ici, la plupart des cases sont vides.}
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{Protocole expérimental}
+\begin{frame}{La tâche : deviner les cases vides}
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Mesure : la RMSE} (en étoiles)
+\[
+  \sqrt{\text{moyenne de }(\text{vraie note} - \text{prédiction})^2}
+\]
+\muted{\small Ex. : vraies notes 4 et 3, prédites 3 et 3\\
+$\to \sqrt{(1^2 + 0^2)/2} = 0{,}71$ étoile.}
+
+\vspace{0.6em}
+\key{Plus elle est basse, mieux c'est.}
+
+\column{0.48\textwidth}
+\textbf{Comment on évalue sans tricher}
 \begin{center}
-\begin{tikzpicture}[x=1cm,y=1cm]
-  \fill[accent!70] (0,0) rectangle (8.1,0.7);
-  \fill[warm!80] (8.1,0) rectangle (9.3,0.7);
-  \fill[gray!45] (9.8,0) rectangle (13.8,0.7);
-  \node[white] at (4.05,0.35) {\small\textbf{train 90\,\%} : apprentissage};
-  \node[white] at (8.7,0.35) {\small\textbf{valid.}};
-  \node at (11.8,0.35) {\small\textbf{test}};
-  \node[above] at (4.05,0.75) {\small\textcolor{gray}{train (31\,598 notes)}};
-  \draw[->,thick,warm] (8.7,-0.1) to[bend left=12] node[below,text=ink]{\small choix des hyperparamètres} (4.05,-0.1);
-  \node[below] at (11.8,-0.1) {\small \textbf{une seule} évaluation finale};
+\begin{tikzpicture}[x=1cm,y=1cm, every node/.style={font=\small}]
+  \fill[accent!70] (0,1.6) rectangle (3.6,2.2);
+  \fill[warm!80]   (3.6,1.6) rectangle (4.4,2.2);
+  \node[white] at (1.8,1.9) {\textbf{entraînement}};
+  \node[white] at (4.0,1.9) {\textbf{val.}};
+  \fill[soft!45] (0,0.6) rectangle (4.4,1.2);
+  \node at (2.2,0.9) {\textbf{test} (autres notes cachées)};
 \end{tikzpicture}
 \end{center}
-\vspace{0.6em}
-\begin{itemize}
-  \item Meilleure configuration réentraînée sur tout le train, \key{test jamais utilisé pour régler}
-  \item Mesures : RMSE, accuracy (note exacte après arrondi), temps d'entraînement
-  \item Analyse par popularité du film : \emph{où} chaque méthode aide-t-elle ?
-  \item Même interface pour tous les modèles : \texttt{fit(train) $\to$ predict(u, i)}
-\end{itemize}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{Méthodes comparées}
-\footnotesize
-\begin{tabular}{@{}p{3.1cm}p{9.9cm}@{}}
-\key{Biais} (baseline) &
-  $\rhat_{ui} = \mu + b_u + b_i$, \; pénalité $\lambda \bigl(\|b_u\|^2 + \|b_i\|^2\bigr)$ \\[6pt]
-\key{Factorisation} &
-  $\rhat_{ui} = \mu + b_u + b_i + p_u^\top q_i$, \; pénalités séparées $\lambda_b$, $\lambda_f$ \\
-  & ALS : $p_u = (Q_u^\top Q_u + \lambda_f I)^{-1} Q_u^\top \tilde r_u$ \quad / \quad SGD \\[6pt]
-\key{Soft-Impute} &
-  $\min_Z \tfrac12 \sum_{\text{obs.}} (r_{ui} - z_{ui})^2 + \tau \|Z\|_*$ : seuillage des valeurs singulières \\[6pt]
-\key{$k$NN films} &
-  $\rhat_{ui} = \text{biais} + \dfrac{\sum_{j \in N_k(i;u)} s_{ij}\, e_{uj}}{\beta + \sum_j |s_{ij}|}$, \;
-  Pearson rétréci $s_{ij}\tfrac{n_{ij}}{n_{ij}+100}$ \\[10pt]
-\key{Biais + genres} &
-  $b_i$ tiré vers $f_i^\top w$ (genres, décennie, popularité) au lieu de 0 \\[6pt]
-\key{Mélange} &
-  régression ridge sur la validation : $\rhat_{ui} = w_0 + \sum_m w_m \rhat^{(m)}_{ui}$ \\[6pt]
-\key{AutoRec} (deep) &
-  $\hat{\boldsymbol e}_{\cdot i} = V\,\sigma(W \boldsymbol e_{\cdot i} + b) + c$ sur les résidus des biais, perte sur les notes observées \\[6pt]
-\key{MF bayésienne} &
-  a priori sur facteurs et régularisation, échantillonnage de Gibbs, $\rhat_{ui} = \tfrac1S \sum_s \rhat^{(s)}_{ui}$ \\
-  & \textbf{FM} : + films notés par $u$ (SVD++), + utilisateurs ayant noté $i$, + genres \\
-\end{tabular}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{Factorisation : tout se joue dans la régularisation}
-\begin{center}
-\includegraphics[width=0.78\linewidth]{mf_learning_curves.png}
-\end{center}
-\begin{itemize}
-  \item Sans régularisation : RMSE train $\to 0$, validation $> 1{,}0$ (surapprentissage)
-  \item $\lambda_f \geq 15$ : facteurs écrasés, on retombe exactement sur les biais
-  \item Fenêtre utile étroite ($\lambda_f \approx 10$) ; ensuite le rang compte peu
-\end{itemize}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{MF bayésienne : moyenner plutôt qu'optimiser}
-\begin{columns}[T]
-\column{0.55\textwidth}
-\includegraphics[width=\linewidth]{bayes/ablation.png}
-\column{0.43\textwidth}
-\vspace{0.6em}
-\begin{itemize}
-  \item Un échantillon seul : RMSE $\approx 1{,}03$ ; la \key{moyenne} de 2\,000 : $0{,}873$
-  \item La régularisation est \key{apprise} : plus de $\lambda$ à régler
-  \item Le plus utile : savoir \key{qui a noté le film}, pas la note elle-même
-  \item Genres : petit gain, cumulable
+\begin{itemize}\small
+  \item Validation (10\,\%) : choisir les réglages
+  \item Test : \key{une seule} mesure finale
+  \item Plateforme : entraînement + test en entrée, notes secrètes pour la note
 \end{itemize}
 \end{columns}
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{Résultats}
-\begin{columns}[T]
-\column{0.42\textwidth}
+\begin{frame}{1. Les biais : certains notent haut, certains films plaisent}
+\[
+  \text{prédiction} = \text{moyenne globale} + \text{biais de l'utilisateur} + \text{biais du film}
+\]
+\vspace{0.2em}
+\textbf{Exemple réel} : utilisateur 0 et \emph{Grumpier Old Men}
+\[
+  3{,}52 \;+\; \underbrace{0{,}63}_{\text{note haut}} \;-\; \underbrace{0{,}36}_{\text{film moyen}}
+  \;=\; \key{3{,}80} \qquad \muted{\text{(vraie note : 4)}}
+\]
+\textbf{Prudence sur les films peu notés} (régularisation) : \emph{Party Girl} n'a qu'une note, un 5.\\
+Son biais passe de $+1{,}5$ à $+0{,}45$ : on divise par (nombre de notes $+ 2$).
+\retenir{RMSE : moyenne seule \textbf{1,037} $\;\to\;$ biais \key{0,875}. Tout le reste part de là.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{2. Factorisation de matrice : des goûts cachés}
+\begin{columns}[c]
+\column{0.52\textwidth}
+\begin{itemize}
+  \item Chaque utilisateur et chaque film reçoit \key{$k$ nombres} (ses \og facteurs \fg), calculés automatiquement
+  \item Correction = produit des deux listes\\
+        \muted{\small $(0{,}8;-0{,}5)\cdot(0{,}9;0{,}1) = 0{,}67$}
+  \item Calculés par \textbf{ALS} (formule exacte, alternée) ou \textbf{SGD} (petits pas)
+\end{itemize}
+\column{0.46\textwidth}
+\textbf{Le piège : apprendre par c\oe ur}\\[0.3em]
 \small
-\begin{tabular}{@{}lcr@{}}
+\begin{tabular}{@{}lcc@{}}
 \toprule
-\textbf{Méthode} & \textbf{RMSE test} & \textbf{s} \\
+ALS, rang 50 & entraînement & validation \\
 \midrule
-Moyenne globale     & 1,037 & 0 \\
-Biais               & 0,875 & 0,01 \\
-MF -- SGD           & 0,878 & 0,5 \\
-MF -- ALS           & 0,873 & 1,5 \\
-Soft-Impute         & 0,872 & 4,7 \\
-AutoRec             & 0,872 & 17 \\
-$k$NN films         & 0,871 & 1,1 \\
-Mélange             & 0,868 & 7,7 \\
-BPMF                & 0,865 & 44 \\
-\midrule
-\textbf{FM bayésienne} & \textbf{0,855} & 60 \\
+sans prudence & 0,00 & 1,21 \\
+prudence $\lambda=10$ & 0,68 & \key{0,89} \\
 \bottomrule
 \end{tabular}
 
-\column{0.54\textwidth}
-\vspace{1em}
+\vspace{0.4em}
+\muted{\footnotesize Trop de prudence ($\lambda \geq 15$) : facteurs nuls, on retombe sur les biais.}
+\end{columns}
+\retenir{RMSE \key{0,873} : gain de 0,002 seulement sur les biais.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{3. Autres idées testées}
+\small
+\begin{tabular}{@{}p{3.1cm}p{8.4cm}r@{}}
+\toprule
+\textbf{Méthode} & \textbf{Idée} & \textbf{RMSE} \\
+\midrule
+Soft-Impute & remplir, ne garder que les grandes tendances, recommencer & 0,872 \\
+$k$NN films & regarder comment l'utilisateur a noté les 40 films \og qui ressemblent \fg & 0,871 \\
+Biais + genres & un film peu noté ressemble aux films de son genre et de sa décennie & 0,874 \\
+AutoRec & réseau de neurones qui résume puis reconstruit chaque colonne & 0,872 \\
+Mélange & somme pondérée de 5 méthodes & \key{0,868} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.6em}
 \begin{itemize}
-  \item Méthodes \og ponctuelles \fg{} : moins de \key{0,01} de gain sur les biais
-  \item AutoRec (deep) : aucun gain, surapprend fortement
-  \item MF bayésienne : \key{$-0{,}019$}, le seul saut net
-  \item FM bayésienne : \key{93\,s} sur train + test, loin des 1\,200\,s
+  \item $k$NN : meilleur sur les films très notés
+  \item Genres : seule aide sur les films à 1--2 notes
+  \item AutoRec : des centaines de milliers de coefficients pour 31\,598 notes, il apprend par c\oe ur
+\end{itemize}
+\retenir{Chacune gagne \textbf{moins de 0,01} sur les biais.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{4. Bayésien : moyenner beaucoup de solutions}
+\begin{columns}[c]
+\column{0.44\textwidth}
+\begin{itemize}
+  \item Avec si peu de notes, \key{beaucoup de solutions} sont plausibles
+  \item On en tire des centaines au hasard et on \key{moyenne} leurs prédictions
+  \item La prudence est apprise : plus de $\lambda$ à régler
+  \item \textbf{FM bayésienne} : on donne aussi \emph{qui a noté quoi} et les genres
+\end{itemize}
+\column{0.54\textwidth}
+\begin{tikzpicture}
+\begin{axis}[width=\linewidth, height=5.4cm, xmode=log,
+    xlabel={nombre de solutions moyennées}, ylabel={RMSE validation},
+    ymin=0.86, ymax=1.06, xmin=1, xmax=2000,
+    axis lines=left, tick label style={font=\footnotesize}, label style={font=\small},
+    yticklabel style={/pgf/number format/.cd, fixed, precision=2, use comma}]
+  \addplot[very thick, accent] coordinates {(1,0.9668) (2,0.9352) (3,0.9251) (5,0.9108) (10,0.8981)
+    (20,0.8921) (50,0.8826) (100,0.8799) (200,0.8779) (500,0.8778) (1000,0.8738) (1500,0.873) (1950,0.8728)};
+  \addplot[thick, soft, dashed] coordinates {(1,1.042) (2000,1.042)};
+  \addplot[thick, warm, dashed] coordinates {(1,0.8909) (2000,0.8909)};
+  \node[soft, font=\footnotesize, anchor=south east] at (axis cs:2000,1.042) {une solution seule};
+  \node[warm, font=\footnotesize, anchor=south east] at (axis cs:2000,0.8909) {biais};
+  \node[accent, font=\footnotesize, anchor=south west] at (axis cs:3,0.93) {moyenne des solutions};
+\end{axis}
+\end{tikzpicture}
+\end{columns}
+\retenir{Une solution seule est \textbf{pire} que la moyenne globale ; la moyenne de 2\,000 bat tout le reste.}
+\end{frame}
+
+%-----------------------------------------------------------------------------
+\begin{frame}{Résultats sur le test}
+\begin{columns}[c]
+\column{0.6\textwidth}
+\begin{tikzpicture}
+\begin{axis}[xbar, bar shift=0pt, width=\linewidth, height=6.6cm, bar width=7pt,
+    xmin=0.85, xmax=0.88, axis lines=left, xlabel={RMSE test (plus bas = mieux)},
+    symbolic y coords={FM bayésienne,BPMF,Mélange,$k$NN,Soft-Impute,AutoRec,Factorisation ALS,Biais},
+    ytick={FM bayésienne,BPMF,Mélange,$k$NN,Soft-Impute,AutoRec,Factorisation ALS,Biais}, y dir=reverse, tick label style={font=\footnotesize}, label style={font=\small},
+    xticklabel style={/pgf/number format/.cd, fixed, precision=3, use comma},
+    nodes near coords, nodes near coords style={font=\scriptsize, /pgf/number format/.cd, fixed, precision=3, use comma},
+    enlarge y limits=0.08]
+  \addplot[fill=soft!50, draw=none] coordinates {(0.8746,Biais) (0.8725,Factorisation ALS) (0.8722,AutoRec)
+    (0.8716,Soft-Impute) (0.8705,$k$NN) (0.8683,Mélange) (0.8646,BPMF)};
+  \addplot[fill=accent, draw=none] coordinates {(0.8552,FM bayésienne)};
+\end{axis}
+\end{tikzpicture}
+\column{0.38\textwidth}
+\begin{itemize}
+  \item Moyenne seule : 1,037
+  \item Les biais font \key{l'essentiel} du gain
+  \item FM bayésienne : \key{$-0{,}019$} sur les biais, le seul saut net
+  \item 1,5 à 3 min sur entraînement + test \muted{(limite : 20 min)}
 \end{itemize}
 \end{columns}
 \end{frame}
 
 %-----------------------------------------------------------------------------
-\begin{frame}{Où chaque méthode aide-t-elle ?}
-\begin{center}
-\includegraphics[width=0.95\linewidth]{alt/rmse_by_popularity.png}
-\end{center}
-\begin{itemize}
-  \item $k$NN et Soft-Impute gagnent sur les films \key{populaires} (jusqu'à $-0{,}016$)
-  \item Sur les films à \key{1--2 notes}, seuls les biais guidés par les genres aident
-\end{itemize}
-\end{frame}
-
-%-----------------------------------------------------------------------------
-\begin{frame}{Leçons et suite}
+\begin{frame}{Ce qu'on retient}
 \begin{columns}[T]
 \column{0.5\textwidth}
-\textbf{Ce que nous avons appris}
+\textbf{Leçons}
 \begin{itemize}
-  \item À 1\,\% de densité, \key{les biais font 90\,\%} du gain
-  \item La formule $k$NN du cours surcorrige avec peu de voisins : $\beta = 0{,}2$ au dénominateur suffit
-  \item Arrondir les prédictions : accuracy inchangée, RMSE $+0{,}012$
-  \item Sur données creuses, \key{bayésien $>$ deep}
+  \item À 1\,\% de remplissage, \key{les biais font 90\,\%} du travail
+  \item Le vrai danger est d'apprendre par c\oe ur : tout se joue dans la \key{prudence} (régularisation)
+  \item Moyenner beaucoup de solutions \key{bat} chercher la meilleure
+  \item Savoir \emph{qui a noté quel film} aide plus que les genres
 \end{itemize}
 \column{0.5\textwidth}
-\textbf{Prochaines étapes}
+\textbf{Suite}
 \begin{itemize}
-  \item FM bayésienne dans \texttt{generate.py} (score plateforme)
-  \item Mélange FM + $k$NN + BPMF
-  \item Validation croisée sur train + test : les réglages tiennent-ils avec $2\times$ plus de notes ?
+  \item FM bayésienne soumise sur la plateforme
+  \item Mélanger FM, $k$NN et BPMF
+  \item Vérifier les réglages avec 2$\times$ plus de notes (entraînement + test)
 \end{itemize}
 \end{columns}
 \end{frame}

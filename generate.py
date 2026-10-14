@@ -4,8 +4,13 @@ import os
 from tqdm import tqdm, trange
 import argparse
 
-from src.baselines import fit_biases
+from pathlib import Path
+
+from src.bfm import fit_bfm
 from src.data import complete, to_coo
+from src.side_info import item_features
+
+METADATA = Path(__file__).resolve().parent / "data" / "namesngenre.npy"  # versioned with the code
 
 
 if __name__ == '__main__':
@@ -23,8 +28,9 @@ if __name__ == '__main__':
     print('Ratings Loaded.')
     
 
-    # Regularized biases mu + b_u + b_i (see src/baselines.py)
-    predict = fit_biases(to_coo(table), table.shape, lam=2.0)
+    # Bayesian factorization machine with implicit feedback and genres (see src/bfm.py)
+    predict = fit_bfm(to_coo(table), table.shape, item_features(METADATA),
+                      features=("iu", "ii", "side"), rank=10, n_iter=2000)
     table = complete(predict, table.shape)
 
     

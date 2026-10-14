@@ -24,7 +24,7 @@ if __name__ == '__main__':
     
 
     # Bayesian matrix factorization with biases (see src/bpmf.py): rank 20, noise precision 2,
-    # 100 Gibbs rounds thrown away, then the predictions of the next 300 rounds averaged
+    # 100 warm-up Gibbs rounds, then the predictions of the next 300 rounds averaged
     predict = fit_bpmf(to_coo(table), table.shape, rank=20, n_samples=300, burn_in=100, alpha=2.0)
     table = complete(predict, table.shape)
 

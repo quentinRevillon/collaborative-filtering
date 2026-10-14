@@ -263,10 +263,43 @@ d & biases learned \emph{with} the factors & $\mu + b_u + b_i$, updated at every
 \end{tabular}
 \end{center}
 \begin{itemize}\small
-  \item \textbf{Alternating least squares}: users fixed $\to$ exact formula for movies, then swap (15 rounds)
-  \item \textbf{Gradient descent}: small steps on batches of 128 ratings (30 rounds)
+  \item Each computed in the two ways of the course (next slide): \textbf{ALS} and \textbf{gradient descent}
   \item Each \textbf{without} ($\lambda \approx 0$) and \textbf{with} regularization; rank $k \in \{2, 5, 10, 20\}$
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Step 3: two ways to compute the same factorization}
+Same model, same cost $C(I, U)$; only the way of minimizing it differs.
+\vspace{0.4em}
+\begin{columns}[T]
+\column{0.49\textwidth}
+\colorbox{accent!8}{\parbox{0.95\linewidth}{
+\textbf{Alternating least squares (ALS)}\\[0.3em]
+\small
+With $U$ fixed, $C$ is a simple quadratic in $I$: setting its derivative to 0 gives the
+\key{exact} best $I$, one small regression per movie:
+\[
+  I_i = \bigl(U_{S_i}^\top U_{S_i} + \lambda\, \mathrm{Id}\bigr)^{-1} U_{S_i}^\top r_i
+\]
+\muted{\footnotesize $S_i$: users who rated movie $i$; $r_i$: their ratings.}\\[0.2em]
+Then fix $I$ and do the same for $U$. Repeat 15 times.\\[0.2em]
+No step size to choose.
+}}
+\column{0.49\textwidth}
+\colorbox{warm!12}{\parbox{0.95\linewidth}{
+\textbf{Gradient descent (GD)}\\[0.3em]
+\small
+Compute the slope of $C$ and move every number a \key{small step} $\eta$ downhill:
+\[
+  I \leftarrow I - \eta\, \tfrac{\partial C}{\partial I}, \qquad
+  U \leftarrow U - \eta\, \tfrac{\partial C}{\partial U}
+\]
+\muted{\footnotesize Stochastic version: slope computed on 128 ratings at a time.}\\[0.2em]
+$\eta = 0.01$, 30 passes over all ratings.\\[0.2em]
+Approximate: needs a step size and a number of passes.
+}}
+\end{columns}
+\takeaway{$C$ is not convex in $(I, U)$ jointly, but convex in each one alone: both methods reach a local minimum.}
 \end{frame}
 
 \begin{frame}{Step 3: matrix factorization, results (test error)}
@@ -275,7 +308,7 @@ d & biases learned \emph{with} the factors & $\mu + b_u + b_i$, updated at every
 \footnotesize\setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
- & \multicolumn{2}{c}{\textbf{Least squares}} & \multicolumn{2}{c}{\textbf{Gradient descent}} \\
+ & \multicolumn{2}{c}{\textbf{ALS}} & \multicolumn{2}{c}{\textbf{Gradient descent}} \\
 \textbf{Factorized} & no $\lambda$ & with $\lambda$ & no $\lambda$ & with $\lambda$ \\
 \midrule
 a. raw ratings & 1.316 & 0.992 & 0.958 & 0.930 \\
@@ -288,7 +321,7 @@ d. biases learned jointly & --- & 0.873 & --- & 0.878 \\
 \end{tabular}
 
 \vspace{0.4em}
-\muted{\footnotesize Best: c with least squares, $k = 20$, $\lambda = 10$.}
+\muted{\footnotesize Best: c with ALS, $k = 20$, $\lambda = 10$.}
 \column{0.38\textwidth}
 \begin{itemize}\small
   \item \key{Removing mean and biases first} is what makes factorization work
@@ -306,16 +339,16 @@ d. biases learned jointly & --- & 0.873 & --- & 0.878 \\
 \toprule
 c. minus mean + biases & \textbf{training} & \textbf{test} \\
 \midrule
-Least squares, no $\lambda$ & 0.601 & 1.134 \\
-Least squares, $\lambda = 10$ & 0.675 & \key{0.872} \\
+ALS, no $\lambda$ & 0.601 & 1.134 \\
+ALS, $\lambda = 10$ & 0.675 & \key{0.872} \\
 Gradient descent, no $\lambda$ & 0.714 & 0.897 \\
 Gradient descent, $\lambda = 0.1$ & 0.702 & 0.876 \\
 \bottomrule
 \end{tabular}
 \column{0.47\textwidth}
 \begin{itemize}\small
-  \item Least squares without $\lambda$ reproduces the training ratings and \key{fails on new ones}
-  \item Gradient descent without $\lambda$ suffers less: small starting values and only 30 rounds act as a hidden regularization
+  \item ALS without $\lambda$ jumps to the exact best fit of the training ratings, and \key{fails on new ones}
+  \item Gradient descent without $\lambda$ suffers less: it starts from small values and stops after 30 small-step passes, before fitting the training ratings exactly (a hidden regularization)
   \item Too large a $\lambda$: the hidden numbers become 0, back to the biases
 \end{itemize}
 \end{columns}

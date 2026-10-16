@@ -1,0 +1,27 @@
+Grille Koren, CV 5 plis :
+    k=20  lam_w=1  cv=0.8884 +/- 0.0082  (1 ep.)
+    k=20  lam_w=3  cv=0.8833 +/- 0.0076  (1 ep.)
+    k=20  lam_w=10  cv=0.8806 +/- 0.0073  (9 ep.)
+    k=20  lam_w=30  cv=0.8816 +/- 0.0069  (9 ep.)
+    k=20  lam_w=100  cv=0.8824 +/- 0.0067  (10 ep.)
+    k=50  lam_w=1  cv=0.8852 +/- 0.0082  (1 ep.)
+    k=50  lam_w=3  cv=0.8813 +/- 0.0078  (13 ep.)
+    k=50  lam_w=10  cv=0.8806 +/- 0.0072  (9 ep.)
+    k=50  lam_w=30  cv=0.8818 +/- 0.0068  (10 ep.)
+    k=50  lam_w=100  cv=0.8825 +/- 0.0067  (13 ep.)
+    k=100  lam_w=1  cv=0.8829 +/- 0.0073  (1 ep.)
+    k=100  lam_w=3  cv=0.8804 +/- 0.0074  (13 ep.)
+    k=100  lam_w=10  cv=0.8807 +/- 0.0069  (10 ep.)
+    k=100  lam_w=30  cv=0.8819 +/- 0.0067  (10 ep.)
+    k=100  lam_w=100  cv=0.8826 +/- 0.0066  (12 ep.)
+    k=200  lam_w=1  cv=0.8813 +/- 0.0068  (1 ep.)
+    k=200  lam_w=3  cv=0.8800 +/- 0.0073  (10 ep.)
+    k=200  lam_w=10  cv=0.8809 +/- 0.0069  (10 ep.)
+    k=200  lam_w=30  cv=0.8821 +/- 0.0067  (10 ep.)
+    k=200  lam_w=100  cv=0.8826 +/- 0.0066  (13 ep.)
+  -> meilleur : k=200 lam_w=3 (10 it.)  cv=0.88 +/- 0.0073
+
+Modele                                             RMSE train  RMSE test  Acc test    Temps
+Baseline biais regularises                             0.7885     0.8744     0.244    0.04s
+kNN films, poids = similarite (k=20, shrink=100, damp=0.5)     0.5988     0.8692     0.249    5.22s
+Koren, poids appris (k=200, lam_w=3, 10 it.)           0.6064     0.8704     0.251    6.15s

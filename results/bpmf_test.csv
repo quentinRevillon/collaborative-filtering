@@ -1,0 +1,4 @@
+model,train_rmse,test_rmse,test_acc,seconds
+Baseline biais regularises,0.7885,0.8744,0.244,0.03
+"kNN films (k=20, shrink=100, damp=0.5)",0.5988,0.8692,0.249,5.26
+"BPMF full (rang 10, 119 it., burn-in 20)",0.6098,0.869,0.248,19.78

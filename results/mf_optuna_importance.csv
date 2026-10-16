@@ -1,0 +1,5 @@
+param,importance
+lam_i,0.799
+lam_bias,0.132
+lam_u,0.063
+rank,0.005

@@ -1,0 +1,8 @@
+BPMF, alpha tire dans Gibbs (prior Gamma(1, 1), depart alpha=2), CV 5 plis :
+  cv=0.8780 +/- 0.0042  (148 it.)
+  iteration      :        1       5      10      20      50     100     150
+  alpha (moyen)  :    1.477   1.440   1.449   1.440   1.583   1.924   2.297
+  1/sqrt(alpha)  :    0.823   0.833   0.831   0.833   0.795   0.721   0.660
+  RMSE train     :    0.820   0.831   0.830   0.828   0.790   0.720   0.662
+  RMSE val (moy.):   0.9167  0.9278  0.9305  0.9308  0.8823  0.8786  0.8781
+  alpha apres burn-in : moyenne 1.861, ecart-type 0.287

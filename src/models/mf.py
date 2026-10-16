@@ -8,8 +8,9 @@ r̂_ui = <u_u, i_i>. Trois variantes selon `bias` :
 
 Fonction de coût (somme sur les notes observées S, comme dans le cours) :
     C = sum_{(u,i) in S} (r_ui - r̂_ui)^2
-        + lam (||U||^2 + ||I||^2) + lam_bias (||b_u||^2 + ||b_i||^2)
-Le cours a deux coefficients (lambda pour I, mu pour U) ; on prend le même `lam`.
+        + lam_u ||U||^2 + lam_i ||I||^2 + lam_bias (||b_u||^2 + ||b_i||^2)
+lam_u et lam_i correspondent aux mu et lambda du cours. Raccourci : `lam` fixe
+lam_u = lam_i = lam (une seule régularisation des facteurs).
 
 Deux optimiseurs de ce même C : MatrixFactorizationGD et MatrixFactorizationALS.
 """
@@ -17,16 +18,24 @@ import time
 
 import numpy as np
 
-from src.baselines import RATING_MAX, RATING_MIN
+from src.models.base import Model, clip_ratings
 
 
-class _MatrixFactorization:
+class _MatrixFactorization(Model):
     """Partie commune : paramètres, initialisation, prédiction, historique."""
 
-    def __init__(self, rank=10, lam=1.0, lam_bias=2.0, n_epochs=200, bias="full",
-                 init_std=0.1, seed=0, clip=True):
-        self.rank, self.lam, self.lam_bias, self.n_epochs = rank, lam, lam_bias, n_epochs
+    iterative = True
+
+    def __init__(self, rank=10, lam=1.0, lam_u=None, lam_i=None, lam_bias=2.0, n_epochs=200,
+                 bias="full", init_std=0.1, seed=0, clip=True):
+        self.lam_u = lam if lam_u is None else lam_u
+        self.lam_i = lam if lam_i is None else lam_i
+        self.rank, self.lam_bias, self.n_epochs = rank, lam_bias, n_epochs
         self.bias, self.init_std, self.seed, self.clip = bias, init_std, seed, clip
+
+    @staticmethod
+    def param_grid():
+        return {"rank": [2, 10, 50], "lam": [1, 5, 10, 15, 20]}
 
     def fit(self, R, R_val=None):
         """Entraîne sur R. Si R_val est fourni, enregistre la RMSE de validation à chaque
@@ -60,7 +69,7 @@ class _MatrixFactorization:
         sq_err = float(e @ e)
         if not np.isfinite(sq_err) or sq_err > 1e12:
             raise FloatingPointError(f"divergence à l'époque {epoch}")
-        loss = (sq_err + self.lam * ((self.U ** 2).sum() + (self.I ** 2).sum())
+        loss = (sq_err + self.lam_u * (self.U ** 2).sum() + self.lam_i * (self.I ** 2).sum()
                 + self.lam_bias * ((self.b_u ** 2).sum() + (self.b_i ** 2).sum()))
         self.history["epoch"].append(epoch)
         self.history["loss"].append(float(loss))
@@ -74,11 +83,11 @@ class _MatrixFactorization:
     def _predict_entries(self, users, items, clip=False):
         pred = (self.mu + self.b_u[users] + self.b_i[items]
                 + np.einsum("nk,nk->n", self.U[users], self.I[items]))
-        return np.clip(pred, RATING_MIN, RATING_MAX) if clip else pred
+        return clip_ratings(pred) if clip else pred
 
     def predict(self):
         R_hat = self.mu + self.b_u[:, None] + self.b_i[None, :] + self.U @ self.I.T
-        return np.clip(R_hat, RATING_MIN, RATING_MAX) if self.clip else R_hat
+        return clip_ratings(R_hat) if self.clip else R_hat
 
 
 class MatrixFactorizationGD(_MatrixFactorization):
@@ -86,8 +95,8 @@ class MatrixFactorizationGD(_MatrixFactorization):
     sur toutes les notes observées, puis mise à jour simultanée de U, I (et des biais).
 
     Avec e_ui = r_ui - r̂_ui sur les notes observées (cf. slide « Missing values ») :
-        dC/du_u = -2 sum_{i notés par u} e_ui i_i + 2 lam u_u
-        dC/di_i = -2 sum_{u ayant noté i} e_ui u_u + 2 lam i_i
+        dC/du_u = -2 sum_{i notés par u} e_ui i_i + 2 lam_u u_u
+        dC/di_i = -2 sum_{u ayant noté i} e_ui u_u + 2 lam_i i_i
         dC/db_u = -2 sum_i e_ui + 2 lam_bias b_u        (idem pour b_i)
 
     Les calculs ne portent que sur les ~30k notes observées (vecteurs users, items,
@@ -107,8 +116,8 @@ class MatrixFactorizationGD(_MatrixFactorization):
     def _step(self, users, items, r, n_users, n_items):
         e = r - self._predict_entries(users, items)
         grads = [
-            -2 * _scatter_sum(users, e[:, None] * self.I[items], n_users) + 2 * self.lam * self.U,
-            -2 * _scatter_sum(items, e[:, None] * self.U[users], n_items) + 2 * self.lam * self.I,
+            -2 * _scatter_sum(users, e[:, None] * self.I[items], n_users) + 2 * self.lam_u * self.U,
+            -2 * _scatter_sum(items, e[:, None] * self.U[users], n_items) + 2 * self.lam_i * self.I,
         ]
         if self.bias == "full":
             grads += [-2 * _scatter_sum(users, e, n_users) + 2 * self.lam_bias * self.b_u,
@@ -125,12 +134,12 @@ class MatrixFactorizationALS(_MatrixFactorization):
 
     Avec données manquantes, la forme close du cours I = R U (U^T U + lam Id)^-1
     devient un problème ridge indépendant par film, sur les seuls users qui l'ont noté :
-        i_i = (sum_{u ∈ S_i} u_u u_u^T + lam Id)^-1  sum_{u ∈ S_i} y_ui u_u
+        i_i = (sum_{u ∈ S_i} u_u u_u^T + lam_i Id)^-1  sum_{u ∈ S_i} y_ui u_u
     avec y_ui = r_ui - mu - b_u (la partie de la note que les facteurs doivent expliquer).
-    Symétrique pour u_u.
+    Symétrique pour u_u, avec lam_u.
 
     Variante "full" : on apprend b_i en même temps que i_i en ajoutant une colonne
-    de 1 aux u_u : x_u = [u_u, 1], w_i = [i_i, b_i], pénalité diag(lam, ..., lam, lam_bias).
+    de 1 aux u_u : x_u = [u_u, 1], w_i = [i_i, b_i], pénalité diag(lam_i, ..., lam_i, lam_bias).
 
     Pas de pas d'apprentissage : chaque demi-étape est un minimum exact, donc C décroît
     à chaque itération. Une époque = une mise à jour de I puis une de U.
@@ -142,16 +151,16 @@ class MatrixFactorizationALS(_MatrixFactorization):
 
     def _step(self, users, items, r, n_users, n_items):
         y_items = r - self.mu - (self.b_u[users] if self.bias == "full" else 0.0)
-        self.I, self.b_i = self._solve_side(self._by_item, y_items, self.U[users])
+        self.I, self.b_i = self._solve_side(self._by_item, y_items, self.U[users], self.lam_i)
         y_users = r - self.mu - (self.b_i[items] if self.bias == "full" else 0.0)
-        self.U, self.b_u = self._solve_side(self._by_user, y_users, self.I[items])
+        self.U, self.b_u = self._solve_side(self._by_user, y_users, self.I[items], self.lam_u)
 
-    def _solve_side(self, groups, y, X):
+    def _solve_side(self, groups, y, X, lam):
         """Pour chaque ligne j : w_j = argmin sum_{n ∈ groups[j]} (y_n - <w_j, x_n>)^2 + pénalité.
 
         X[n] est le vecteur de facteurs de « l'autre côté » de la note n (fixé)."""
         k = self.rank
-        reg = np.full(k, float(self.lam))
+        reg = np.full(k, float(lam))
         if self.bias == "full":
             X = np.hstack([X, np.ones((len(X), 1))])
             reg = np.append(reg, self.lam_bias)

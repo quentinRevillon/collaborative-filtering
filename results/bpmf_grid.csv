@@ -1,0 +1,4 @@
+variant,n_epochs,burn_in,alpha,bias,rank,cv_rmse,cv_std
+full,119,20,2.0,full,10,0.882,0.0049
+full,150,20,2.0,full,20,0.8827,0.0028
+mean,145,20,2.0,mean,10,0.8831,0.0029

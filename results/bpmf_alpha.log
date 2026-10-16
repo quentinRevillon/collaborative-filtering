@@ -1,0 +1,9 @@
+BPMF, grille sur alpha, CV 5 plis ({'bias': 'full', 'rank': 10, 'n_epochs': 150, 'burn_in': 20, 'seed': 0}) :
+    alpha=0.5  cv=0.9137 +/- 0.0087  (113 ep.)
+    alpha=1  cv=0.8860 +/- 0.0070  (150 ep.)
+    alpha=1.5  cv=0.8776 +/- 0.0055  (133 ep.)
+    alpha=2  cv=0.8820 +/- 0.0049  (119 ep.)
+    alpha=3  cv=0.8965 +/- 0.0043  (150 ep.)
+    alpha=5  cv=0.9066 +/- 0.0062  (1 ep.)
+    alpha=8  cv=0.9076 +/- 0.0059  (1 ep.)
+  -> meilleur : alpha=1.5 (133 it.)  cv=0.8776 +/- 0.0055

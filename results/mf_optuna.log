@@ -1,0 +1,42 @@
+Optuna ALS full, 25 essais, CV 5 plis (essai 0 = meilleur point de la grille GD) :
+    essai   0  rank=50  lam_u=10  lam_i=10  lam_bias=2  cv=0.8833 +/- 0.0065  (13 ep.)
+    essai   1  rank=12  lam_u=14  lam_i=6.43  lam_bias=4.31  cv=0.8847 +/- 0.0063  (25 ep.)
+    essai   2  rank=7  lam_u=8.66  lam_i=2.05  lam_bias=47.3  cv=0.9450 +/- 0.0087  (1 ep.)
+    essai   3  rank=56  lam_u=1.41  lam_i=23.7  lam_bias=3.86  cv=0.8885 +/- 0.0062  (1 ep.)
+    essai   4  rank=13  lam_u=59.8  lam_i=0.163  lam_bias=0.183  cv=0.9614 +/- 0.0042  (25 ep.)
+    essai   5  rank=2  lam_u=31.5  lam_i=21.6  lam_bias=40.7  cv=0.9233 +/- 0.0081  (1 ep.)
+    essai   6  rank=60  lam_u=25  lam_i=2.42  lam_bias=22  cv=0.8996 +/- 0.0074  (11 ep.)
+    essai   7  rank=2  lam_u=8.31  lam_i=0.269  lam_bias=68.2  cv=0.9745 +/- 0.0087  (25 ep.)
+    essai   8  rank=11  lam_u=1.75  lam_i=0.622  lam_bias=21  elague apres 2 pli(s)
+    essai   9  rank=8  lam_u=5.07  lam_i=0.114  lam_bias=7.13  elague apres 2 pli(s)
+    essai  10  rank=33  lam_u=15.7  lam_i=5.04  lam_bias=0.283  cv=0.9038 +/- 0.0062  (25 ep.)
+    essai  11  rank=2  lam_u=53.9  lam_i=9.22  lam_bias=3.41  cv=0.8831 +/- 0.0066  (25 ep.)
+    essai  12  rank=3  lam_u=28.6  lam_i=1.87  lam_bias=3.18  cv=0.8880 +/- 0.0060  (2 ep.)
+    essai  13  rank=16  lam_u=79.4  lam_i=7.96  lam_bias=1.64  cv=0.8849 +/- 0.0064  (25 ep.)
+    essai  14  rank=3  lam_u=5.07  lam_i=17  lam_bias=7.29  cv=0.8888 +/- 0.0067  (2 ep.)
+    essai  15  rank=11  lam_u=1.67  lam_i=7.98  lam_bias=0.292  elague apres 2 pli(s)
+    essai  16  rank=35  lam_u=4.62  lam_i=3.64  lam_bias=1.7  elague apres 2 pli(s)
+    essai  17  rank=27  lam_u=10.3  lam_i=30  lam_bias=1.62  cv=0.8850 +/- 0.0064  (25 ep.)
+    essai  18  rank=54  lam_u=37.1  lam_i=65.7  lam_bias=4.54  cv=0.8841 +/- 0.0066  (25 ep.)
+    essai  19  rank=21  lam_u=46  lam_i=27.4  lam_bias=0.77  elague apres 2 pli(s)
+    essai  20  rank=6  lam_u=56.9  lam_i=11.5  lam_bias=0.786  elague apres 2 pli(s)
+    essai  21  rank=60  lam_u=5.98  lam_i=12.4  lam_bias=10.6  elague apres 2 pli(s)
+    essai  22  rank=64  lam_u=28.7  lam_i=23.3  lam_bias=16.1  elague apres 2 pli(s)
+    essai  23  rank=59  lam_u=10.5  lam_i=96.9  lam_bias=2.23  cv=0.8834 +/- 0.0065  (25 ep.)
+    essai  24  rank=53  lam_u=8.11  lam_i=57  lam_bias=16.3  elague apres 2 pli(s)
+
+Importance des hyperparametres (part de la variance du score expliquee) :
+  lam_i     0.80
+  lam_bias  0.13
+  lam_u     0.06
+  rank      0.01
+
+Meilleur : {'bias': 'full', 'n_epochs': 25, 'rank': 2, 'lam_u': 53.91191283726968, 'lam_i': 9.220688960776432, 'lam_bias': 3.4100565699300254}  cv=0.8831 +/- 0.0066
+Nombre d'epoques de la GD pour ces hyperparametres (CV) :
+  394 ep.  cv=0.8831 +/- 0.0066
+
+Modele                                             RMSE train  RMSE test  Acc test    Temps
+Baseline biais regularises                             1.0326     1.0369     0.129    0.07s
+MF-GD grille (k=50, lam=10)                            0.6721     0.8723     0.248   17.88s
+MF-ALS Optuna (k=2, lam_u=53.9, lam_i=9.22, lam_b=3.41)     0.7913     0.8744     0.245    2.58s
+MF-GD Optuna (394 ep.)                                 0.7913     0.8744     0.245    2.58s

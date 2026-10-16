@@ -1,17 +1,13 @@
-"""Baselines : moyenne globale et modèle de biais  r_ui ≈ mu + b_u + b_i.
-
-Chaque modèle expose `fit(R)` (R avec NaN pour les entrées manquantes) et
-`predict()` qui renvoie la matrice complète (n_users, n_items).
-"""
+"""Baselines : moyenne globale et modèle de biais  r_ui ≈ mu + b_u + b_i."""
 import numpy as np
 
-RATING_MIN, RATING_MAX = 0.5, 5.0
+from src.models.base import Model, clip_ratings
 
 
-class GlobalMean:
+class GlobalMean(Model):
     """Prédit la même valeur mu (moyenne des notes observées) partout."""
 
-    def fit(self, R):
+    def fit(self, R, R_val=None):
         self.shape = R.shape
         self.mu = np.nanmean(R)
         return self
@@ -20,7 +16,7 @@ class GlobalMean:
         return np.full(self.shape, self.mu)
 
 
-class Biases:
+class Biases(Model):
     """r_ui ≈ mu + b_u + b_i, appris par moindres carrés sur les notes observées.
 
     Minimise  sum_{(u,i) obs} (r_ui - mu - b_u - b_i)^2 + lam_u ||b_u||^2 + lam_i ||b_i||^2
@@ -45,27 +41,32 @@ class Biases:
         self.use_user, self.use_item = use_user, use_item
         self.clip = clip
 
-    def fit(self, R):
-        mask = ~np.isnan(R)
-        R0 = np.where(mask, R, 0.0)
-        n_users, n_items = R.shape
-        n_u, n_i = mask.sum(1), mask.sum(0)
+    @staticmethod
+    def param_grid():
+        return {"lam_u": [0, 1, 2, 3, 5, 10, 20], "lam_i": [0, 1, 2, 3, 5, 10, 20]}
 
-        self.mu = R0.sum() / mask.sum()
+    def fit(self, R, R_val=None):
+        users, items = np.nonzero(~np.isnan(R))
+        r = R[users, items]
+        n_users, n_items = R.shape
+        n_u = np.bincount(users, minlength=n_users)
+        n_i = np.bincount(items, minlength=n_items)
+
+        self.mu = r.mean()
         self.b_u, self.b_i = np.zeros(n_users), np.zeros(n_items)
 
         for _ in range(self.n_iter):
             if self.use_item:
-                resid = np.where(mask, R0 - self.mu - self.b_u[:, None], 0.0)
-                self.b_i = _shrunk_mean(resid.sum(0), n_i, self.lam_i)
+                resid = r - self.mu - self.b_u[users]
+                self.b_i = _shrunk_mean(np.bincount(items, resid, n_items), n_i, self.lam_i)
             if self.use_user:
-                resid = np.where(mask, R0 - self.mu - self.b_i[None, :], 0.0)
-                self.b_u = _shrunk_mean(resid.sum(1), n_u, self.lam_u)
+                resid = r - self.mu - self.b_i[items]
+                self.b_u = _shrunk_mean(np.bincount(users, resid, n_users), n_u, self.lam_u)
         return self
 
     def predict(self):
-        P = self.mu + self.b_u[:, None] + self.b_i[None, :]
-        return np.clip(P, RATING_MIN, RATING_MAX) if self.clip else P
+        R_hat = self.mu + self.b_u[:, None] + self.b_i[None, :]
+        return clip_ratings(R_hat) if self.clip else R_hat
 
 
 def _shrunk_mean(sums, counts, lam):

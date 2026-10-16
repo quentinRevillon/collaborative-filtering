@@ -1,0 +1,21 @@
+BPMF 'mean', CV 5 plis :
+    rank=10  cv=0.8831 +/- 0.0029  (145 ep.)
+BPMF 'full', CV 5 plis :
+    rank=10  cv=0.8820 +/- 0.0049  (119 ep.)
+    rank=20  cv=0.8827 +/- 0.0028  (150 ep.)
+  -> meilleur : full rang 10 (119 it.)  cv=0.882 +/- 0.0049
+
+Courbe sur le pli 1 (echantillon seul vs moyenne des echantillons) :
+  it.   1 : echantillon 0.9163   moyenne 0.9163
+  it.  10 : echantillon 0.9272   moyenne 0.9272
+  it.  20 : echantillon 0.9284   moyenne 0.9284
+  it.  21 : echantillon 0.9368   moyenne 0.9368
+  it.  30 : echantillon 0.9290   moyenne 0.8832
+  it.  50 : echantillon 0.9546   moyenne 0.8791
+  it. 100 : echantillon 1.0005   moyenne 0.8782
+  it. 150 : echantillon 1.0169   moyenne 0.8791
+
+Modele                                             RMSE train  RMSE test  Acc test    Temps
+Baseline biais regularises                             0.7885     0.8744     0.244    0.03s
+kNN films (k=20, shrink=100, damp=0.5)                 0.5988     0.8692     0.249    5.26s
+BPMF full (rang 10, 119 it., burn-in 20)               0.6098     0.8690     0.248   19.78s

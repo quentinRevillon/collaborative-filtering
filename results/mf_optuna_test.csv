@@ -1,0 +1,5 @@
+model,train_rmse,test_rmse,test_acc,seconds
+Baseline biais regularises,0.7885,0.8744,0.244,0.04
+"MF-GD grille (k=50, lam=10)",0.6721,0.8723,0.248,17.88
+"MF-ALS Optuna (k=2, lam_u=53.9, lam_i=9.22, lam_b=3.41)",0.7913,0.8744,0.245,2.58
+MF-GD Optuna (394 ep.),0.7913,0.8744,0.245,2.58

@@ -4,7 +4,7 @@ import os
 from tqdm import tqdm, trange
 import argparse
 
-from src.baselines import Biases
+from src.models import Biases
 
 
 if __name__ == '__main__':
@@ -23,8 +23,8 @@ if __name__ == '__main__':
     
 
     # Any method you want
-    # Baseline : biais user + film regularises (lambda regle sur validation, cf. src/run_baselines.py)
-    table = Biases(lam_u=2, lam_i=2).fit(table).predict()
+    # Baseline : biais user + film regularises (lambdas regles par CV 5 plis, cf. src/experiments/baselines.py)
+    table = Biases(lam_u=5, lam_i=3).fit(table).predict()
 
     
 

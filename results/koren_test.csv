@@ -1,0 +1,4 @@
+model,train_rmse,test_rmse,test_acc,seconds
+Baseline biais regularises,0.7885,0.8744,0.244,0.04
+"kNN films, poids = similarite (k=20, shrink=100, damp=0.5)",0.5988,0.8692,0.249,5.22
+"Koren, poids appris (k=200, lam_w=3, 10 it.)",0.6064,0.8704,0.251,6.15

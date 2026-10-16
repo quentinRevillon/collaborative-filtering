@@ -1,0 +1,9 @@
+model,train_rmse,test_rmse,test_acc,seconds
+Moyenne globale,1.0326,1.0369,0.129,0.02
+Biais film (mu + b_i),0.8417,0.9996,0.221,0.03
+Biais user (mu + b_u),0.9232,0.9448,0.217,0.03
+"Biais user+film, sequentiel",0.761,0.9218,0.235,0.03
+"Biais user+film, moindres carres",0.7469,0.9042,0.24,0.04
+Biais film regularise (lam_i=3),0.8827,0.9654,0.218,0.03
+Biais user regularise (lam_u=5),0.9256,0.9435,0.22,0.03
+"Biais regularises (lam_u=5, lam_i=3)",0.7885,0.8744,0.244,0.03

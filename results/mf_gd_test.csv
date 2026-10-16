@@ -1,0 +1,5 @@
+model,train_rmse,test_rmse,test_acc,seconds
+Baseline biais regularises,0.7885,0.8744,0.244,0.03
+"MF-GD none (k=2, lam=1, 90 ep.)",0.7155,0.9785,0.229,0.54
+"MF-GD mean (k=2, lam=5, 800 ep.)",0.7639,0.9248,0.218,4.4
+"MF-GD full (k=50, lam=10, 244 ep.)",0.6721,0.8723,0.248,15.64

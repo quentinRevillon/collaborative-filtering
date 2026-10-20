@@ -16,7 +16,7 @@ When your code will be test, we will execute:
 ## Organisation du code
 
 ```
-data/                    # .npy du zip (non versionnés, cf. .gitignore)
+data/                    # .npy du zip (non versionnés), sauf namesngenre2.npy (genres corrigés, versionné)
 generate.py              # point d'entrée de la plateforme (utilise src.models)
 src/
   data.py                # chargement des matrices, split validation, K-fold sur les notes observées
@@ -25,6 +25,10 @@ src/
     base.py              #   classe Model commune, bornes des notes
     baselines.py         #   GlobalMean, Biases (mu + b_u + b_i, régularisé ou non)
     mf.py                #   R ≈ U I^T (+ mu, + biais) : descente de gradient et ALS
+    knn.py               #   kNN sur les résidus des biais (Pearson + shrink + damp)
+    koren.py             #   modèle de voisinage de Koren 2008 (poids appris)
+    bpmf.py              #   BPMF (Gibbs), alpha fixé ou tiré
+    bfm.py               #   Bayesian Factorization Machine (myfm) : implicite + genres
   tuning.py              # validation croisée K plis : grid_search, optuna_search (early stopping inclus)
   evaluation.py          # protocole final : réentraîner sur train, scorer sur test, CSV
   experiments/           # une étude = un script court qui assemble les briques ci-dessus
@@ -32,6 +36,11 @@ src/
     mf_gd.py
     als.py
     mf_optuna.py         #   lam_u, lam_i, lam_bias séparés, réglés avec Optuna
+    knn.py, koren.py     #   voisinages : kNN films/users, Koren
+    bpmf.py              #   BPMF : variantes, rang
+    bpmf_init.py         #   BPMF : effet de l'initialisation
+    bpmf_alpha.py        #   BPMF : grille sur alpha, alpha tiré, config longue, test
+    bfm.py               #   Bayesian FM : features, rang, courbe, test
   plots/
     convergence.py       # figure GD vs ALS (lit results/, écrit figures/)
     bpmf_alpha.py        # figure RMSE CV de BPMF selon alpha
@@ -66,6 +75,11 @@ python -m src.experiments.baselines        # ~15 s
 python -m src.experiments.mf_gd            # long (~30 min)
 python -m src.experiments.als              # ~15 min, utilise les résultats des deux précédents
 python -m src.experiments.mf_optuna        # ~30 min (25 essais), part du meilleur point de la grille
+python -m src.experiments.knn              # ~1 min
+python -m src.experiments.koren            # ~4 min
+python -m src.experiments.bpmf             # ~10 min
+python -m src.experiments.bpmf_alpha       # ~25 min (options --gibbs, --long, --test)
+python -m src.experiments.bfm              # ~20 min (--skip-cv : seulement courbe + test)
 python -m src.plots.convergence
 python -m src.plots.bpmf_alpha
 ```

@@ -1,0 +1,15 @@
+Meilleure config (results/bfm_grid.csv) : tout, {'n_epochs': 118, 'burn_in': 20, 'features': ('iu', 'ii', 'side'), 'rank': 5}  cv=0.8472
+
+3. Courbe sur le pli 1 (echantillon seul vs moyenne, alpha tire) :
+  it.   1 : echantillon 1.0088   moyenne 1.0088   alpha 0.07
+  it.  20 : echantillon 0.9064   moyenne 0.9064   alpha 1.59
+  it.  50 : echantillon 0.9168   moyenne 0.8528   alpha 1.74
+  it. 100 : echantillon 0.9487   moyenne 0.8471   alpha 2.04
+  it. 200 : echantillon 0.9736   moyenne 0.8478   alpha 2.21
+  it. 300 : echantillon 0.9768   moyenne 0.8502   alpha 2.20
+  it. 500 : echantillon 0.9758   moyenne 0.8531   alpha 2.18
+
+Modele                                             RMSE train  RMSE test  Acc test    Temps
+Baseline biais regularises                             0.7885     0.8744     0.244    0.06s
+BPMF avec biais (rang 10, alpha 1.5, 133 it.)          0.7042     0.8653     0.247   32.10s
+Bayesian FM tout (rang 5, 118 it.)                     0.6625     0.8407     0.256    4.65s

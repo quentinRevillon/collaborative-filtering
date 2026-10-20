@@ -1,0 +1,7 @@
+step,variant,n_epochs,burn_in,features,rank,cv_rmse,cv_std
+features,aucune (= BPMF),166,20,aucune,10,0.8793,0.0046
+features,genres,157,20,side,10,0.8496,0.0069
+features,implicite,103,20,iu+ii,10,0.8728,0.0045
+features,tout,64,20,iu+ii+side,10,0.8473,0.0045
+rank,tout,118,20,iu+ii+side,5,0.8472,0.0031
+rank,tout,102,20,iu+ii+side,20,0.8478,0.0064

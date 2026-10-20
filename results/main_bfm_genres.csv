@@ -1,0 +1,8 @@
+eval,config,features,genres,n_iter,rmse,std,per_fold
+cv5,sans genres (iu+ii),iu+ii,nouveau,1000,0.8763,0.0052,0.8698 0.8702 0.8795 0.8807 0.8812
+cv5,"genres seuls, ancien",side,ancien,1000,0.8792,0.0049,0.8789 0.8706 0.8787 0.8838 0.8840
+cv5,"genres seuls, nouveau",side,nouveau,1000,0.8563,0.0063,0.8541 0.8487 0.8532 0.8674 0.8578
+cv5,"complet (iu+ii+side), ancien",iu+ii+side,ancien,1000,0.8732,0.0042,0.8702 0.8682 0.8729 0.8743 0.8805
+cv5,"complet (iu+ii+side), nouveau",iu+ii+side,nouveau,1000,0.8532,0.0051,0.8522 0.8443 0.8532 0.8579 0.8586
+test,"complet, ancien",iu+ii+side,ancien,2000,0.8552,,
+test,"complet, nouveau",iu+ii+side,nouveau,2000,0.8403,,

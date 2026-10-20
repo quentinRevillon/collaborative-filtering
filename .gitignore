@@ -3,3 +3,4 @@ output.npy
 __pycache__/
 *.pyc
 .venv/
+!data/namesngenre2.npy

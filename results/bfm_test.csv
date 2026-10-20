@@ -1,0 +1,4 @@
+model,train_rmse,test_rmse,test_acc,seconds
+Baseline biais regularises,0.7885,0.8744,0.244,0.06
+"BPMF avec biais (rang 10, alpha 1.5, 133 it.)",0.7042,0.8653,0.247,32.1
+"Bayesian FM tout (rang 5, 118 it.)",0.6625,0.8407,0.256,4.65

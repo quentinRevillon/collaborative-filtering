@@ -1,0 +1,21 @@
+1. Features, rang 10, CV 5 plis :
+    aucune (= BPMF)  cv=0.8793 +/- 0.0046  (166 it.)
+    genres           cv=0.8496 +/- 0.0069  (157 it.)
+    implicite        cv=0.8728 +/- 0.0045  (103 it.)
+    tout             cv=0.8473 +/- 0.0045  (64 it.)
+2. Rang, features 'tout' :
+    rank=5  cv=0.8472 +/- 0.0031  (118 ep.)
+    rank=20  cv=0.8478 +/- 0.0064  (102 ep.)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\vince\Desktop\IASD\DataLab\masteriasd-datalab-project-a1-group-40\src\experiments\bfm.py", line 78, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\vince\Desktop\IASD\DataLab\masteriasd-datalab-project-a1-group-40\src\experiments\bfm.py", line 61, in main
+    h = BayesianFM(**dict(p, n_epochs=FIXED["n_epochs"])).fit(*folds[0]).history
+        ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: BayesianFM.__init__() got an unexpected keyword argument 'step'
+  -> meilleur : tout, rang 5 (118 it.)  cv=0.8472 +/- 0.0031
+
+3. Courbe sur le pli 1 (echantillon seul vs moyenne, alpha tire) :

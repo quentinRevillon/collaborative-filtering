@@ -1,0 +1,16 @@
+features : ancien (4980, 33) | nouveau (4980, 32)
+pli 1 : sans genres (iu+ii)=0.8698  genres seuls, ancien=0.8789  genres seuls, nouveau=0.8541  complet (iu+ii+side), ancien=0.8702  complet (iu+ii+side), nouveau=0.8522
+pli 2 : sans genres (iu+ii)=0.8702  genres seuls, ancien=0.8706  genres seuls, nouveau=0.8487  complet (iu+ii+side), ancien=0.8682  complet (iu+ii+side), nouveau=0.8443
+pli 3 : sans genres (iu+ii)=0.8795  genres seuls, ancien=0.8787  genres seuls, nouveau=0.8532  complet (iu+ii+side), ancien=0.8729  complet (iu+ii+side), nouveau=0.8532
+pli 4 : sans genres (iu+ii)=0.8807  genres seuls, ancien=0.8838  genres seuls, nouveau=0.8674  complet (iu+ii+side), ancien=0.8743  complet (iu+ii+side), nouveau=0.8579
+pli 5 : sans genres (iu+ii)=0.8812  genres seuls, ancien=0.8840  genres seuls, nouveau=0.8578  complet (iu+ii+side), ancien=0.8805  complet (iu+ii+side), nouveau=0.8586
+CV 5 plis (rang 10, 1000 iterations)
+  sans genres (iu+ii)              0.8763 +/- 0.0052
+  genres seuls, ancien             0.8792 +/- 0.0049
+  genres seuls, nouveau            0.8563 +/- 0.0063
+  complet (iu+ii+side), ancien     0.8732 +/- 0.0042
+  complet (iu+ii+side), nouveau    0.8532 +/- 0.0051
+  complet nouveau - ancien, par pli : -0.0181 -0.0240 -0.0197 -0.0165 -0.0219  (moyenne -0.0200)
+Train -> test, config finale de Quentin (iu+ii+side, rang 10, 2000 iterations) :
+  genres ancien   RMSE test 0.8552  (90 s)
+  genres nouveau  RMSE test 0.8403  (93 s)

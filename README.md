@@ -41,6 +41,9 @@ src/
     bpmf_init.py         #   BPMF : effet de l'initialisation
     bpmf_alpha.py        #   BPMF : grille sur alpha, alpha tiré, config longue, test
     bfm.py               #   Bayesian FM : features, rang, courbe, test
+    main_bpmf_cv.py      #   vérif. du BPMF de main sur nos plis (4 configs)
+    main_bfm_genres.py   #   vérif. de la Bayesian FM de main : ancien vs nouveau fichier de genres
+    main_code.py         #   chargement du code de main depuis une copie locale (../a1-main)
   plots/
     convergence.py       # figure GD vs ALS (lit results/, écrit figures/)
     bpmf_alpha.py        # figure RMSE CV de BPMF selon alpha
@@ -80,6 +83,9 @@ python -m src.experiments.koren            # ~4 min
 python -m src.experiments.bpmf             # ~10 min
 python -m src.experiments.bpmf_alpha       # ~25 min (options --gibbs, --long, --test)
 python -m src.experiments.bfm              # ~20 min (--skip-cv : seulement courbe + test)
+git worktree add ../a1-main origin/main    # copie de main, pour les deux vérifications suivantes
+python -m src.experiments.main_bpmf_cv     # ~10 min, nécessite torch
+python -m src.experiments.main_bfm_genres  # ~30 min
 python -m src.plots.convergence
 python -m src.plots.bpmf_alpha
 ```

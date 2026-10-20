@@ -24,7 +24,8 @@ columns: only 13 % of the columns had the right movie).
 
 ```
 generate.py              platform entry point (load/save lines unchanged)
-requirements.txt         libraries installed by the platform (pip install -r requirements.txt)
+requirements.txt         libraries installed by the platform (pip install -r requirements.txt);
+                         torch is not listed: generate.py does not need it (see Usage)
 slides.pdf               preliminary presentation (source: slides/slides.tex)
 slides/                  slides.tex (main deck), slides_finales.tex/.pdf (deck with every method tested)
 src/                     models, all with the API fit_xxx(train, shape, **hp) -> predict(u, i)
@@ -48,9 +49,14 @@ data/                    namesngenre2.npy (corrected genres, versioned), namesng
 
 ```bash
 pip install -r requirements.txt
+pip install torch                                          # only for the experiments below
 python generate.py --name data/ratings_train.npy          # writes output.npy
 python experiments/evaluate_output.py --output output.npy --test data/ratings_test.npy
 ```
+
+`torch` is only used by the experiment code (`src/bpmf.py`, `src/mf.py`, `src/autorec.py`,
+`src/gcmc.py`, `src/glocalk.py` and the `experiments/` scripts that call them); it is not in
+`requirements.txt` so that the platform does not install it for `generate.py`.
 
 ## Protocol
 

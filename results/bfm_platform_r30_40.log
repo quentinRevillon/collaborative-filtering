@@ -1,0 +1,6 @@
+Train + test : 63196 notes, CV 5 plis (~50556 notes d'apprentissage par pli)
+  rang 30 : meilleure it. 179  cv=0.8168 +/- 0.0040  | it. 118 : 0.8175  | it. 500 : 0.8179
+  rang 40 : meilleure it. 490  cv=0.8186 +/- 0.0050  | it. 118 : 0.8198  | it. 500 : 0.8186
+
+Meilleure config (tous rangs) : rang 30, 179 it. -> cv=0.8168 +/- 0.004  (par pli : 0.8128 0.8203 0.8191 0.8208 0.8112)
+Soumission actuelle (rang 5, 118 it.) : cv=0.8205

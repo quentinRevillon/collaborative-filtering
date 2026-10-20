@@ -1,0 +1,46 @@
+Predictions hors pli, CV 5 plis sur train + test, 10 chaines FM :
+  reprise de ['biais', 'fm_0', 'fm_1', 'fm_2', 'fm_3', 'fm_4', 'knn_films', 'knn_users']
+  pli 1 : chaine FM 5 (28 s)
+  pli 1 : chaine FM 6 (29 s)
+  pli 1 : chaine FM 7 (32 s)
+  pli 1 : chaine FM 8 (32 s)
+  pli 1 : chaine FM 9 (42 s)
+  pli 2 : chaine FM 5 (30 s)
+  pli 2 : chaine FM 6 (30 s)
+  pli 2 : chaine FM 7 (34 s)
+  pli 2 : chaine FM 8 (34 s)
+  pli 2 : chaine FM 9 (34 s)
+  pli 3 : chaine FM 5 (35 s)
+  pli 3 : chaine FM 6 (34 s)
+  pli 3 : chaine FM 7 (34 s)
+  pli 3 : chaine FM 8 (34 s)
+  pli 3 : chaine FM 9 (35 s)
+  pli 4 : chaine FM 5 (35 s)
+  pli 4 : chaine FM 6 (36 s)
+  pli 4 : chaine FM 7 (34 s)
+  pli 4 : chaine FM 8 (34 s)
+  pli 4 : chaine FM 9 (35 s)
+  pli 5 : chaine FM 5 (34 s)
+  pli 5 : chaine FM 6 (34 s)
+  pli 5 : chaine FM 7 (37 s)
+  pli 5 : chaine FM 8 (35 s)
+  pli 5 : chaine FM 9 (35 s)
+  FM, moyenne de 1 chaine(s)                       cv=0.8171 +/- 0.0047  ecart vs FM(1) +0.0000  (+0.0000 +0.0000 +0.0000 +0.0000 +0.0000)
+  FM, moyenne de 2 chaine(s)                       cv=0.8141 +/- 0.0052  ecart vs FM(1) -0.0030  (-0.0049 -0.0022 -0.0032 -0.0017 -0.0028)
+  FM, moyenne de 3 chaine(s)                       cv=0.8125 +/- 0.0050  ecart vs FM(1) -0.0046  (-0.0065 -0.0042 -0.0052 -0.0030 -0.0041)
+  FM, moyenne de 5 chaine(s)                       cv=0.8117 +/- 0.0050  ecart vs FM(1) -0.0054  (-0.0069 -0.0048 -0.0063 -0.0039 -0.0048)
+  FM, moyenne de 10 chaine(s)                      cv=0.8113 +/- 0.0052  ecart vs FM(1) -0.0058  (-0.0074 -0.0045 -0.0072 -0.0043 -0.0054)
+  stack FM(1) + kNN films                          cv=0.8132 +/- 0.0048  ecart vs FM(1) -0.0039  (-0.0038 -0.0032 -0.0042 -0.0045 -0.0038)
+  stack FM(1) + kNN films + kNN users + biais      cv=0.8132 +/- 0.0048  ecart vs FM(1) -0.0039  (-0.0039 -0.0032 -0.0042 -0.0045 -0.0038)
+  stack FM(5) + kNN films                          cv=0.8098 +/- 0.0050  ecart vs FM(1) -0.0073  (-0.0087 -0.0062 -0.0081 -0.0065 -0.0068)
+  stack FM(5) + kNN films + kNN users + biais      cv=0.8098 +/- 0.0050  ecart vs FM(1) -0.0072  (-0.0087 -0.0062 -0.0081 -0.0064 -0.0068)
+  stack FM(10) + kNN films                         cv=0.8095 +/- 0.0052  ecart vs FM(1) -0.0075  (-0.0090 -0.0059 -0.0088 -0.0067 -0.0072)
+  stack FM(10) + kNN films + kNN users + biais     cv=0.8095 +/- 0.0052  ecart vs FM(1) -0.0075  (-0.0090 -0.0059 -0.0088 -0.0066 -0.0072)
+
+Poids des stacks (appris sur toutes les predictions hors pli) :
+  variant=stack FM(1) + kNN films  intercept=0.0539  w_fm1=0.7552  w_knn_films=0.2298
+  variant=stack FM(1) + kNN films + kNN users + biais  intercept=0.0557  w_fm1=0.7525  w_knn_films=0.195  w_knn_users=0.0895  w_biais=-0.0525
+  variant=stack FM(5) + kNN films  intercept=0.0657  w_fm5=0.8215  w_knn_films=0.1609
+  variant=stack FM(5) + kNN films + kNN users + biais  intercept=0.0634  w_fm5=0.8219  w_knn_films=0.1245  w_knn_users=0.0196  w_biais=0.0171
+  variant=stack FM(10) + kNN films  intercept=0.0649  w_fm10=0.8282  w_knn_films=0.1543
+  variant=stack FM(10) + kNN films + kNN users + biais  intercept=0.062  w_fm10=0.8291  w_knn_films=0.1165  w_knn_users=0.0117  w_biais=0.0262

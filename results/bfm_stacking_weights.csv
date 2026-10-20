@@ -1,0 +1,7 @@
+variant,intercept,w_fm1,w_knn_films,w_knn_users,w_biais,w_fm5,w_fm10
+stack FM(1) + kNN films,0.0539,0.7552,0.2298,,,,
+stack FM(1) + kNN films + kNN users + biais,0.0557,0.7525,0.195,0.0895,-0.0525,,
+stack FM(5) + kNN films,0.0657,,0.1609,,,0.8215,
+stack FM(5) + kNN films + kNN users + biais,0.0634,,0.1245,0.0196,0.0171,0.8219,
+stack FM(10) + kNN films,0.0649,,0.1543,,,,0.8282
+stack FM(10) + kNN films + kNN users + biais,0.062,,0.1165,0.0117,0.0262,,0.8291

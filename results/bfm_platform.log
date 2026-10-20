@@ -1,0 +1,7 @@
+Train + test : 63196 notes, CV 5 plis (~50556 notes d'apprentissage par pli)
+  rang  5 : meilleure it. 157  cv=0.8203 +/- 0.0056  | it. 118 : 0.8205  | it. 500 : 0.8214
+  rang 10 : meilleure it. 500  cv=0.8198 +/- 0.0041  | it. 118 : 0.8201  | it. 500 : 0.8198
+  rang 20 : meilleure it. 238  cv=0.8171 +/- 0.0047  | it. 118 : 0.8178  | it. 500 : 0.8176
+
+Soumission actuelle (rang 5, 118 it.) : cv=0.8205 +/- 0.0052
+Meilleure config : rang 20, 238 it. -> cv=0.8171  | ecart vs soumission par pli : -0.0024 -0.0033 -0.0029 -0.0058 -0.0028 (moyenne -0.0035)

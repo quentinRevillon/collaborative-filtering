@@ -41,6 +41,8 @@ src/
     bpmf_init.py         #   BPMF : effet de l'initialisation
     bpmf_alpha.py        #   BPMF : grille sur alpha, alpha tiré, config longue, test
     bfm.py               #   Bayesian FM : features, rang, courbe, test
+    bfm_platform.py      #   Bayesian FM : rang et itérations en CV sur train + test (taille plateforme)
+    bfm_stacking.py      #   moyennage de chaînes et stacking FM + kNN (CV sur train + test)
     main_bpmf_cv.py      #   vérif. du BPMF de main sur nos plis (4 configs)
     main_bfm_genres.py   #   vérif. de la Bayesian FM de main : ancien vs nouveau fichier de genres
     main_code.py         #   chargement du code de main depuis une copie locale (../a1-main)
@@ -83,6 +85,8 @@ python -m src.experiments.koren            # ~4 min
 python -m src.experiments.bpmf             # ~10 min
 python -m src.experiments.bpmf_alpha       # ~25 min (options --gibbs, --long, --test)
 python -m src.experiments.bfm              # ~20 min (--skip-cv : seulement courbe + test)
+python -m src.experiments.bfm_platform     # ~1 h (--ranks 30 40 : seulement ces rangs)
+python -m src.experiments.bfm_stacking     # ~15 min (--chains 10 --reuse : ajoute des chaînes)
 git worktree add ../a1-main origin/main    # copie de main, pour les deux vérifications suivantes
 python -m src.experiments.main_bpmf_cv     # ~10 min, nécessite torch
 python -m src.experiments.main_bfm_genres  # ~30 min

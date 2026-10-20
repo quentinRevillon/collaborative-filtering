@@ -11,14 +11,20 @@ and falls back to the baseline b_ui when sum_j s_ij is zero. beta = 0 is the
 course/Surprise formula; beta > 0 shrinks the correction towards the baseline
 when the neighbours are few or weakly similar (very useful at ~1 % density).
 
+fit_item_knn_damped is the variant used by the submitted stack (generate.py): it keeps
+negative similarities too, with weights s_ij / (damp + sum_j |s_ij|), and a baseline with
+separate user / item regularization:
+    r_hat = b_ui + sum_j s_ij e_uj / (damp + sum_j |s_ij|)
+
 Usage:
-    from src.knn import fit_item_knn
+    from src.knn import fit_item_knn, fit_item_knn_damped
     predict = fit_item_knn(train, shape, k=40, shrink=100.0, beta=0.2, lam=2.0)
+    predict = fit_item_knn_damped(train, shape, k=20, shrink=100.0, damp=0.5, lam_u=5.0, lam_i=3.0)
     r_hat = predict(u, i)
 """
 import numpy as np
 
-from src.baselines import fit_biases
+from src.baselines import biases, fit_biases
 from src.data import to_dense
 
 
@@ -70,6 +76,38 @@ def fit_item_knn(train, shape, k=40, shrink=100.0, beta=0.0, lam=2.0):
             if len(idx) and len(rated[user]):
                 sub = S[np.ix_(i[idx], rated[user])]
                 out[idx] += knn_correction(sub, E[user, rated[user]], k, beta)
+        return out
+
+    return predict
+
+
+def fit_item_knn_damped(train, shape, k=20, shrink=100.0, damp=0.5, lam_u=5.0, lam_i=3.0):
+    """Item kNN on bias residuals, signed similarities, damped denominator (submitted variant).
+
+    The baseline uses 10 alternating updates, as in va/preliminary (src/models/knn.py) where
+    the stack weights were learnt: neighbours are picked among many near-tied similarities, so
+    even tiny changes of the residuals change some predictions.
+    """
+    mu, bu, bi = biases(train, shape, lam_u, n_iter=10, lam_i=lam_i)
+    base = lambda u, i: mu + bu[u] + bi[i]
+    E = to_dense(train[0], train[1], train[2] - base(train[0], train[1]), shape).astype(np.float32)
+    M = to_dense(train[0], train[1], 1.0, shape)
+    S = pearson_baseline(E, M, shrink)
+    rated = [np.flatnonzero(row) for row in M]
+
+    def predict(u, i):
+        out = base(u, i)
+        order = np.argsort(u, kind="stable")
+        bounds = np.cumsum(np.bincount(u, minlength=shape[0]))
+        for user, idx in enumerate(np.split(order, bounds[:-1])):
+            if len(idx) and len(rated[user]):
+                sub = S[np.ix_(i[idx], rated[user])]
+                e = E[user, rated[user]]
+                if sub.shape[1] > k:
+                    top = np.argpartition(-sub, k - 1, axis=1)[:, :k]
+                    sub, e = np.take_along_axis(sub, top, axis=1), e[top]
+                den = np.abs(sub).sum(1) + damp
+                out[idx] += np.where(den > 0, (sub * e).sum(1) / np.where(den > 0, den, 1.0), 0.0)
         return out
 
     return predict

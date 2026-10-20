@@ -17,18 +17,20 @@ def fit_global_mean(train, shape):
     return lambda u, i: np.full(len(u), mu)
 
 
-def biases(train, shape, lam, n_iter=20):
+def biases(train, shape, lam, n_iter=20, lam_i=None):
     """Fit mu, b_u, b_i by alternating closed-form ridge updates.
 
-    Minimizes sum (r - mu - b_u - b_i)^2 + lam * (|b_u|^2 + |b_i|^2).
+    Minimizes sum (r - mu - b_u - b_i)^2 + lam * |b_u|^2 + lam_i * |b_i|^2
+    (lam_i = lam when not given).
     """
+    lam_i = lam if lam_i is None else lam_i
     u, i, r = train
     mu = r.mean()
     nu = np.bincount(u, minlength=shape[0])
     ni = np.bincount(i, minlength=shape[1])
     bu = np.zeros(shape[0])
     for _ in range(n_iter):
-        bi = np.bincount(i, r - mu - bu[u], minlength=shape[1]) / np.maximum(lam + ni, 1e-12)  # 0 if unrated
+        bi = np.bincount(i, r - mu - bu[u], minlength=shape[1]) / np.maximum(lam_i + ni, 1e-12)  # 0 if unrated
         bu = np.bincount(u, r - mu - bi[i], minlength=shape[0]) / np.maximum(lam + nu, 1e-12)
     return mu, bu, bi
 

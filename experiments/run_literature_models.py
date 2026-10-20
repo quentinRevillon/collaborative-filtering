@@ -31,7 +31,7 @@ from src.side_info import item_features
 
 ROOT = Path(__file__).resolve().parent.parent
 RES, PREDS = ROOT / "results", ROOT / "results" / "preds"
-F = item_features(ROOT / "data" / "namesngenre.npy")
+F = item_features(ROOT / "data" / "namesngenre2.npy")
 GCMC_HP = dict(epochs=200, dropout=0.7)
 GLK_HP = dict(epochs_p=40, epochs_f=40)
 

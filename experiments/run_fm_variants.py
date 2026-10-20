@@ -34,7 +34,7 @@ from src.side_info import item_features
 
 ROOT = Path(__file__).resolve().parent.parent
 RES, PREDS = ROOT / "results", ROOT / "results" / "preds"
-F = item_features(ROOT / "data" / "namesngenre.npy")
+F = item_features(ROOT / "data" / "namesngenre2.npy")
 WORKERS = 3
 BASE = ("iu", "ii", "side")
 # (likelihood, features, rank, n_iter, seeds); round 1 "us"/"ip" also had a shrunk mean rating (leaky, 0.905)

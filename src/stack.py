@@ -9,7 +9,7 @@ member is fitted only once on the input ratings (time budget of the platform).
 Usage:
     from src.side_info import item_features
     from src.stack import fit_stack
-    predict = fit_stack(train, shape, item_features("data/namesngenre.npy"))   # train: COO (u, i, r)
+    predict = fit_stack(train, shape, item_features("data/namesngenre2.npy"))   # train: COO (u, i, r)
     r_hat = predict(u, i)
 """
 from src.bfm import fit_bfm

@@ -23,7 +23,7 @@ C_TRAIN, C_TEST = "#2a6fdb", "#e8833a"
 def load(data_dir):
     """Load train/test rating matrices and movie metadata."""
     d = Path(data_dir)
-    return np.load(d / "ratings_train.npy"), np.load(d / "ratings_test.npy"), np.load(d / "namesngenre.npy", allow_pickle=True)
+    return np.load(d / "ratings_train.npy"), np.load(d / "ratings_test.npy"), np.load(d / "namesngenre2.npy", allow_pickle=True)
 
 
 def save(fig, name):

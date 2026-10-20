@@ -45,7 +45,7 @@ FOLD_ITERS = [200, 500]                   # n_iter of the out-of-fold FMs
 EASE_LAMS = [10.0, 100.0, 1000.0]
 KNN_GRID = [(k, s, b) for k in (20, 80) for s in (30.0, 100.0) for b in (0.3, 1.0, 3.0)]
 PRIORS = [3.0, 10.0, 30.0]                # pseudo-counts of the GBDT support statistics
-F = item_features(ROOT / "data" / "namesngenre.npy")
+F = item_features(ROOT / "data" / "namesngenre2.npy")
 
 
 def save_csv(rows, name):

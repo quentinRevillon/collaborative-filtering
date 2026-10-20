@@ -38,7 +38,7 @@ from src.side_info import item_features
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "results"
-F = item_features(ROOT / "data" / "namesngenre.npy")
+F = item_features(ROOT / "data" / "namesngenre2.npy")
 PLATFORM_N = 63196
 
 MODELS = {

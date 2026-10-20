@@ -217,7 +217,7 @@ def main():
     t0 = time.perf_counter()
     train, shape = load_coo(ROOT / "data" / "ratings_train.npy")
     test, _ = load_coo(ROOT / "data" / "ratings_test.npy")
-    F = item_features(ROOT / "data" / "namesngenre.npy")
+    F = item_features(ROOT / "data" / "namesngenre2.npy")
     tr, va = split(train, 0.1, seed=0)
     counts = item_counts(train, shape)
     rare = subset(test, counts[test[1]] < RARE)

@@ -11,7 +11,7 @@ member's training set), so the weight of each member can depend on the support.
 Usage:
     from src.ensemble import fit_ensemble, BEST
     from src.side_info import item_features
-    F = item_features("data/namesngenre.npy")
+    F = item_features("data/namesngenre2.npy")
     predict = fit_ensemble(train, shape, F, **BEST)   # train: COO (u, i, r)
     r_hat = predict(u, i)                              # works on millions of pairs (chunked)
 

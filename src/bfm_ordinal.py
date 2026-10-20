@@ -11,7 +11,7 @@ interpolation on a fine grid (error < 1e-5), and only every `thin`-th kept sampl
 Usage:
     from src.bfm_ordinal import fit_ordinal_bfm
     from src.side_info import item_features
-    F = item_features("data/namesngenre.npy")
+    F = item_features("data/namesngenre2.npy")
     predict = fit_ordinal_bfm(train, shape, F, features=("iu", "ii", "side"), rank=10, n_iter=2000)
     r_hat = predict(u, i)
     model, blocks = fit_ordinal_model(train, shape, F, ("iu", "ii", "side"), rank=10, n_iter=500)

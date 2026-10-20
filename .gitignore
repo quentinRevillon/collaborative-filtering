@@ -1,6 +1,7 @@
 output.npy
 data/*.npy
 !data/namesngenre.npy
+!data/namesngenre2.npy
 __pycache__/
 *.pyc
 docs/**/*.aux

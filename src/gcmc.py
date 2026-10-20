@@ -17,7 +17,7 @@ the defaults are hidden 100 / 30, dropout 0.7, 200 epochs (chosen on the 10 % va
 Usage:
     from src.gcmc import fit_gcmc, fit_gcmc_early
     from src.side_info import item_features
-    F = item_features("data/namesngenre.npy")
+    F = item_features("data/namesngenre2.npy")
     predict = fit_gcmc(train, shape, F, epochs=200)
     predict, curves = fit_gcmc_early(train, shape, F, valid, epochs=1000)   # valid RMSE every 10 epochs
     r_hat = predict(u, i)

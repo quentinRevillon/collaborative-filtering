@@ -23,7 +23,7 @@ densely, sample by sample, instead of calling myfm's row-wise predictor on 3M ro
 Usage:
     from src.bfm import fit_bfm
     from src.side_info import item_features
-    F = item_features("data/namesngenre.npy")
+    F = item_features("data/namesngenre2.npy")
     predict = fit_bfm(train, shape, F, features=("iu", "ii", "side"), rank=10, n_iter=1000)
     predict = fit_bfm_chains(train, shape, F, rank=10, n_iter=2000, seeds=(0, 1, 2))  # averaged chains
     r_hat = predict(u, i)
@@ -142,23 +142,26 @@ def sample_scores(model, blocks, u, i):
     return np.array([w0 + gu[u] + gi[i] + np.sum(au[u] * ai[i], 1) for w0, (gu, au), (gi, ai) in parts])
 
 
-def fit_model(train, shape, F, features, rank, n_iter, seed=SEED):
-    """Run the Gibbs sampler; return (myfm model keeping n_iter - BURN_IN samples, feature blocks)."""
+def fit_model(train, shape, F, features, rank, n_iter, seed=SEED, burn_in=BURN_IN):
+    """Run the Gibbs sampler; return (myfm model keeping n_iter - burn_in samples, feature blocks)."""
     u, i, r = train
     blocks = (user_blocks(train, shape, features), item_blocks(train, shape, F, features))
     model = myfm.MyFMRegressor(rank=rank, random_seed=seed)
-    model.fit(None, r, X_rel=relations(u, i, blocks), n_iter=n_iter, n_kept_samples=n_iter - BURN_IN,
+    model.fit(None, r, X_rel=relations(u, i, blocks), n_iter=n_iter, n_kept_samples=n_iter - burn_in,
               group_shapes=[b.shape[1] for b in blocks[0] + blocks[1]])
     return model, blocks
 
 
-def fit_bfm(train, shape, F, features=("iu", "ii", "side"), rank=10, n_iter=1000):
-    """Fit a Bayesian FM by Gibbs sampling and return predict(u, i) = posterior predictive mean."""
-    M = posterior_mean(*fit_model(train, shape, F, features, rank, n_iter))
+def fit_bfm(train, shape, F, features=("iu", "ii", "side"), rank=10, n_iter=1000, burn_in=BURN_IN):
+    """Fit a Bayesian FM by Gibbs sampling and return predict(u, i) = posterior predictive mean
+    (average of the n_iter - burn_in samples drawn after the first burn_in sweeps)."""
+    M = posterior_mean(*fit_model(train, shape, F, features, rank, n_iter, burn_in=burn_in))
     return lambda u, i: M[u, i]
 
 
-def fit_bfm_chains(train, shape, F, features=("iu", "ii", "side"), rank=10, n_iter=2000, seeds=(0, 1, 2)):
+def fit_bfm_chains(train, shape, F, features=("iu", "ii", "side"), rank=10, n_iter=2000, seeds=(0, 1, 2),
+                   burn_in=BURN_IN):
     """Average the posterior means of independent Gibbs chains (one per seed); return predict(u, i)."""
-    M = np.mean([posterior_mean(*fit_model(train, shape, F, features, rank, n_iter, s)) for s in seeds], 0)
+    M = np.mean([posterior_mean(*fit_model(train, shape, F, features, rank, n_iter, s, burn_in))
+                 for s in seeds], 0)
     return lambda u, i: M[u, i]

@@ -223,7 +223,7 @@ def main():
     print("blend", flush=True)
     best = min(selected, key=lambda s: s[0]["valid_rmse"])
     full_best = results[selected.index(best)][1]
-    fits = alt_fits(item_features(ROOT / "data" / "namesngenre.npy"))
+    fits = alt_fits(item_features(ROOT / "data" / "namesngenre2.npy"))
     part, full = fit_all(fits, tr, shape), fit_all(fits, train, shape)
     without, _ = blend_row("blend (ridge, alt models)", part, full, va, test)
     part["AutoRec"], full["AutoRec"] = best[2], full_best

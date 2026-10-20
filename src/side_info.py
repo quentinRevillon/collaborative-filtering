@@ -9,7 +9,7 @@ alternating closed-form updates of b_i, w (ridge, penalty lam_w) and b_u.
 
 Usage:
     from src.side_info import item_features, fit_side_biases
-    F = item_features("data/namesngenre.npy")          # (n_items, n_features)
+    F = item_features("data/namesngenre2.npy")          # (n_items, n_features)
     predict = fit_side_biases(train, shape, F, lam=2.0, lam_w=1.0, pop=True)
     r_hat = predict(u, i)
 """

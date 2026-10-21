@@ -1,0 +1,10 @@
+C:\Users\vince\Desktop\IASD\DataLab\masteriasd-datalab-project-a1-group-40\src\experiments\error_analysis.py:64: RuntimeWarning: Mean of empty slice
+  mean_i.append(np.nan_to_num(np.nanmean(R_fit, axis=0), nan=np.nanmean(R_fit))[vi])
+C:\Users\vince\Desktop\IASD\DataLab\masteriasd-datalab-project-a1-group-40\.venv\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1997: RuntimeWarning: Degrees of freedom <= 0 for slice.
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+iter=200  lr=0.05  feuilles=15  min_leaf=200   ecart -0.00328  (-0.0025 -0.0035 -0.0040 -0.0026 -0.0038)
+iter=100  lr=0.05  feuilles=7   min_leaf=500   ecart -0.00265  (-0.0019 -0.0030 -0.0027 -0.0023 -0.0034)
+iter=200  lr=0.03  feuilles=7   min_leaf=500   ecart -0.00270  (-0.0019 -0.0032 -0.0027 -0.0022 -0.0035)
+iter=300  lr=0.03  feuilles=7   min_leaf=1000  ecart -0.00283  (-0.0020 -0.0036 -0.0031 -0.0019 -0.0034)
+iter=150  lr=0.05  feuilles=15  min_leaf=1000  ecart -0.00301  (-0.0023 -0.0040 -0.0033 -0.0022 -0.0032)
+iter=100  lr=0.1   feuilles=4   min_leaf=1000  ecart -0.00232  (-0.0017 -0.0031 -0.0022 -0.0018 -0.0029)

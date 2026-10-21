@@ -1,0 +1,5 @@
+model,cv_rmse,cv_std
+biases only,0.8642,0.0041
+item kNN,0.8523,0.0045
+Bayesian FM x5 (raw ratings),0.8117,0.005
+Bayesian FM x5 (user-normalized),0.8049,0.0051

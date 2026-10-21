@@ -1,0 +1,19 @@
+variant,cv_rmse,diff_vs_submission,folds_better,per_fold_diff
+soumission (FM5 + kNN films),0.8098,0.0,0,+0.0000 +0.0000 +0.0000 +0.0000 +0.0000
+FM 10 chaines + kNN films,0.80953,-0.00026,4,-0.0003 +0.0003 -0.0006 -0.0002 -0.0004
++ kNN users + biais,0.8098,1e-05,2,-0.0000 -0.0000 +0.0000 +0.0001 +0.0000
+FWLS : poids selon log n_film,0.8095,-0.0003,5,-0.0000 -0.0004 -0.0003 -0.0002 -0.0005
+FWLS : poids selon log n_user,0.80955,-0.00024,4,+0.0001 -0.0003 -0.0004 -0.0002 -0.0004
+FWLS : poids selon std chaines,0.80963,-0.00017,4,-0.0004 -0.0002 -0.0002 -0.0003 +0.0002
+FWLS : poids selon std user,0.80971,-8e-05,3,+0.0000 +0.0001 -0.0001 -0.0001 -0.0002
+FWLS : poids selon log n_film + log n_user,0.80932,-0.00047,5,-0.0000 -0.0006 -0.0005 -0.0003 -0.0008
+FWLS : poids selon log n_film + log n_user + std chaines + std user,0.80904,-0.00076,5,-0.0004 -0.0007 -0.0009 -0.0006 -0.0012
+[test biaise] biais residuel par user (lambda=5),0.82062,0.01082,0,+0.0099 +0.0091 +0.0111 +0.0124 +0.0116
+[test biaise] biais residuel par user (lambda=20),0.81711,0.00731,0,+0.0068 +0.0060 +0.0076 +0.0086 +0.0076
+[test biaise] biais residuel par user (lambda=50),0.8145,0.0047,0,+0.0044 +0.0036 +0.0050 +0.0058 +0.0047
+[test biaise] biais residuel par film (lambda=5),0.8446,0.03481,0,+0.0340 +0.0349 +0.0368 +0.0344 +0.0340
+[test biaise] biais residuel par film (lambda=20),0.82687,0.01708,0,+0.0165 +0.0173 +0.0183 +0.0171 +0.0162
+[test biaise] biais residuel par film (lambda=50),0.81903,0.00924,0,+0.0089 +0.0094 +0.0100 +0.0093 +0.0086
+recalibration par tranche de prediction (20 tranches),0.80892,-0.00088,5,-0.0002 -0.0013 -0.0009 -0.0006 -0.0014
+stack lineaire + gradient boosting sur le residu (leger),0.80652,-0.00328,5,-0.0025 -0.0035 -0.0040 -0.0026 -0.0038
+stack lineaire + gradient boosting sur le residu (moyen),0.8086,-0.0012,5,-0.0005 -0.0017 -0.0022 -0.0003 -0.0013

@@ -1,0 +1,26 @@
+  pli 1 : centrage + reduction, k=5 (28 s)
+  pli 1 : centrage + reduction, k=20 (28 s)
+  pli 1 : reduction seule, k=5 (28 s)
+  pli 2 : centrage + reduction, k=5 (29 s)
+  pli 2 : centrage + reduction, k=20 (32 s)
+  pli 2 : reduction seule, k=5 (30 s)
+  pli 3 : centrage + reduction, k=5 (28 s)
+  pli 3 : centrage + reduction, k=20 (27 s)
+  pli 3 : reduction seule, k=5 (28 s)
+  pli 4 : centrage + reduction, k=5 (27 s)
+  pli 4 : centrage + reduction, k=20 (27 s)
+  pli 4 : reduction seule, k=5 (27 s)
+  pli 5 : centrage + reduction, k=5 (29 s)
+  pli 5 : centrage + reduction, k=20 (26 s)
+  pli 5 : reduction seule, k=5 (29 s)
+
+Une chaine (graine 0), comparee a la meme chaine sans normalisation :
+  sans normalisation (reference)                       cv=0.8171  ecart +0.00000  (+0.0000 +0.0000 +0.0000 +0.0000 +0.0000)
+  centrage + reduction, k=5                            cv=0.8072  ecart -0.00984  (-0.0107 -0.0086 -0.0120 -0.0084 -0.0095)
+  centrage + reduction, k=20                           cv=0.8070  ecart -0.01007  (-0.0107 -0.0089 -0.0117 -0.0088 -0.0102)
+  reduction seule, k=5                                 cv=0.8091  ecart -0.00798  (-0.0099 -0.0062 -0.0091 -0.0070 -0.0077)
+
+Stacks avec la meilleure variante (centrage + reduction, k=20), compares au stack FM brute (1 chaine) + kNN :
+  FM brute + kNN (reference)                           cv=0.8132  ecart +0.00000  (+0.0000 +0.0000 +0.0000 +0.0000 +0.0000)
+  FM normalisee + kNN                                  cv=0.8068  ecart -0.00635  (-0.0071 -0.0056 -0.0076 -0.0048 -0.0066)
+  FM brute + FM normalisee + kNN                       cv=0.8062  ecart -0.00692  (-0.0076 -0.0064 -0.0080 -0.0055 -0.0072)

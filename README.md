@@ -4,9 +4,13 @@
 the entries observed in the input) by stacking Bayesian factorization machines fitted by MCMC with an
 item kNN. The submission ranked 3rd out of 30 teams in the class.
 
+<img height="450" src="figures/final_rmse_by_segment.png" />
+
+Out-of-fold RMSE by user and movie segment: final model (CV 0.8023) against submission 3 (CV 0.8098).
+
 ## Overview
 
-- Problem: predict every missing rating (0.5 to 5 stars) of a MovieLens-derived matrix; metric RMSE
+- Problem: predict every missing rating (0.5 to 5 stars) of the course rating matrix; metric RMSE
   on hidden ratings, computed by the course evaluation platform, which fits `generate.py` on
   `ratings_train` + `ratings_test` (63,196 ratings) under a 20-minute limit.
 - Approach: regularized biases, matrix factorization and kNN as baselines, then Bayesian models
@@ -18,7 +22,8 @@ item kNN. The submission ranked 3rd out of 30 teams in the class.
 ## Results
 
 5-fold cross-validation on the 63,196 ratings of `ratings_train` + `ratings_test`, every model on the
-same folds (fold-to-fold standard deviation about 0.004). Each row adds one step to the previous ones.
+same folds (fold-to-fold standard deviation about 0.004). Rows follow the order in which the models
+were built (report.pdf, Conclusion).
 
 | Step | CV RMSE |
 |---|---|
@@ -92,7 +97,7 @@ smaller models (rank 5 and 20 tie on train, rank 20 wins on the union).
 
 ## Data
 
-The ratings are a copy of MovieLens `ml-latest-small` distributed with the course, not included here.
+The ratings are distributed with the course and are not included here.
 Expected layout:
 
 ```

@@ -1,85 +1,115 @@
-# DataLab A1: Collaborative filtering (group 40, *La piscine*)
+# collaborative-filtering — movie rating prediction with Bayesian factorization machines
 
-Completion of a sparse users × movies ratings matrix (MovieLens copy, 610 × 4980, ~1 % observed).
-Metric: RMSE on held-out ratings (the platform also reports exact-rating accuracy and running time).
+**collaborative-filtering** completes a sparse users x movies rating matrix (610 x 4980, about 2 % of
+the entries observed in the input) by stacking Bayesian factorization machines fitted by MCMC with an
+item kNN. The submission ranked 3rd out of 30 teams in the class.
 
-## Submitted method
+## Overview
 
-`generate.py` fits the model of `src/final_stack.py`:
+- Problem: predict every missing rating (0.5 to 5 stars) of a MovieLens-derived matrix; metric RMSE
+  on hidden ratings, computed by the course evaluation platform, which fits `generate.py` on
+  `ratings_train` + `ratings_test` (63,196 ratings) under a 20-minute limit.
+- Approach: regularized biases, matrix factorization and kNN as baselines, then Bayesian models
+  (BPMF, Bayesian factorization machines with implicit feedback and genres), per-user rating
+  normalization, and a stack corrected by gradient boosting.
+- Context: Data Science Lab, assignment 1 (collaborative filtering), Master IASD, PSL, October 2026.
+  Team project, group 40.
 
-1. **Bayesian factorization machines** (`src/bfm.py`, package `myfm`): user and item ids, implicit
-   feedback (items rated by the user, users who rated the item), genres / release decade of
-   `data/namesngenre2.npy`; rank 20, 238 Gibbs sweeps (20 discarded), noise precision sampled,
-   posterior means of 5 chains averaged. One FM is fitted on **user-normalized ratings**
-   z = (r - m_u) / s_u (shrunk user mean and standard deviation, mapped back afterwards), one on
-   raw ratings. The FM assumes the same noise for every user; on z, users whose ratings are very
-   spread out (who concentrate the error) weigh less.
-2. **Item kNN** on bias residuals (`src/knn.py`, `fit_item_knn_damped`).
-3. **Linear stack** of the three predictions, corrected by **gradient boosting** (scikit-learn) on
-   its residual, with features of the rating: predictions, disagreement between the chains,
-   user / movie statistics, genres, decade.
+## Results
 
-Stack and boosting are learnt on out-of-fold predictions computed once by 5-fold cross-validation
-on `ratings_train` + `ratings_test` (the platform input), versioned in `data/stack_train.npz`; they
-are refitted in a few seconds by `generate.py`. If the input ratings differ from that file, the
-boosting is skipped and a fixed linear stack is used.
+5-fold cross-validation on the 63,196 ratings of `ratings_train` + `ratings_test`, every model on the
+same folds (fold-to-fold standard deviation about 0.004). Each row adds one step to the previous ones.
 
-| Model | 5-fold CV on train + test | `ratings_train` -> `ratings_test` | Platform |
-|---|---|---|---|
-| Bayesian FM rank 5, one chain (submission 2) | 0.8205 | 0.8407 | 0.812 |
-| Bayesian FM rank 20, 5 chains + item kNN (submission 3) | 0.8098 | 0.8322 | |
-| + user normalization (linear stack, fallback path) | 0.8046 | 0.8282 | |
-| **+ gradient boosting (this submission)** | **0.8023** | - | |
+| Step | CV RMSE |
+|---|---|
+| Regularized biases (baseline) | 0.8642 |
+| Best course method (item kNN) | 0.8523 |
+| Posterior averaging (BPMF) | 0.8479 |
+| Genres in a Bayesian FM | 0.8190 |
+| Implicit feedback | 0.8171 |
+| Five chains | 0.8117 |
+| User normalization | 0.8049 |
+| Stack with item kNN and gradient boosting (final) | **0.8023** |
 
-The boosting cannot be scored on `ratings_test` (its training data contains the test ratings).
-Running time on train + test: about 5.5 min. `data/namesngenre2.npy` is the corrected genre file
-sent on 19/10 (the original `namesngenre.npy` was not aligned with the rating columns).
+Platform scores (hidden ratings): 0.812 for a single-chain Bayesian FM (rank 5), 0.801 for the
+5-chain Bayesian FM stacked with the item kNN. The full analysis (paired tests, error analysis by
+user and movie segment) is in [`report.pdf`](report.pdf).
 
-## Layout
-
-```
-generate.py              platform entry point (load/save lines unchanged)
-requirements.txt         libraries installed by the platform (pip install -r requirements.txt);
-                         torch is not listed: generate.py does not need it (see Usage)
-slides.pdf               preliminary presentation (source: slides/slides.tex)
-slides/                  slides.tex (main deck), slides_finales.tex/.pdf (deck with every method tested)
-src/                     models, all with the API fit_xxx(train, shape, **hp) -> predict(u, i)
-  data.py                loading, splits, metrics, matrix completion helper
-  baselines.py           global mean, regularized biases mu + b_u + b_i
-  mf.py, mf_plain.py     matrix factorization (ALS, gradient descent), with or without baseline
-  knn.py, knn_course.py  item / user kNN (course formula and on bias residuals; damped variant submitted)
-  bpmf.py                Bayesian matrix factorization (previous submission)
-  bfm.py                 Bayesian factorization machines
-  final_stack.py         submitted model: user-normalized FM + FM + kNN, stack + gradient boosting
-experiments/             reproducible experiment scripts (write results/ and figures/)
-  run_course_methods.py  course methods: biases, matrix factorization, kNN (numbers of the slides)
-  run_bayesian.py        BPMF and Bayesian factorization machines
-  evaluate_output.py     score output.npy on a held-out file
-results/, figures/       experiment outputs
-docs/                    project procedure and documentation (LaTeX)
-data/                    namesngenre2.npy (corrected genres, versioned), stack_train.npz (out-of-fold
-                         predictions for the stack), namesngenre.npy (original,
-                         misaligned, kept for reference); ratings_*.npy are not versioned
-```
-
-## Usage
+## Installation
 
 ```bash
+python -m venv .venv && source .venv/bin/activate     # Python 3.12
 pip install -r requirements.txt
-pip install torch                                          # only for the experiments below
-python generate.py --name data/ratings_train.npy          # writes output.npy
+pip install torch                                     # only for the experiment scripts
+```
+
+## Quick start
+
+Place the course files in `data/` (see [Data](#data)), then fit on train and score on test:
+
+```bash
+python generate.py --name data/ratings_train.npy
 python experiments/evaluate_output.py --output output.npy --test data/ratings_test.npy
 ```
 
-`torch` is only used by the experiment code (`src/bpmf.py`, `src/mf.py`, `src/autorec.py`,
-`src/gcmc.py`, `src/glocalk.py` and the `experiments/` scripts that call them); it is not in
-`requirements.txt` so that the platform does not install it for `generate.py`.
+`generate.py` writes `output.npy`, the completed 610 x 4980 matrix (about 5.5 min on train + test,
+CPU). Without `data/stack_train.npz` (out-of-fold predictions, not versioned because they contain the
+ratings), the gradient-boosting correction is skipped and a fixed linear stack is used; this path
+scores 0.8282 RMSE on `ratings_test` when fitted on `ratings_train`.
 
-## Protocol
+## Repository structure
 
-Local: fit on `ratings_train`, hyperparameters tuned on a 10 % validation split of train (seed 0),
-final score on `ratings_test`. Platform: `generate.py` receives train + test merged and is scored on a hidden eval set.
+- `generate.py`: platform entry point, completes a ratings matrix with the final model.
+- `src/final_stack.py`: final model, user-normalized and raw Bayesian FMs, item kNN, stack + boosting.
+- `src/bfm.py`: Bayesian factorization machines (package `myfm`) with implicit feedback and side features.
+- `src/bpmf.py`: Bayesian probabilistic matrix factorization with biases, by Gibbs sampling.
+- `src/baselines.py`, `src/mf.py`, `src/knn.py`, `src/knn_course.py`: biases, matrix factorization
+  (ALS, SGD), neighbourhood models. Every model exposes `fit_xxx(train, shape, **hp) -> predict(u, i)`.
+- `src/`: other models tried (AutoRec, GC-MC, GLocal-K, EASE, Soft-Impute, ensembles).
+- `experiments/`: one script per experiment, writing `results/*.csv` and `figures/`.
+- `slides/`: preliminary presentation (`slides.tex`, course methods) and the deck of every method tested.
+- `report.pdf`: final report.
 
-## Deliverables
+The branch `va/preliminary` holds the unified cross-validation, the error analysis and the report
+source (`report/report_2col.tex`).
 
-`slides.pdf` and `report.pdf` at the repository root (A1 preliminary slides: 14 Oct 23:59; report: 21 Oct 23:59).
+## Method
+
+1. **Bayesian factorization machine** ([myFM](https://github.com/tohtsky/myFM)): user and movie
+   one-hots, implicit feedback (movies rated by the user, users who rated the movie, weighted
+   |N|^-1/2), genres and release decade; rank 20, 238 Gibbs iterations (20 burn-in), posterior means
+   of 5 chains averaged.
+2. **User normalization**: one FM is fitted on z = (r - m_u) / s_u, with the user mean and standard
+   deviation shrunk towards the global ones (20 pseudo-ratings), and mapped back; a second FM is
+   fitted on raw ratings.
+3. **Item kNN** on bias residuals (Pearson similarity shrunk with 100 pseudo-users, k = 20).
+4. **Stack**: least-squares combination of the three predictions, corrected by gradient-boosted
+   trees (scikit-learn, 200 trees) on its residual, with the chain disagreement and user / movie
+   statistics as features; both learnt on out-of-fold predictions.
+
+Hyperparameters are chosen by cross-validation on train + test: settings tuned on train alone favour
+smaller models (rank 5 and 20 tie on train, rank 20 wins on the union).
+
+## Data
+
+The ratings are a copy of MovieLens `ml-latest-small` distributed with the course, not included here.
+Expected layout:
+
+```
+data/
+├── ratings_train.npy   # 610 x 4980, NaN = missing, 31,598 ratings
+├── ratings_test.npy    # same shape, 31,598 other ratings
+└── namesngenre2.npy    # title and genres of each movie column
+```
+
+## References
+
+1. R. Salakhutdinov, A. Mnih. Bayesian probabilistic matrix factorization using Markov chain Monte Carlo. ICML 2008.
+2. S. Rendle. Factorization machines. ICDM 2010.
+3. C. Freudenthaler, L. Schmidt-Thieme, S. Rendle. Bayesian factorization machines. NIPS Workshop, 2011.
+4. S. Rendle, L. Zhang, Y. Koren. On the difficulty of evaluating baselines. arXiv:1905.01395, 2019.
+5. Y. Koren. Factorization meets the neighborhood. KDD 2008.
+
+## Team
+
+Quentin Revillon and Vincent Ami (group 40). Course by Alexandre Vérine, Université Paris Dauphine - PSL.

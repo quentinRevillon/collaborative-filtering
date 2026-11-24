@@ -1,19 +1,30 @@
-output.npy
-data/*.npy
-!data/namesngenre.npy
-!data/namesngenre2.npy
+# Python
 __pycache__/
-*.pyc
-docs/**/*.aux
-docs/**/*.log
-docs/**/*.out
-docs/**/*.toc
-docs/**/*.fls
-docs/**/*.fdb_latexmk
-docs/**/*.synctex.gz
-slides/*.aux
-slides/*.log
-slides/*.nav
-slides/*.out
-slides/*.snm
-slides/*.toc
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+# Notebooks
+.ipynb_checkpoints/
+# Data and outputs (course ratings, out-of-fold predictions)
+data/
+output.npy
+*.npy
+*.npz
+*.pkl
+# LaTeX build files
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

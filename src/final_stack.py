@@ -10,9 +10,11 @@
    features of the rating (base predictions, disagreement between chains, user / movie
    statistics, genres, decade).
    Stack and boosting need out-of-fold predictions of the base models: they were computed once by
-   5-fold cross-validation on ratings_train + ratings_test (the platform input) and are versioned
-   in data/stack_train.npz; the stack and the boosting are refitted on them here (a few seconds).
-   If the ratings given to fit() are not exactly those of data/stack_train.npz, the boosting is
+   5-fold cross-validation on ratings_train + ratings_test (the platform input) and saved in
+   data/stack_train.npz; the stack and the boosting are refitted on them here (a few seconds).
+   That file contains the ratings, so it is not versioned (it is produced by
+   src/experiments/final_stack.py on branch va/preliminary).
+   If the file is missing or its ratings differ from those given to fit(), the boosting is
    skipped and the linear stack uses the FALLBACK weights learnt in cross-validation.
 
 Usage:

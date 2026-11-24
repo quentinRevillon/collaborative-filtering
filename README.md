@@ -4,7 +4,7 @@ Movie rating prediction on a sparse 610 x 4980 users x movies matrix, with Bayes
 
 <img height="450" src="figures/final_rmse_by_segment.png" />
 
-Out-of-fold RMSE by user and movie segment: final model (CV 0.8023) against submission 3 (CV 0.8098).
+*Out-of-fold RMSE by user and movie segment: final model (CV 0.8023) against submission 3 (CV 0.8098).*
 
 ## Results
 

@@ -19,7 +19,7 @@ Movie rating prediction on a sparse 610 x 4980 users x movies matrix, with Bayes
 | + user normalization | 0.8049 |
 | Stack with item kNN and gradient boosting (final) | 0.8023 |
 
-Platform score on hidden ratings: 0.801 for the 5-chain Bayesian FM stacked with the item kNN. Details in [`report.pdf`](report.pdf).
+Platform score on hidden ratings: 0.801 for the 5-chain Bayesian FM stacked with the item kNN. Details in the [report](docs/report.pdf) and [slides](docs/slides.pdf).
 
 ## Quick start
 
@@ -49,15 +49,15 @@ src/           models (Bayesian FM, BPMF, MF, kNN, others tried)
 experiments/   one script per experiment
 results/       CSV results
 figures/       plots
-slides/        presentations
-report.pdf     final report
+docs/          report, final slides, preliminary slides (PDF)
+slides/        LaTeX sources of the slides
 ```
 
 ## References
 
-1. R. Salakhutdinov, A. Mnih. Bayesian probabilistic matrix factorization using Markov chain Monte Carlo. ICML 2008.
-2. S. Rendle. Factorization machines. ICDM 2010.
-3. C. Freudenthaler, L. Schmidt-Thieme, S. Rendle. Bayesian factorization machines. NIPS Workshop, 2011.
+1. R. Salakhutdinov et al. [Bayesian probabilistic matrix factorization using Markov chain Monte Carlo](https://doi.org/10.1145/1390156.1390267). ICML, 2008.
+2. S. Rendle. [Factorization machines](https://doi.org/10.1109/ICDM.2010.127). ICDM, 2010.
+3. C. Freudenthaler et al. [Bayesian factorization machines](https://www.ismll.uni-hildesheim.de/pub/pdfs/FreudenthalerRendle_BayesianFactorizationMachines.pdf). NIPS Workshop on Sparse Representation and Low-rank Approximation, 2011.
 
 ## Team
 
